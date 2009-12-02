@@ -1,0 +1,36 @@
+verbose = 8
+
+[CodeLayout::ProhibitHardTabs]
+allow_leading_tabs = 0
+severity = 5
+
+[CodeLayout::ProhibitTrailingWhitespace]
+severity = 5
+
+# requires Perl::Critic::More
+[CodeLayout::RequireASCII]
+severity = 5
+
+[Documentation::RequirePodAtEnd]
+severity = 5
+
+[TestingAndDebugging::RequireUseWarnings]
+severity = 5
+
+# requires Regexp::Parser
+[RegularExpressions::ProhibitUnusedCapture]
+severity = 5
+
+# requires Regexp::Parser
+[RegularExpressions::ProhibitSingleCharAlternation]
+severity = 5
+
+[Subroutines::ProhibitAmpersandSigils]
+severity = 5
+
+[Objects::ProhibitIndirectSyntax]
+severity = 5
+
+[-TestingAndDebugging::ProhibitNoStrict]
+[-BuiltinFunctions::ProhibitStringyEval]
+[-ValuesAndExpressions::ProhibitLeadingZeros]

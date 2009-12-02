@@ -1,0 +1,8 @@
+if buffer is read-only, change colorscheme or provide a better visual
+indicator
+
+mapping for switching from vertical split to horizontal, and vice versa
+
+saner page up/down behaviour (presing page-down when there is less than a full
+page left to scroll downwards, causes page-up not to return to the position
+prior to the page-down)

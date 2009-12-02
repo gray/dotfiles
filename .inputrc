@@ -1,0 +1,69 @@
+# To re-read (and implement changes to this file) use:
+#   bind -f ~/.inputrc
+
+$include /etc/inputrc
+
+set bell-style none
+
+# Allow the command prompt to wrap to the next line
+set horizontal-scroll-mode Off
+
+# Ignore case when doing completion
+set completion-ignore-case On
+
+# Enable one-tab completion
+set show-all-if-ambiguous On
+
+# Completed dir names have a slash appended
+set mark-directories On
+
+# Completed names which are symlinks to dirs have a slash appended
+set mark-symlinked-directories On
+
+# Don't match hidden files unless '.' is the first character.
+set match-hidden-files Off
+
+set page-completions Off
+set completion-query-items 350
+set expand-tilde On
+
+# Adds trailing symbols like `ls -F`
+set visible-stats On
+
+# Don't strip characters to 7 bits when reading
+set input-meta On
+
+# Allow latin1 characters to be inserted rather than converted to
+# prefix-meta sequences
+set convert-meta Off
+
+# Display characters with the eighth bit set directly rather than as
+# meta-prefixed characters
+set output-meta On
+
+# Incremental searching with Up and Down
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+# Prevent the previous from breaking Left and Right
+"\e[C": forward-char
+"\e[D": backward-char
+
+# Edit the path
+"\C-xp": "PATH=${PATH}\e\C-e\C-a\ef\C-f"
+
+# Prepare to type a quoted word -- insert open and close double quotes.
+"\C-x\"": "\"\"\C-b"
+
+# Insert a backslash (testing backslash escapes in sequences and macros)
+"\C-x\\": "\\"
+
+# Quote the current or previous word
+"\C-xq": "\eb\"\ef\""
+
+# Add a binding to refresh the line, which is unbound
+"\C-xr": redraw-current-line
+
+# Edit variable on current line.
+"\C-xe": "\C-a\C-k$\C-y\M-\C-e\C-a\C-y="
+
+set blink-matching-paren On

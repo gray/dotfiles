@@ -1,0 +1,70 @@
+installed plugins:
+
+abolish:
+    http://www.vim.org/scripts/script.php?script_id=1545
+ack:
+    http://www.vim.org/scripts/script.php?script_id=2572
+camelcasemotion:
+    http://www.vim.org/scripts/script.php?script_id=1905
+delimitMate:
+    http://www.vim.org/scripts/script.php?script_id=2754
+largefile:
+    http://www.vim.org/scripts/script.php?script_id=1506
+nerd commenter:
+    http://www.vim.org/scripts/script.php?script_id=1218
+nerd tree:
+    http://www.vim.org/scripts/script.php?script_id=1658
+plutil:
+    http://www.vim.org/scripts/script.php?script_id=1590
+sherlock:
+    http://www.vim.org/scripts/script.php?script_id=2731
+snipmate:
+    http://www.vim.org/scripts/script.php?script_id=2540
+supertab:
+    http://www.vim.org/scripts/script.php?script_id=1643
+surround:
+    http://www.vim.org/scripts/script.php?script_id=1697
+taglist:
+    http://www.vim.org/scripts/script.php?script_id=273
+universal text linking:
+    http://www.vim.org/scripts/script.php?script_id=293
+vcscommand:
+    http://www.vim.org/scripts/script.php?script_id=90
+zoomwin:
+    http://www.vim.org/scripts/script.php?script_id=508
+
+installed syntaxes:
+
+csv syntax:
+    http://vim.wikia.com/wiki/Working_with_CSV_files
+go:
+    http://go.googlecode.com/hg/misc/vim/go.vim
+json syntax:
+    http://www.vim.org/scripts/script.php?script_id=1945
+perl (updated):
+    http://github.com/petdance/vim-perl
+perl xs syntax (updated):
+    http://www.profvince.com/perl/xs.vim
+puppet syntax:
+    http://reductivelabs.com/downloads/puppet/puppet.vim
+scala syntax:
+    http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
+tt2 syntax:
+    http://www.vim.org/scripts/script.php?script_id=830
+
+installed colors:
+
+css_color:
+    http://www.vim.org/scripts/script.php?script_id=2150
+gentooish:
+    http://www.vim.org/scripts/script.php?script_id=2474
+inkpot:
+    http://www.vim.org/scripts/script.php?script_id=1143
+ir_black:
+    http://blog.infinitered.com/entries/show/8
+jammy:
+    http://www.vim.org/scripts/script.php?script_id=2169
+jellybeans:
+    http://www.vim.org/scripts/script.php?script_id=2555
+vividchalk:
+    http://www.vim.org/scripts/script.php?script_id=1891
