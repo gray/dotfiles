@@ -258,30 +258,16 @@ noremap N Nzvzt
 " Make it easier to navigate displayed lines when lines wrap
 inoremap <down> <c-o>gj
 inoremap <up> <c-o>gk
-nnoremap j  gj
-nnoremap k  gk
-nnoremap 0  g0
-nnoremap $  g$
-nnoremap gj j
-nnoremap gk k
-nnoremap g0 0
-nnoremap g$ $
-vnoremap j  gj
-vnoremap k  gk
-vnoremap 0  g0
-vnoremap $  g$
-vnoremap gj j
-vnoremap gk k
-vnoremap g0 0
-vnoremap g$ $
+noremap j  gj
+noremap k  gk
+noremap gj j
+noremap gk k
 
 " Saner paging behaviour.
-nnoremap <silent> <space> <c-d><c-d>
-nnoremap <silent> - <c-u><c-u>
-nnoremap <silent> <pagedown> <c-d><c-d>
-nnoremap <silent> <pageup> <c-u><c-u>
-vnoremap <silent> <pagedown> <c-d><c-d>
-vnoremap <silent> <pageup> <c-u><c-u>
+noremap <silent> <space> <c-d><c-d>
+noremap <silent> - <c-u><c-u>
+noremap <silent> <pagedown> <c-d><c-d>
+noremap <silent> <pageup> <c-u><c-u>
 inoremap <silent> <pagedown> <c-\><c-o><c-d><c-\><c-o><c-d>
 inoremap <silent> <pageup> <c-\><c-o><c-u><c-\><c-o><c-u>
 
