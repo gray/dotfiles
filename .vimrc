@@ -39,16 +39,12 @@ set shortmess+=t      " Truncate filename at start if too long
 set shortmess+=o      " Do not prompt to overwrite file
 set shortmess+=O      " Message for reading file overwrites previous
 
-set t_Co=16
-if $TERM_PROGRAM == "Apple_Terminal"
-    let &t_AB = "\<esc>[%?%p1%{8}%<%t%p1%{40}%+%e%p1%{92}%+%;%dm"
-    let &t_AF = "\<esc>[%?%p1%{8}%<%t%p1%{30}%+%e%p1%{82}%+%;%dm"
-elseif $TERM_PROGRAM == "iTerm.app"
-    set term=linux  " Fixes arrow keys
+if $TERM_PROGRAM == "iTerm.app"
+    " Fixes arrow keys
+    set term=linux
     set t_Co=256
-elseif $SSH_CONNECTION != ""
-    " set term=xterm  " Fixes backspace
-    set term=linux  " Fixes backspace
+elseif &term =~ "xterm"
+    set t_Co=16
 endif
 
 set encoding=utf-8
@@ -95,20 +91,18 @@ endif
 
 set textwidth=78
 set autoindent        " Use indent from previous line
-set smartindent       " Smarter indenting on new lines
 set smarttab          " Smart handling of the tab key
 set expandtab         " Use spaces for tabs
-set shiftround        " Round indent to multiple of shiftwidth
+set tabstop=8         " View (and :retab) others' code as intended
+set softtabstop=4     " Backspace will now delete 4 spaces at a time
 set shiftwidth=4      " Number of spaces for each indent
-set tabstop=8         " Number of spaces for tab key. Those who use hard tabs
-                      " usally use this value, so view it like they intended.
-                      " This also alllows :retab to work as expected.
-set softtabstop=4     " Backspace will now delete 4 spaces at a time.
+set shiftround        " Round indent to multiple of shiftwidth
 
 set formatoptions-=t  " Don't auto-wrap text
 set formatoptions+=c  " Auto-wrap comments
 set formatoptions+=n  " Recognize numbered lists
 set formatoptions+=o  " Insert comment leader after o/O
+set formatoptions+=r  " Insert comment leader after <cr> in insert mode.
 set formatoptions+=q  " Allow formatting of comments with 'gq'
 set formatoptions+=1  " Break a line before, not after, a one-letter word
 
@@ -219,8 +213,7 @@ map <c-w><c-t> :WMToggle<cr>
 "    \ "&completefunc:<c-x><c-u>",
 "    \ "&omnifunc:<c-x><c-o>", ]
 
-let NERDSpaceDelims = 1
-let NERDShutUp = 1
+let g:NERDSpaceDelims = 1
 let g:NERDTreeShowHidden = 1
 
 let Tlist_Enable_Fold_Column = 0
@@ -241,13 +234,21 @@ let g:netrw_dirhistmax = 0
 let maplocalleader = ","
 let mapleader = ","
 
+" Use ,, to work around , as leader
+noremap ,, ,
+
+nnoremap <f2> :set invpaste paste?<cr>
+imap <f2> <c-o><f2>
 set pastetoggle=<f2>
-nmap <localleader>pp :set paste! paste?<cr>
 
 " Save current buffer with root permissions.
-cnoremap w!! %w !sudo tee % > /dev/null
+cnoremap <silent> w!! %w !sudo tee % > /dev/null
 
+" Insert a single character.
 noremap <localleader>i i<space><esc>r
+
+" Preserve undo history.
+inoremap <c-u> <c-g>u<c-u>
 
 " Position search match at the top of the screen; open any containing fold.
 " TODO: position of initial search match should also be at the top.
@@ -311,6 +312,7 @@ inoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr>
 " Yank to end of line
 nnoremap Y y$
 
+" Return to visual mode after indenting
 vnoremap < <gv
 vnoremap > >gv
 
@@ -321,11 +323,8 @@ nnoremap <s-up> v<up>
 vnoremap <s-down> <down>
 vnoremap <s-up> <up>
 
-" Start visual mode with last pasted text
-noremap <localleader>v `[v`]
-
-" Fix pasting
-noremap <middlemouse> :setlocal paste<cr><middlemouse>:setlocal nopaste<cr>
+" Select last pasted text
+nnoremap <localleader>v `[v`]
 
 " Paragraph formatting
 nnoremap Q gqap
@@ -361,8 +360,8 @@ if has("autocmd")
 
     " Restore cursor position.
     autocmd BufReadPost *
-        \ if !&diff && line("'\"") > 0 && line("'\"") <= line("$") |
-        \     execute "normal g`\"" |
+        \ if !&diff && line("'\"") > 1 && line("'\"") <= line("$") |
+        \     execute "normal! g`\"" |
         \ endif
 
     " Make new scripts executable
