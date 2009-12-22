@@ -89,7 +89,7 @@ if has("eval")
     filetype indent on
 endif
 
-set textwidth=78
+set textwidth=76
 set autoindent        " Use indent from previous line
 set smarttab          " Smart handling of the tab key
 set expandtab         " Use spaces for tabs
