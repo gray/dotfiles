@@ -8,8 +8,6 @@ allml:
     http://www.vim.org/scripts/script.php?script_id=1896
 camelcasemotion:
     http://www.vim.org/scripts/script.php?script_id=1905
-delimitMate:
-    http://www.vim.org/scripts/script.php?script_id=2754
 fuzzy finder:
     http://www.vim.org/scripts/script.php?script_id=1984
 largefile:
@@ -39,21 +37,25 @@ zoomwin:
 
 installed syntaxes:
 
-csv syntax:
+csv:
     http://vim.wikia.com/wiki/Working_with_CSV_files
 go:
     http://go.googlecode.com/hg/misc/vim/go.vim
-json syntax:
+json:
     http://www.vim.org/scripts/script.php?script_id=1945
+markdown:
+    http://www.vim.org/scripts/script.php?script_id=1242
+nginx:
+    http://www.vim.org/scripts/script.php?script_id=1886
 perl (updated):
     http://github.com/petdance/vim-perl
-perl xs syntax (updated):
+perl xs (updated):
     http://www.profvince.com/perl/xs.vim
-puppet syntax:
+puppet:
     http://reductivelabs.com/downloads/puppet/puppet.vim
-scala syntax:
+scala:
     http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
-tt2 syntax:
+tt2:
     http://www.vim.org/scripts/script.php?script_id=830
 
 installed colors:
