@@ -67,7 +67,7 @@ gentooish:
 inkpot:
     http://www.vim.org/scripts/script.php?script_id=1143
 ir_black:
-    http://blog.infinitered.com/entries/show/8
+    http://github.com/twerth/dotfiles/raw/master/etc/vim/colors/ir_black.vim
 jammy:
     http://www.vim.org/scripts/script.php?script_id=2169
 jellybeans:
