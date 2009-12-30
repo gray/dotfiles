@@ -388,7 +388,10 @@ if has("autocmd")
     " Custom filetype mapping is defined in ~/.vim/filetype.vim
     autocmd FileType apache,puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
+    autocmd FileType javascript setlocal equalprg=js_beautify.pl
+    autocmd FileType json setlocal equalprg=json_xs
     autocmd FileType make setlocal noexpandtab nolist
+    autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
     autocmd FileType svn setlocal nobackup
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml setlocal matchpairs+=<:>
