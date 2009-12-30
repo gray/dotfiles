@@ -131,9 +131,8 @@ set completeopt+=menuone   " Show popup even with one match
 "set completeopt=menu,preview,longest,menuone
 set infercase              " Try to adjust insert completions for case
 
-set wildmenu               " Enable wildmenu for completion
-set wildmode=longest       " Complete longest common string,
-set wildmode+=list,full    " list alternatives, then each full match
+set wildmenu                    " Enable wildmenu for completion
+set wildmode=list:longest,full  " Complete longest common string,
 set wildignore=*~,*.swp,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.jpg,*.png,*.gif
 set wildignore+=CVS,SVN,.git,.bzr,.hg
 
@@ -237,9 +236,9 @@ let mapleader = ","
 " Use ,, to work around , as leader
 noremap ,, ,
 
-nnoremap <f2> :set invpaste paste?<cr>
-imap <f2> <c-o><f2>
-set pastetoggle=<f2>
+nnoremap <f1> :set invpaste paste?<cr>
+inoremap <f1> <c-o><f1>
+set pastetoggle=<f1>
 
 " Save current buffer with root permissions.
 cnoremap <silent> w!! %w !sudo tee % > /dev/null
