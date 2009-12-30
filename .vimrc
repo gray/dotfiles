@@ -250,10 +250,10 @@ noremap <localleader>i i<space><esc>r
 " Preserve undo history.
 inoremap <c-u> <c-g>u<c-u>
 
-" Position search match at the top of the screen; open any containing fold.
-" TODO: position of initial search match should also be at the top.
-noremap n nzvzt
-noremap N Nzvzt
+" Position search matches in the middle of the screen and open any
+" containing folds.
+noremap n nzzzv
+noremap N Nzzzv
 
 " Make it easier to navigate displayed lines when lines wrap
 inoremap <down> <c-o>gj
@@ -344,6 +344,9 @@ if has("autocmd")
     augroup vimrc
     autocmd!
 
+    " GUI startup resets the visual bell; turn it back off
+    autocmd GUIEnter * set visualbell t_vb=
+
     " Restore cursor position.
     autocmd BufReadPost *
         \ if !&diff && line("'\"") > 1 && line("'\"") <= line("$") |
@@ -359,9 +362,6 @@ if has("autocmd")
         \          silent! execute "!chmod +x <afile>" |
         \     endif |
         \ endif
-
-    " GUI startup resets the visual bell; turn it back off
-    autocmd GUIEnter * set visualbell t_vb=
 
     " Highlight text approaching and over 80 columns.
     " TODO: only do this if wrap is on
