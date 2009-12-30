@@ -1,0 +1,7 @@
+--maximum-line-length=78
+--maximum-consecutive-blank-lines=2
+--continuation-indentation=4
+--paren-tightness=2
+--opening-token-right
+--stack-opening-tokens
+--stack-closing-tokens
