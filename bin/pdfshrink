@@ -1,0 +1,39 @@
+#!/bin/sh
+
+# TODO:
+#   - remove empty pages
+#   - add options for image resolution, overwriting files, verbosity
+
+for file in "$@"; do
+    ext=`expr "$file" : '.*\.\(.*\)'`
+    if test pdf != "$ext" || test ! -s "$file"; then
+        continue
+    fi
+
+    out=$file.shrunk
+
+    gs -q -dNOPAUSE -dBATCH -dSAFER \
+        -sDEVICE=pdfwrite           \
+        -dCompatibilityLevel=1.3    \
+        -dPDFSETTINGS=/ebook        \
+        -dColorImageResolution=72   \
+        -dGrayImageResolution=72    \
+        -dMonoImageResolution=72    \
+        -sOutputFile="$out"         \
+        "$file" > /dev/null 2>&1
+    ret=$?
+
+    test -f "$out" || continue
+
+    fsize=`stat -c%s "$file"`
+    osize=`stat -c%s "$out"`
+
+    # Replace the original file if the new one is smaller.
+    if test 0 -eq $ret && test 0 -lt $osize && test $osize -lt $fsize; then
+        mv -f "$out" "$file"
+    else
+        rm -f "$out"
+    fi
+done
+
+exit 0
