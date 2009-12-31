@@ -20,6 +20,7 @@ for file in "$@"; do
         -dGrayImageResolution=72    \
         -dMonoImageResolution=72    \
         -sOutputFile="$out"         \
+        -c .setpdfwrite -f          \
         "$file" > /dev/null 2>&1
     ret=$?
 
