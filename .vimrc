@@ -432,7 +432,7 @@ endif
 " GUI ---------------------------------------------------------------------{{{1
 
 if has("gui_running")
-    colorscheme darkdevel
+    colorscheme gentooish
 
     set lines=40
     set columns=85
