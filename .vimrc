@@ -184,6 +184,20 @@ endfunction
 " :call matchdelete(w:m1)
 " :call matchdelete(w:m2)
 
+" Search with * or # in current visual selection.
+function! VisualSearch(direction) range
+    let l:saved_reg = @"
+    execute "normal! vgvy"
+    let l:pattern = escape(@", '\\/.*$^~[]')
+    let l:pattern = substitute(l:pattern, "\n$", "", "")
+    if "b" == a:direction
+        execute "normal ?" . l:pattern . "^M"
+    else
+        execute "normal /" . l:pattern . "^M"
+    endif
+    let @/ = l:pattern
+    let @" = l:saved_reg
+endfunction
 
 " Commands ----------------------------------------------------------------{{{1
 
@@ -336,6 +350,9 @@ nmap <localleader>z <plug>ZoomWin
 
 " cnoremap <silent> <tab> <c-\>esherlock#completeForward()<cr>
 
+vnoremap <silent> * :call VisualSearch('f')<cr>
+vnoremap <silent> # :call VisualSearch('b')<cr>
+
 
 " Autocommands ------------------------------------------------------------{{{1
 
@@ -386,14 +403,16 @@ if has("autocmd")
     autocmd BufRead quickfix setlocal nobuflisted wrap number
 
     " Custom filetype mapping is defined in ~/.vim/filetype.vim
-    autocmd FileType apache,puppet setlocal shiftwidth=2 softtabstop=2
+    autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
+    autocmd FileType gitcommit setlocal nobackup spell wrap
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
     autocmd FileType json setlocal equalprg=json_xs
     autocmd FileType make setlocal noexpandtab nolist
+    autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
-    autocmd FileType svn setlocal nobackup
+    autocmd FileType svn setlocal nobackup spell wrap
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType xml setlocal matchpairs+=<:>
