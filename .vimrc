@@ -152,9 +152,9 @@ if has("syntax") && !&diff
 endif
 
 set background=dark
-let g:inkpot_black_background = 1
 
 colorscheme ir_black
+highlight NonText ctermbg=NONE ctermfg=NONE
 
 
 " Buffers, Windows, Tabs --------------------------------------------------{{{1
@@ -269,11 +269,16 @@ noremap <localleader>i i<space><esc>r
 
 " Preserve undo history.
 inoremap <c-u> <c-g>u<c-u>
+inoremap <c-w> <c-g>u<c-w>
 
 " Position search matches in the middle of the screen and open any
 " containing folds.
 noremap n nzzzv
 noremap N Nzzzv
+noremap * *zzzv
+noremap # #zzzv
+noremap g* g*zzzv
+noremap g# g#zzzv
 
 " Make it easier to navigate displayed lines when lines wrap
 inoremap <down> <c-o>gj
@@ -442,6 +447,7 @@ endif
 
 if has("gui_running")
     colorscheme gentooish
+    let g:inkpot_black_background = 1
 
     set lines=40
     set columns=85
