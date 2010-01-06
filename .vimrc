@@ -133,8 +133,10 @@ set infercase              " Try to adjust insert completions for case
 
 set wildmenu                    " Enable wildmenu for completion
 set wildmode=list:longest,full  " Complete longest common string,
-set wildignore=*~,*.swp,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.jpg,*.png,*.gif
-set wildignore+=CVS,SVN,.git,.bzr,.hg
+set wildignore+=*~,*.swp
+set wildignore+=*.a,*.class,*.la,*.mo,*.o,*.obj,*.pyc,*.pyo,*.so
+set wildignore+=*.gif,*.jpg,*.png
+set wildignore+=CVS,SVN,.bzr,.git,.hg
 
 set tags=tags;/  " Search for a ctags file
 set showfulltag
@@ -169,20 +171,19 @@ set tabpagemax=128     " Maximum number of tabs open
 
 " Functions ---------------------------------------------------------------{{{1
 
-command! -nargs=? HighlightLongLines call s:HighlightLongLines('<args>')
-function! s:HighlightLongLines(width)
-    let targetWidth = a:width != '' ? a:width : 79
-    if targetWidth > 0
-        exec 'match Todo /\%>' . (targetWidth) . 'v/'
-    else
-        echomsg "Usage: HighlightLongLines [natural number]"
+function! s:HighlightLongLinesToggle(val)
+    if !exists('w:longmatch') && (a:val == "" || a:val)
+        let w:longmatch = matchadd('MatchParen', '\%<81v.\%>77v', -1)
+        let w:toolongmatch = matchadd('ErrorMsg', '\%>80v.\+', -1)
+        echo "Highlight long lines ON"
+    elseif exists('w:longmatch') && (a:val == "" || !a:val)
+        call matchdelete(w:longmatch)
+        call matchdelete(w:toolongmatch)
+        unlet w:longmatch
+        unlet w:toolongmatch
+        echo "Highlight long lines OFF"
     endif
 endfunction
-" TODO: change above to use this and then clear
-" let w:m1=matchadd('Search', '\%<81v.\%>77v', -1)
-" let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
-" :call matchdelete(w:m1)
-" :call matchdelete(w:m2)
 
 " Search with * or # in current visual selection.
 function! VisualSearch(direction) range
@@ -191,9 +192,9 @@ function! VisualSearch(direction) range
     let l:pattern = escape(@", '\\/.*$^~[]')
     let l:pattern = substitute(l:pattern, "\n$", "", "")
     if "b" == a:direction
-        execute "normal ?" . l:pattern . "^M"
+        execute "normal ?" . l:pattern . '<CR>'
     else
-        execute "normal /" . l:pattern . "^M"
+        execute "normal /" . l:pattern . '<CR>'
     endif
     let @/ = l:pattern
     let @" = l:saved_reg
@@ -213,6 +214,9 @@ command! DiffBuff vertical new | let t:diff_bufnr = bufnr("$") |
 " Close DiffBuff's diff window and reset syntax
 command! DiffOff execute "bwipeout " . t:diff_bufnr | diffoff |
     \ if exists("b:orig_syntax") | let &l:syntax = b:orig_syntax | endif
+
+command! -nargs=? HighlightLongLinesToggle
+    \ call s:HighlightLongLinesToggle('<args>')
 
 
 " Plugin Settings ---------------------------------------------------------{{{1
@@ -305,6 +309,7 @@ nmap gN :cnext<cr>
 nmap gP :cprev<cr>
 
 " Redraw screen, remove search highlighting, sync syntax, show list.
+" TODO: call HighlightLongLinesToggle; turn this into a function.
 nnoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr><c-l>
 inoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr><c-l>a
 
@@ -367,6 +372,13 @@ if has("autocmd")
     autocmd BufReadPost *
         \ if !&diff && line("'\"") > 1 && line("'\"") <= line("$") |
         \     execute "normal! g`\"" |
+        \     let b:restored_pos = 1 |
+        \ endif
+    " Open any containing folds when restoring cursor position.
+    autocmd BufWinEnter *
+        \ if exists("b:restored_pos") |
+        \     execute "normal! zv" |
+        \     unlet b:restored_pos |
         \ endif
 
     " Make new scripts executable
@@ -378,13 +390,6 @@ if has("autocmd")
         \          silent! execute "!chmod +x <afile>" |
         \     endif |
         \ endif
-
-    " Highlight text approaching and over 80 columns.
-    " TODO: only do this if wrap is on
-    " TODO: this doesn't work on split windows
-    autocmd BufNewFile,BufRead *
-        \ let w:m1 = matchadd("MatchParen", '\%<81v.\%>77v', -1) |
-        \ let w:m2 = matchadd("ErrorMsg", '\%>80v.\+', -1)
 
     " Turn off highlighting when idle.
     autocmd CursorHold * nohlsearch | redraw
@@ -409,6 +414,7 @@ if has("autocmd")
     autocmd FileType html setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
     autocmd FileType json setlocal equalprg=json_xs
+    autocmd FileType perl silent HighlightLongLinesToggle 1
     autocmd FileType make setlocal noexpandtab nolist
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
