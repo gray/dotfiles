@@ -58,7 +58,10 @@ endif
 set nowrap            " Don't wrap long lines
 set linebreak         " Wrap lines at convenient points
 set list              " Visually display tabs and trailing spaces
-let &listchars = "tab:".nr2char(187).nr2char(183).",trail:".nr2char(183)
+let &listchars = 'tab:'      . nr2char(187) . nr2char(183) . ',' .
+               \ 'trail:'    . nr2char(183) . ',' .
+               \ 'extends:'  . nr2char(187) . ',' .
+               \ 'precedes:' . nr2char(171)
 
 set ttimeoutlen=50    " Reduce delay for key codes
 
