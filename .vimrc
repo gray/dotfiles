@@ -175,29 +175,28 @@ set tabpagemax=128     " Maximum number of tabs open
 " Functions ---------------------------------------------------------------{{{1
 
 function! s:HighlightLongLinesToggle(val)
-    if !exists('w:longmatch') && (a:val == "" || a:val)
-        let w:longmatch = matchadd('MatchParen', '\%<81v.\%>77v', -1)
-        let w:toolongmatch = matchadd('ErrorMsg', '\%>80v.\+', -1)
+    if !exists('w:long_line_near_match') && (a:val == "" || a:val)
+        let w:long_line_near_match = matchadd('MatchParen', '\%<81v.\%>77v', -1)
+        let w:long_line_over_match = matchadd('ErrorMsg', '\%>80v.\+', -1)
         echo "Highlight long lines ON"
-    elseif exists('w:longmatch') && (a:val == "" || !a:val)
-        call matchdelete(w:longmatch)
-        call matchdelete(w:toolongmatch)
-        unlet w:longmatch
-        unlet w:toolongmatch
+    elseif exists('w:long_line_near_match') && (a:val == "" || !a:val)
+        call matchdelete(w:long_line_near_match)
+        call matchdelete(w:long_line_over_match)
+        unlet w:long_line_near_match w:long_line_over_match
         echo "Highlight long lines OFF"
     endif
 endfunction
 
-" Search with * or # in current visual selection.
+" Search with * or # for current visual selection.
 function! VisualSearch(direction) range
     let l:saved_reg = @"
     execute "normal! vgvy"
     let l:pattern = escape(@", '\\/.*$^~[]')
     let l:pattern = substitute(l:pattern, "\n$", "", "")
     if "b" == a:direction
-        execute "normal ?" . l:pattern . '<CR>'
+        execute "normal ?" . l:pattern
     else
-        execute "normal /" . l:pattern . '<CR>'
+        execute "normal /" . l:pattern
     endif
     let @/ = l:pattern
     let @" = l:saved_reg
@@ -258,7 +257,7 @@ let mapleader = ","
 noremap ,, ,
 
 nnoremap <f1> :set invpaste paste?<cr>
-inoremap <f1> <c-o><f1>
+inoremap <f1> <c-o>:set invpaste paste?<cr>
 set pastetoggle=<f1>
 
 " Save current buffer with root permissions.
