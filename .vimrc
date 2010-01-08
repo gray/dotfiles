@@ -354,12 +354,12 @@ inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<c-g>u\<cr>"
 " Toggle various plugins
 noremap <silent> <localleader>nt :NERDTreeToggle<cr>
 noremap <silent> <localleader>tl :TlistToggle<cr>
-noremap <localleader>fff :FuzzyFinderFile<cr>
-noremap <localleader>ffb :FuzzyFinderBookmark<cr>
-noremap <localleader>ffa :FuzzyFinderAddBookmark<cr>
-noremap <localleader>ffd :FuzzyFinderDir<cr>
-noremap <localleader>ffm :FuzzyFinderMruFile<cr>
-noremap <localleader>fft :FuzzyFinderTag<cr>
+noremap <localleader>fff :FufFile<cr>
+noremap <localleader>ffb :FufBookmark<cr>
+noremap <localleader>ffa :FufAddBookmark<cr>
+noremap <localleader>ffd :FufDir<cr>
+noremap <localleader>ffm :FufMruFile<cr>
+noremap <localleader>fft :FufTag<cr>
 
 " Zoom in on the current window
 nmap <localleader>z <plug>ZoomWin
