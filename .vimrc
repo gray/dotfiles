@@ -136,7 +136,7 @@ set infercase              " Try to adjust insert completions for case
 
 set wildmenu                    " Enable wildmenu for completion
 set wildmode=list:longest,full  " Complete longest common string,
-set wildignore+=*~,*.swp
+set wildignore+=*~,*.swo,*.swp
 set wildignore+=*.a,*.class,*.la,*.mo,*.o,*.obj,*.pyc,*.pyo,*.so
 set wildignore+=*.gif,*.jpg,*.png
 set wildignore+=CVS,SVN,.bzr,.git,.hg
@@ -153,8 +153,12 @@ endif
 
 set background=dark
 
-colorscheme ir_black
-highlight NonText ctermbg=NONE ctermfg=NONE
+if has("gui_running")
+    colorscheme gentooish
+else
+    colorscheme ir_black
+    highlight! link NonText SpecialKey
+endif
 
 
 " Buffers, Windows, Tabs --------------------------------------------------{{{1
@@ -174,16 +178,16 @@ set tabpagemax=128     " Maximum number of tabs open
 
 " Functions ---------------------------------------------------------------{{{1
 
-function! s:HighlightLongLinesToggle(val)
-    if !exists('w:long_line_near_match') && (a:val == "" || a:val)
-        let w:long_line_near_match = matchadd('MatchParen', '\%<81v.\%>77v', -1)
-        let w:long_line_over_match = matchadd('ErrorMsg', '\%>80v.\+', -1)
-        echo "Highlight long lines ON"
-    elseif exists('w:long_line_near_match') && (a:val == "" || !a:val)
-        call matchdelete(w:long_line_near_match)
-        call matchdelete(w:long_line_over_match)
-        unlet w:long_line_near_match w:long_line_over_match
-        echo "Highlight long lines OFF"
+function! s:HighlightLongLinesToggle(toggle)
+    if !exists('w:long_line_warning') && ("" == a:toggle || a:toggle)
+        let w:long_line_warning = matchadd('MatchParen', '\%<81v.\%>77v', -1)
+        let w:long_line_error = matchadd('ErrorMsg', '\%>80v.\+', -1)
+        echom "Highlight long lines ON"
+    elseif exists('w:long_line_warning') && ("" == a:toggle || !a:toggle)
+        call matchdelete(w:long_line_warning)
+        call matchdelete(w:long_line_error)
+        unlet w:long_line_warning w:long_line_error
+        echom "Highlight long lines OFF"
     endif
 endfunction
 
@@ -217,7 +221,7 @@ command! DiffBuff vertical new | let t:diff_bufnr = bufnr("$") |
 command! DiffOff execute "bwipeout " . t:diff_bufnr | diffoff |
     \ if exists("b:orig_syntax") | let &l:syntax = b:orig_syntax | endif
 
-command! -nargs=? HighlightLongLinesToggle
+command! -nargs=? -bar HighlightLongLinesToggle
     \ call s:HighlightLongLinesToggle('<args>')
 
 
@@ -272,12 +276,12 @@ inoremap <c-w> <c-g>u<c-w>
 
 " Position search matches in the middle of the screen and open any
 " containing folds.
-noremap n nzzzv
-noremap N Nzzzv
-noremap * *zzzv
-noremap # #zzzv
-noremap g* g*zzzv
-noremap g# g#zzzv
+noremap n nzvzz
+noremap N Nzvzz
+noremap * *zvzz
+noremap # #zvzz
+noremap g* g*zvzz
+noremap g# g#zvzz
 
 " Make it easier to navigate displayed lines when lines wrap
 inoremap <down> <c-o>gj
@@ -402,8 +406,8 @@ if has("autocmd")
     autocmd CursorHold * nohlsearch | redraw
 
     " Set 'updatetime' to 15 seconds when in insert mode.
-    au InsertEnter * let updaterestore=&updatetime | set updatetime=15000
-    au InsertLeave * let &updatetime=updaterestore
+    autocmd InsertEnter * let orig_updatetime=&updatetime| set updatetime=15000
+    autocmd InsertLeave * let &updatetime=orig_updatetime
     " Turn off insert mode when idle.
     autocmd CursorHoldI * stopinsert
 
@@ -418,17 +422,26 @@ if has("autocmd")
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
     autocmd FileType gitcommit setlocal nobackup spell wrap
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
-    autocmd FileType html setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
+    autocmd FileType html
+        \ setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
     autocmd FileType json setlocal equalprg=json_xs
-    autocmd FileType perl silent HighlightLongLinesToggle 1
     autocmd FileType make setlocal noexpandtab nolist
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
     autocmd FileType svn setlocal nobackup spell wrap
     autocmd FileType vim setlocal keywordprg=:help
-    autocmd FileType xml setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
+    autocmd FileType xml
+        \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType xml setlocal matchpairs+=<:>
+
+    autocmd BufWinEnter *
+        \ if &filetype == 'perl' |
+        \     HighlightLongLinesToggle 1  |
+        \     setlocal wrap |
+        \ endif
+    autocmd BufWinLeave *
+        \ if &filetype == 'perl' | HighlightLongLinesToggle 0 | endif
 
     " Use syntax highlighting keywords for keyword completion
     "if exists("+omnifunc")
@@ -445,9 +458,6 @@ endif
 " GUI ---------------------------------------------------------------------{{{1
 
 if has("gui_running")
-    colorscheme gentooish
-    let g:inkpot_black_background = 1
-
     set lines=40
     set columns=85
 
