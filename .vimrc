@@ -437,11 +437,11 @@ if has("autocmd")
 
     autocmd BufWinEnter *
         \ if &filetype == 'perl' |
-        \     HighlightLongLinesToggle 1  |
+        \     silent HighlightLongLinesToggle 1  |
         \     setlocal wrap |
         \ endif
     autocmd BufWinLeave *
-        \ if &filetype == 'perl' | HighlightLongLinesToggle 0 | endif
+        \ if &filetype == 'perl' | silent HighlightLongLinesToggle 0 | endif
 
     " Use syntax highlighting keywords for keyword completion
     "if exists("+omnifunc")
