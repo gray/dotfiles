@@ -420,6 +420,7 @@ if has("autocmd")
 
     " Custom filetype mapping is defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
+    autocmd FileType crontab setlocal backupcopy=yes
     autocmd FileType gitcommit setlocal nobackup spell wrap
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html
@@ -427,13 +428,14 @@ if has("autocmd")
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
     autocmd FileType json setlocal equalprg=json_xs
     autocmd FileType make setlocal noexpandtab nolist
-    autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
+    autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType svn setlocal nobackup spell wrap
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml
         \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType xml setlocal matchpairs+=<:>
+    autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd BufWinEnter *
         \ if &filetype == 'perl' |
