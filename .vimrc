@@ -408,8 +408,13 @@ if has("autocmd")
     " Set 'updatetime' to 15 seconds when in insert mode.
     autocmd InsertEnter * let orig_updatetime=&updatetime| set updatetime=15000
     autocmd InsertLeave * let &updatetime=orig_updatetime
+
     " Turn off insert mode when idle.
     autocmd CursorHoldI * stopinsert
+
+     " Make the cursor easier to find when idle.
+     autocmd CursorHold * setlocal cursorline cursorcolumn
+     autocmd CursorMoved * setlocal nocursorline nocursorcolumn
 
     " Automatically unset paste mode
     autocmd InsertLeave * setlocal nopaste
