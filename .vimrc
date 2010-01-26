@@ -414,7 +414,7 @@ if has("autocmd")
 
      " Make the cursor easier to find when idle.
      autocmd CursorHold * setlocal cursorline cursorcolumn
-     autocmd CursorMoved,CursorMovedI * setlocal nocursorline nocursorcolumn
+     autocmd CursorMoved,InsertEnter * setlocal nocursorline nocursorcolumn
 
     " Automatically unset paste mode
     autocmd InsertLeave * setlocal nopaste
