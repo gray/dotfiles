@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if test "" == $OSTYPE; then
+    OSTYPE=`uname -sr`
+fi
+case $OSTYPE in
+    [dD]arwin*)
+        # Faster, but requires Developer Tools
+        AIRPORT=/System/Library/PrivateFrameworks/Apple80211.framework/
+        AIRPORT+=Versions/A/Resources/airport
+        if test -x $AIRPORT; then
+            BSSID=`$AIRPORT -I | sed '/^ *BSSID: /!d; s/^ *BSSID: //; s/://g'`
+        else
+            BSSID=`ioreg -l | sed '/^[ |]*"IO80211BSSID/!d; s/^.*= <\(.*\)>$/\1/'`
+        fi
+        ;;
+    *)
+        echo "Unimplemented for '$OSTYPE'" >&2
+        exit 1
+        ;;
+esac
+
+echo $BSSID
