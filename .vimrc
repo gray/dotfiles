@@ -227,6 +227,9 @@ command! -nargs=? -bar HighlightLongLinesToggle
 
 " Plugin Settings ---------------------------------------------------------{{{1
 
+" For sh syntax; most shells are POSIX-compliant nowadays
+let g:is_posix = 1
+
 let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplModSelTarget = 1
 
@@ -412,9 +415,9 @@ if has("autocmd")
     " Turn off insert mode when idle.
     autocmd CursorHoldI * stopinsert
 
-     " Make the cursor easier to find when idle.
-     autocmd CursorHold * setlocal cursorline cursorcolumn
-     autocmd CursorMoved,InsertEnter * setlocal nocursorline nocursorcolumn
+    " Make the cursor easier to find when idle.
+    autocmd CursorHold * setlocal cursorline cursorcolumn
+    autocmd CursorMoved,InsertEnter * setlocal nocursorline nocursorcolumn
 
     " Automatically unset paste mode
     autocmd InsertLeave * setlocal nopaste
