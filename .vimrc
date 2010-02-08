@@ -206,6 +206,11 @@ function! VisualSearch(direction) range
     let @" = l:saved_reg
 endfunction
 
+function! CurrentSyntaxGroup()
+    return synIDattr(synID(line('.'),col('.'),1),'name')
+endfunction
+
+
 " Commands ----------------------------------------------------------------{{{1
 
 " Show unsaved changes to current buffer
