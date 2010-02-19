@@ -10,7 +10,13 @@ set cpoptions+=>    " Separate register items by line breaks
 
 set modelines=0     " Trust no one
 
-set autochdir       " Switch to the directory of the current file.
+" Switch to the directory of the current file.
+if exists('+autochdir')
+    set autochdir
+else
+    autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
+endif
+
 set autoread        " Reload file if externally, but not internally modified
 set autowrite       " Write file if modified
 set writebackup     " Make a temporary backup file before overwriting
