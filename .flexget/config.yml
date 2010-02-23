@@ -2,8 +2,9 @@
 presets:
   global:
     download: ~/Downloads/.
-    include: ~/.flexget/private/email.yml
-    # include: ~/.flexget/private/transmissionrpc.yml
+    include:
+      - ~/.flexget/private/email.yml
+      # - ~/.flexget/private/transmissionrpc.yml
 
   movies:
     interval: 2 hours
@@ -39,7 +40,8 @@ presets:
         - '[\W_]+(72|108)0p'
     set:
       path: ~/Movies/TV Episodes/%(series_name)s/.
-    include: ~/.flexget/private/series.yml
+    include:
+      - ~/.flexget/private/series.yml
 
   # Switch to the transmissionrpc plugin when it matures. It can only add
   # torrents via URL, and this will fail on some private trackers which
@@ -72,7 +74,8 @@ presets:
 feeds:
   xtremespeeds_tv:
     interval: 5 minutes
-    include: ~/.flexget/private/xtremespeeds_tv-rss.yml
+    include:
+      - ~/.flexget/private/xtremespeeds_tv-rss.yml
     preset:
       - tracker-private
       - tv
@@ -85,7 +88,8 @@ feeds:
   thebox:
     interval: 15 minutes
     rss: http://thebox.bz/rssdd.xml
-    include: ~/.flexget/private/thebox-headers.yml
+    include:
+      - ~/.flexget/private/thebox-headers.yml
     preset:
       - tracker-private
       - tv
@@ -97,14 +101,16 @@ feeds:
     interval: 5 minutes
     # Prefer non-rar files from other feeds.
     delay: 30 minutes
-    include: ~/.flexget/private/torrentvault_tv-rss.yml
+    include:
+      - ~/.flexget/private/torrentvault_tv-rss.yml
     preset:
       - tracker-private
       - tv
 
   xtremespeeds_movies:
     interval: 15 minutes
-    include: ~/.flexget/private/xtremespeeds_movies-rss.yml
+    include:
+      - ~/.flexget/private/xtremespeeds_movies-rss.yml
     preset:
       - tracker-private
       - movies
