@@ -5,6 +5,11 @@ presets:
     include:
       - ~/.flexget/private/email.yml
       # - ~/.flexget/private/transmissionrpc.yml
+    regexp:
+      reject:
+        - '[\W_]+x264'
+        - '[\W_]+(72|108)0p'
+        - '[\W_]+nuked'
 
   movies:
     interval: 2 hours
@@ -12,9 +17,6 @@ presets:
       min: 650
       max: 1750
     regexp:
-      reject:
-        - '[\W_]+x264'
-        - '[\W_]+(72|108)0p'
       reject_excluding:
         - '[\W_]+b[dr]rip'
         - '[\W_]+dvd(rip|scr)'
@@ -34,10 +36,6 @@ presets:
     torrent_size:
       min: 150
       max: 800
-    regexp:
-      reject:
-        - '[\W_]+x264'
-        - '[\W_]+(72|108)0p'
     set:
       path: ~/Movies/TV Episodes/%(series_name)s/.
     include:
