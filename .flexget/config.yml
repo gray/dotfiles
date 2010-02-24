@@ -4,7 +4,7 @@ presets:
     download: ~/Downloads/.
     include:
       - ~/.flexget/private/email.yml
-      # - ~/.flexget/private/transmissionrpc.yml
+      - ~/.flexget/private/transmissionrpc.yml
     regexp:
       reject:
         - '[\W_]+x264'
@@ -48,7 +48,7 @@ presets:
     exec: |
       # Add torrent.
       transmission-remote -a '%(output)s' &&
-      growlnotify -a Transmission -t "Torrent added" -m "%(title)s" &&
+      echo %(title)s | growlnotify -a Transmission -t 'Torrent added' &&
       # Remove completed, stopped torrents.
       transmission-remote -l | awk '/ 100%% .* Stopped / {print $1}' |
         paste -s -d, - | xargs -I \{\} transmission-remote -t \{\} -r &&
@@ -59,15 +59,10 @@ presets:
       ratio: 0
       maxupspeed: 5
     exec: |
-      # Add torrent.
-      transmission-remote -a '%(output)s' &&
-      growlnotify -a Transmission -t "Torrent added" -m "%(title)s" &&
-      transmission-remote -t %(torrent_info_hash)s -tu 5 -sr 0 &&
+      echo %(title)s | growlnotify -a Transmission -t 'Torrent added' &&
       # Remove completed, stopped torrents.
       transmission-remote -l | awk '/ 100%% .* Stopped / {print $1}' |
         paste -s -d, - | xargs -I \{\} transmission-remote -t \{\} -r &&
-      # Remove torrent file.
-      rm -f '%(output)s'
 
 feeds:
   xtremespeeds_tv:
