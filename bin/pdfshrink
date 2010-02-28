@@ -14,6 +14,11 @@ for file in "$@"; do
 
     out=$file.shrunk
 
+    if ! command -v gs >/dev/null 2>&1; then
+        echo "Can't find ghostscript (gs)" >&2
+        exit 1
+    fi
+
     gs -q -dNOPAUSE -dBATCH -dSAFER \
         -sDEVICE=pdfwrite           \
         -dCompatibilityLevel=1.3    \
@@ -28,8 +33,8 @@ for file in "$@"; do
 
     test -f "$out" || continue
 
-    fsize=`stat -c%s "$file"`
-    osize=`stat -c%s "$out"`
+    fsize=`wc -c < "$file"`
+    osize=`wc -c < "$out"`
 
     # Replace the original file if the new one is smaller.
     if test 0 -eq $ret && test 0 -lt $osize && test $osize -lt $fsize; then
