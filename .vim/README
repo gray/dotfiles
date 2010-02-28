@@ -4,8 +4,6 @@ abolish:
     http://www.vim.org/scripts/script.php?script_id=1545
 ack:
     http://www.vim.org/scripts/script.php?script_id=2572
-allml:
-    http://www.vim.org/scripts/script.php?script_id=1896
 camelcasemotion:
     http://www.vim.org/scripts/script.php?script_id=1905
 fuzzy finder:
@@ -18,6 +16,8 @@ nerd tree:
     http://www.vim.org/scripts/script.php?script_id=1658
 plutil:
     http://www.vim.org/scripts/script.php?script_id=1590
+ragtag:
+    http://www.vim.org/scripts/script.php?script_id=1896
 sherlock:
     http://www.vim.org/scripts/script.php?script_id=2731
 snipmate:
@@ -28,6 +28,8 @@ surround:
     http://www.vim.org/scripts/script.php?script_id=1697
 taglist:
     http://www.vim.org/scripts/script.php?script_id=273
+unimpaired:
+    http://www.vim.org/scripts/script.php?script_id=1590
 universal text linking:
     http://www.vim.org/scripts/script.php?script_id=293
 vcscommand:
