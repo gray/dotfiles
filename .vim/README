@@ -59,6 +59,8 @@ scala:
     http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
 tt2:
     http://www.vim.org/scripts/script.php?script_id=830
+yaml:
+    http://github.com/trans/yaml_vim
 
 installed colors:
 
