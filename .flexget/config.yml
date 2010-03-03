@@ -36,13 +36,18 @@ presets:
       min: 150
       max: 800
     series:
-      # Grab the first episode of any program.
-      - _NEW_:
-          name_regexp: '[\W_]+s0*1[\W_]*ep?0*1(?!\d)'
+      settings:
+        tv:
+          path: ~/Movies/TV Series/%(series_name)s/.
     include:
       - private/series.yml
-    set:
-      path: ~/Movies/TV Series/%(series_name)s/.
+    # Grab the first episode of any new program.
+    # TODO: use thetvdb or tvrage to avoid downloading duplicates, old
+    #   shows, and shows with unwanted genres, etc.
+    regexp:
+      accept:
+        - '[\W_]+(?:s0?1[\W_]*ep?0?1|0?1x0?1)(?!\d)':
+            path: ~/Movies/TV Series/_NEW_/.
 
   torrent:
     include:
@@ -54,7 +59,7 @@ presets:
         paste -s -d, - | xargs -I \{\} transmission-remote -t \{\} -r &&
       # Move torrent to watched directory. If transmission is not running
       # when the torrent is downloaded, it should be found when it restarts.
-      mv -f %(output)s ~/Downloads/torrents/.
+      mv -f %(output)s ~/Downloads/.
 
   torrent-public:
     set:
@@ -89,7 +94,7 @@ feeds:
         # This feed uses a different episode numbering for this series.
         - ^[\W_]*midsomer[\W_]+murders
   torrentvault_tv:
-    interval: 5 minutes
+    interval: 20 minutes
     # Prefer non-rar files from other feeds.
     delay: 30 minutes
     include:
