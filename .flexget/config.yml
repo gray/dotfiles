@@ -2,15 +2,8 @@
 presets:
   global:
     download: ~/Downloads/.
-    include:
-      - private/email.yml
-    regexp:
-      reject:
-        - '[\W_]+x264'
-        - '[\W_]+(72|108)0p'
-        - '[\W_]+nuked'
 
-  movies:
+  movie:
     interval: 2 hours
     torrent_size:
       min: 650
@@ -50,16 +43,19 @@ presets:
             path: ~/Movies/TV Series/_NEW_/.
 
   torrent:
+    regexp:
+      reject:
+        - '[\W_]+x264'
+        - '[\W_]+(72|108)0p'
+        - '[\W_]+nuked'
     include:
+      - private/email.yml
       - private/transmissionrpc.yml
     exec: |
-      echo %(title)s | growlnotify -a Transmission -t 'Torrent added' &&
       # Remove completed, stopped torrents.
       transmission-remote -l | awk '/ 100%% .* Stopped / {print $1}' |
         paste -s -d, - | xargs -I \{\} transmission-remote -t \{\} -r &&
-      # Move torrent to watched directory. If transmission is not running
-      # when the torrent is downloaded, it should be found when it restarts.
-      mv -f %(output)s ~/Downloads/.
+      rm -f %(output)s
 
   torrent-public:
     set:
@@ -109,4 +105,31 @@ feeds:
       - private/xtremespeeds_movies-rss.yml
     preset:
       - torrent
-      - movies
+      - movie
+
+  apple_trailers:
+    interval: 4 hours
+    limit_new: 1
+    rss: http://pipes.yahoo.com/pipes/pipe.run?_id=3a8394a8d15d278e88f115979513d138&_render=rss
+    accept_all: yes
+    set:
+      path: ~/Movies/Trailers/.
+
+  ted_talks:
+    interval: 2 hours
+    limit_new: 1
+    rss: http://feeds.feedburner.com/tedtalks_video
+    accept_all: yes
+    set:
+      path: ~/Movies/Talks/.
+    exec: |
+      # Extract the audio stream from the video.
+      ffmpeg -y -vn -acodec copy -i %(output)s -map_meta_data
+        %(output)s:%(output)s.m4a %(output)s.m4a >/dev/null 2>&1 &&
+      # Change the file extension so it is recognized as an audiobook.
+      mv -f %(output)s.m4a %(output)s.m4b &&
+      # Add the new audio file to iTunes.
+      osascript -e '
+        tell application "iTunes" to add posix file "%(output)s.m4b"
+      ' >/dev/null 2>&1 &&
+      rm -f %(output)s %(output)s.m4b
