@@ -111,6 +111,8 @@ feeds:
     interval: 4 hours
     limit_new: 1
     rss: http://pipes.yahoo.com/pipes/pipe.run?_id=3a8394a8d15d278e88f115979513d138&_render=rss
+    headers:
+      User-Agent: QuickTime/7.6.2
     accept_all: yes
     set:
       path: ~/Movies/Trailers/.
