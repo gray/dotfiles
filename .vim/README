@@ -60,7 +60,7 @@ scala:
 tt2:
     http://www.vim.org/scripts/script.php?script_id=830
 yaml:
-    http://github.com/trans/yaml_vim
+    http://github.com/ingydotnet/yaml_vim
 
 installed colors:
 
