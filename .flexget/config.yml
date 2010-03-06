@@ -46,7 +46,7 @@ presets:
     regexp:
       reject:
         - '[\W_]+x264'
-        - '[\W_]+(72|108)0p'
+        - '[\W_]+(?:72|108)0p'
         - '[\W_]+nuked'
     include:
       - private/email.yml
@@ -72,7 +72,7 @@ feeds:
       - tv
   eztv:
     interval: 10 minutes
-    rss: http://www.ezrss.it/feed/
+    rss: http://ezrss.it/feed/
     preset:
       - torrent
       - torrent-public
@@ -107,18 +107,24 @@ feeds:
       - torrent
       - movie
 
-  apple_trailers:
+  daves_trailer_page:
     interval: 4 hours
+    html:
+      url: http://www.davestrailerpage.co.uk/
+      title_from: contents
     limit_new: 1
-    rss: http://pipes.yahoo.com/pipes/pipe.run?_id=3a8394a8d15d278e88f115979513d138&_render=rss
+    regexp:
+      accept:
+        - '^(?:HD 480P|Trailer(?: |$))':
+            from: title
+    # Some of the links are to apple.com
     headers:
       User-Agent: QuickTime/7.6.2
-    accept_all: yes
     set:
       path: ~/Movies/Trailers/.
 
   ted_talks:
-    interval: 2 hours
+    interval: 3 hours
     limit_new: 1
     rss: http://feeds.feedburner.com/tedtalks_video
     accept_all: yes
