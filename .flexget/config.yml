@@ -3,7 +3,7 @@ presets:
   global:
     download: ~/Downloads/.
 
-  movie:
+  movies:
     interval: 2 hours
     torrent_size:
       min: 650
@@ -11,7 +11,7 @@ presets:
     regexp:
       reject_excluding:
         - '[\W_]+b[dr]rip'
-        - '[\W_]+dvd(rip|scr)'
+        - '[\W_]+dvd(?:rip|scr)'
         - '[\W_]+r5'
     seen_movies: strict
     imdb:
@@ -22,7 +22,7 @@ presets:
         - music
         - musical
     set:
-      path: ~/Movies/.
+      path: ~/Media/Movies/.
 
   tv:
     torrent_size:
@@ -31,7 +31,7 @@ presets:
     series:
       settings:
         tv:
-          path: ~/Movies/TV Series/%(series_name)s/.
+          path: ~/Media/TV/%(series_name)s/.
     include:
       - private/series.yml
     # Grab the first episode of any new program.
@@ -40,7 +40,7 @@ presets:
     regexp:
       accept:
         - '[\W_]+(?:s0?1[\W_]*ep?0?1|0?1x0?1)(?!\d)':
-            path: ~/Movies/TV Series/_NEW_/.
+            path: ~/Media/TV/_NEW_/.
 
   torrent:
     regexp:
@@ -105,7 +105,7 @@ feeds:
       - private/xtremespeeds_movies-rss.yml
     preset:
       - torrent
-      - movie
+      - movies
 
   daves_trailer_page:
     interval: 4 hours
@@ -115,13 +115,13 @@ feeds:
     limit_new: 1
     regexp:
       accept:
-        - '^(?:HD 480P|Trailer(?: |$))':
+        - '^(?:hd 480p|trailer(?: |$))':
             from: title
     # Some of the links are to apple.com
     headers:
       User-Agent: QuickTime/7.6.2
     set:
-      path: ~/Movies/Trailers/.
+      path: ~/Media/Movie Trailers/.
 
   ted_talks:
     interval: 3 hours
@@ -129,7 +129,7 @@ feeds:
     rss: http://feeds.feedburner.com/tedtalks_video
     accept_all: yes
     set:
-      path: ~/Movies/Talks/.
+      path: ~/Media/Talks/.
     exec: |
       # Extract the audio stream from the video.
       ffmpeg -y -vn -acodec copy -i %(output)s -map_meta_data
