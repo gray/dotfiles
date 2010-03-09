@@ -86,6 +86,8 @@ feeds:
       - torrent
       - tv
     regexp:
+      reject_excluding:
+        - xvid
       reject:
         # This feed uses a different episode numbering for this series.
         - ^[\W_]*midsomer[\W_]+murders
@@ -121,7 +123,7 @@ feeds:
     headers:
       User-Agent: QuickTime/7.6.2
     set:
-      path: ~/Media/Movie Trailers/.
+      path: ~/Media/Movies/Trailers/.
 
   ted_talks:
     interval: 3 hours
