@@ -81,7 +81,7 @@ transmit () {
 
 # Add any new torrent files to transmission, then archive them.
 find "$WATCH_DIR" -type f -name '*.torrent' | \
-while read file; do
+while IFS= read -r file; do
     dir=${file%/*}
 
     # transmission-remote doesn't yet allow setting the directory for only
@@ -103,7 +103,7 @@ is_idle_expired () {
 }
 
 transmit --torrent all --info | \
-while read line; do
+while IFS= read -r line; do
     val=${line##*: }
     case $line in
         'Id: '?*)              id=$val          ;;
@@ -133,8 +133,8 @@ while read line; do
 
             # TODO: Unrar any RAR archives.
             # if command -v unrar >/dev/null 2>&1; then
-                # find "$dir/$name" -type f -name '*.rar' -print0 | \
-                # while read -d $'\0' file; do
+                # find "$dir/$name" -type f -name '*.rar' | \
+                # while IFS= read -r file; do
                     # dir=${file%/*}
                     # unrar x -y -p- -o+ "$file"
                 # done
