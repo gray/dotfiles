@@ -58,18 +58,18 @@ else
         "$@" &
         child_pid=$!
         (
-            trap 'kill -TERM $sleep_pid 2>/dev/null ; exit 0' TERM
+            trap 'kill -s TERM $sleep_pid 2>/dev/null; exit 0' TERM
             sleep "$timeout" &
             sleep_pid=$!
             wait $sleep_pid 2>/dev/null
-            kill -TERM $child_pid 2>/dev/null
+            kill -s TERM $child_pid 2>/dev/null
             sleep 2
-            kill -KILL $child_pid 2>/dev/null
+            kill -s KILL $child_pid 2>/dev/null
         ) &
         alarm_pid=$!
         wait $child_pid 2>/dev/null
         status=$?
-        kill -TERM $alarm_pid 2>/dev/null
+        kill -s TERM $alarm_pid 2>/dev/null
         return $status
     }
 fi
@@ -80,8 +80,8 @@ transmit () {
 }
 
 # Add any new torrent files to transmission, then archive them.
-find "$WATCH_DIR" -type f -name '*.torrent' -print0 | \
-while read -d $'\0' file; do
+find "$WATCH_DIR" -type f -name '*.torrent' | \
+while read file; do
     dir=${file%/*}
 
     # transmission-remote doesn't yet allow setting the directory for only
@@ -96,6 +96,7 @@ done
 
 # TODO: make this portable.
 is_idle_expired () {
+    [ -z "$1" ] && return 1
     _now=$(gdate +%s)
     _last=$(gdate --date "$1" +%s)
     [ $(($_now - $_last)) -lt $(($IDLE_EXPIRED_HOURS * 3600)) ] && return 1
