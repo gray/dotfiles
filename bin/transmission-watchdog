@@ -37,8 +37,12 @@ elif command -v shlock >/dev/null 2>&1; then
     trap 'rm -f "$LOCK"; exit' HUP INT QUIT TERM
     shlock -f "$LOCK" -p $$ || exit
     trap 'rm -f "$LOCK"; exit' EXIT
+elif command -v lockfile >/dev/null 2>&1; then
+    trap 'rm -f "$LOCK"; exit' HUP INT QUIT TERM
+    lockfile -r 0 -l 300 "$LOCK" >/dev/null 2>&1 || exit
+    trap 'rm -f "$LOCK"; exit' EXIT
 else
-    echo "Put a leash on the watchdog- install flock or shlock" >&2
+    echo "Put a leash on the watchdog- install flock, shlock or lockfile" >&2
 fi
 
 # Prefer the timeout program from GNU coreutils.
@@ -94,11 +98,7 @@ done
 is_idle_expired () {
     _now=$(gdate +%s)
     _last=$(gdate --date "$1" +%s)
-    if [ $(($_now - $_last)) -gt $(($IDLE_EXPIRED_HOURS * 3600)) ]; then
-        return 0
-    else
-        return 1
-    fi
+    [ $(($_now - $_last)) -lt $(($IDLE_EXPIRED_HOURS * 3600)) ] && return 1
 }
 
 transmit --torrent all --info | \
@@ -144,6 +144,7 @@ while read line; do
         fi
     fi
 
+    # TODO: treat demonoid.com as public
     if [ 'Yes' = "$public" ] && [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
     then
         transmit --torrent "$id" --torrent-uplimit "$PUBLIC_UP_RATE" \
