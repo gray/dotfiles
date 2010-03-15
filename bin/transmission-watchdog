@@ -4,20 +4,23 @@
 #   - finds torrents under a directory (including its subdirectories) and
 #     adds them to transmission, specifying the directory from where the
 #     torrent was located to be the completed directory for the data
-#   - removes torrents that have completed and stopped
+#   - removes completed, stopped torrents
+#   - removes idle, expired torrents
 #   - changes upload rate and ratio for public torrents
 #
 # TODO:
-#   - unrar RAR archives
-#   - kill transmission if it's hanging so it can be restarted by some
+#   - unrars RAR archives
+#   - kills transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
 
+VERBOSE=0
 LOCK=/tmp/transmission-watchdog.lock
 NETRC=~/.netrc
 WATCH_DIR=~/Media/.
+ARCHIVE_DIR=~/Downloads/torrents/.
+IDLE_EXPIRED_HOURS=24
 PUBLIC_UP_RATE=5
 PUBLIC_RATIO=0
-VERBOSE=0
 
 [ 1 != "$CRON" ] && VERBOSE=1
 
@@ -42,9 +45,7 @@ fi
 if command -v timeout >/dev/null 2>&1; then
     :
 elif command -v gtimeout >/dev/null 2>&1; then
-    timeout () {
-        gtimeout $@
-    }
+    timeout () { gtimeout "$@"; }
 else
     # From "Beginning Portable Shell Scripting", 2008.
     timeout () {
@@ -70,8 +71,8 @@ else
 fi
 
 transmit () {
-    timeout 30 transmission-remote -N $NETRC $@
     # TODO: add retry and kill logic
+    timeout 30 transmission-remote -N $NETRC "$@"
 }
 
 # Add any new torrent files to transmission, then archive them.
@@ -81,59 +82,72 @@ while read -d $'\0' file; do
 
     # transmission-remote doesn't yet allow setting the directory for only
     # the current torrent.
-    trap 'transmit -w ~/Media/.' ERR
-    transmit -w "$dir"    >/dev/null 2>&1
-    transmit -a "$file"   >/dev/null 2>&1
-    transmit -w ~/Media/. >/dev/null 2>&1
+    trap 'transmit --download-dir "$WATCH_DIR"' ERR
+    transmit --download-dir "$dir"       >/dev/null 2>&1
+    transmit --add "$file"               >/dev/null 2>&1
+    transmit --download-dir "$WATCH_DIR" >/dev/null 2>&1
 
-    mv -f "$file" ~/Downloads/torrents/.
+    mv -f "$file" "$ARCHIVE_DIR"
 done
 
-if command -v unrar >/dev/null 2>&1; then
-    HAS_UNRAR=1
-fi
+# TODO: make this portable.
+is_idle_expired () {
+    _now=$(gdate +%s)
+    _last=$(gdate --date "$1" +%s)
+    if [ $(($_now - $_last)) -gt $(($IDLE_EXPIRED_HOURS * 3600)) ]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
-transmit -t all -i | \
+transmit --torrent all --info | \
 while read line; do
     val=${line##*: }
     case $line in
-        'Id: '?*)             id=$val            ;;
-        'Name: '?*)           name=$val          ;;
-        'State: '?*)          state=$val         ;;
-        'Location: '?*)       dir=$val           ;;
-        'Percent Done: '?*)   percent=$val       ;;
-        'Public torrent: '?*) public=$val        ;;
-        'Upload Limit: '?*)   up_rate=${val%% *}
-                              do=1               ;;
+        'Id: '?*)              id=$val          ;;
+        'Name: '?*)            name=$val        ;;
+        'State: '?*)           state=$val       ;;
+        'Location: '?*)        dir=$val         ;;
+        'Percent Done: '?*)    percent=$val     ;;
+        'Latest activity: '?*) last_active=$val ;;
+        'Public torrent: '?*)  public=$val      ;;
+        'Upload Limit: '?*)    up_rate=$val
+                               do=1             ;;
     esac
 
-    [ -z $do ] && continue; do=''
+    [ 1 != "$do" ] && continue; do=0
 
     if [ '100%' = "$percent" ]; then
-        # TODO: Unrar any RAR archives.
-        # if [ 1 = "$HAS_UNRAR" ]; then
-            # find "$dir/$name" -type f -name '*.rar' -print0 | \
-            # while read -d $'\0' file; do
-                # unrar x -y -p- -o+ "$file"
-            # done
-            # [ 1 = "$VERBOSE" ] && echo "Unrarred $dir/$name"
-        # fi
-
-        if [ 'Stopped' = "$state" ]; then
+        if [ 'Idle' = "$state" ]; then
+            # Determine if torrent has expired due to inactivity.
+            if is_idle_expired "$last_active"; then
+                transmit --torrent "$id" --remove >/dev/null 2>&1
+                [ 1 = "$VERBOSE" ] && echo "Stopping idle torrent: $name"
+            fi
+        elif [ 'Stopped' = "$state" ]; then
             # Remove completed and stopped torrents.
-            transmit -t "$id" -r >/dev/null 2>&1
+            transmit --torrent "$id" --remove >/dev/null 2>&1
             [ 1 = "$VERBOSE" ] && echo "Removed completed torrent: $name"
+
+            # TODO: Unrar any RAR archives.
+            # if command -v unrar >/dev/null 2>&1; then
+                # find "$dir/$name" -type f -name '*.rar' -print0 | \
+                # while read -d $'\0' file; do
+                    # dir=${file%/*}
+                    # unrar x -y -p- -o+ "$file"
+                # done
+                # [ 1 = "$VERBOSE" ] && echo "Unrarred $dir/$name"
+            # fi
+
             continue
         fi
     fi
 
-    if [ 'Yes' = "$public" ] && [ "$PUBLIC_UP_RATE" != "$up_rate" ]; then
-        # Change the upload rate and ratio for public torrents.
-        echo "$public"
-        echo "$PUBLIC_UP_RATE"
-        echo "$up_rate"
-        transmit -t "$id" -tu "$PUBLIC_UP_RATE" -sr "$PUBLIC_RATIO" \
-            >/dev/null 2>&1
+    if [ 'Yes' = "$public" ] && [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
+    then
+        transmit --torrent "$id" --torrent-uplimit "$PUBLIC_UP_RATE" \
+            --seedratio "$PUBLIC_RATIO" >/dev/null 2>&1
         [ 1 = "$VERBOSE" ] && echo "Throttled public torrent: $name"
     fi
 done
