@@ -20,7 +20,6 @@ VERBOSE=1
 LOCK=/tmp/transmission-watchdog.lock
 NETRC=~/.netrc
 WATCH_DIR=~/Media/.
-ARCHIVE_DIR=~/Downloads/torrents/.
 IDLE_EXPIRED_HOURS=24
 PUBLIC_UP_RATE=5
 PUBLIC_RATIO=0
@@ -79,7 +78,7 @@ transmit () {
     timeout 30 transmission-remote -N $NETRC "$@"
 }
 
-# Add any new torrent files to transmission, then archive them.
+# Add any new torrent files to transmission.
 find "$WATCH_DIR" -type f -name '*.torrent' | while IFS= read -r file; do
     dir=${file%/*}
 
@@ -88,8 +87,7 @@ find "$WATCH_DIR" -type f -name '*.torrent' | while IFS= read -r file; do
     transmit --download-dir "$dir"       >/dev/null 2>&1
     transmit --add "$file"               >/dev/null 2>&1
     transmit --download-dir "$WATCH_DIR" >/dev/null 2>&1
-
-    mv -f "$file" "$ARCHIVE_DIR"
+    rm -f "$file"
 
     [ 1 = "$VERBOSE" ] && printf "Added torrent: ${file##*/}\n"
 done
