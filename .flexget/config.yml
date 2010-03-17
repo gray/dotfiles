@@ -79,7 +79,7 @@ feeds:
       - tv
     regexp:
       reject_excluding:
-        - xvid\b.*(?:drama|mystery)
+        - 2010\b.*xvid\b.*(?:drama|mystery)
       reject:
         # This feed uses a different episode numbering for this series.
         - ^[\W_]*midsomer[\W_]+murders
