@@ -97,17 +97,10 @@ is_expired () {
     [ -z "$1" ] && return 1
 
     _expired=$(($IDLE_EXPIRED_HOURS * 3600))
-    _now=$(gdate +%s)
+    _now=$(date +%s)
     _started=$(gdate --date "$1" +%s)
-    if [ -n "$2" ]; then
-        _last_active=$(gdate --date "$2" +%s)
-    else
-        _last_active=0
-    fi
 
-    [ $(($_now - $_started))     -gt $_expired ] &&
-    [ $(($_now - $_last_active)) -gt $_expired ] &&
-    return 1
+    [ $(($_now - $_started)) -gt $_expired ] && return 1
 }
 
 has_cmd unrar && HAS_UNRAR=1
@@ -117,31 +110,32 @@ do=0
 transmit --torrent all --info | while IFS= read -r line; do
     val=${line##*: }
     case $line in
-        '  Id: '?*)              id=$val          ;;
-        '  Name: '?*)            name=$val        ;;
-        '  State: '?*)           state=$val       ;;
-        '  Location: '?*)        dir=$val         ;;
-        '  Percent Done: '?*)    percent=$val     ;;
-        '  Date started: '?*)    started=$val     ;;
-        '  Latest activity: '?*) last_active=$val ;;
-        '  Public torrent: '?*)  public=$val      ;;
+        '  Id: '?*)              id=$val      ;;
+        '  Name: '?*)            name=$val    ;;
+        '  State: '?*)           state=$val   ;;
+        '  Location: '?*)        dir=$val     ;;
+        '  Percent Done: '?*)    percent=$val ;;
+        '  Date started: '?*)    started=$val ;;
+        '  Public torrent: '?*)  public=$val  ;;
         '  Upload Limit: '?*)    up_rate=$val
-                                 do=1             ;;
+                                 do=1         ;;
     esac
 
-    [ 1 != "$do" ] && continue;
+    [ 1 != "$do" ] && continue
 
-    do=; last_dir=; removed=; unrarred=;
+    do=; last_dir=; unrarred_lock=
 
     if [ '100%' = "$percent" ]; then
         if [ 1 = "$HAS_UNRAR" ]; then
-            find "$dir/$name" -type f -name '*.rar' | \
-            while IFS= read -r file; do
+            SAVED_IFS="$IFS"; IFS=
+            for file in $(find "$dir/$name" -type f -name '*.rar' 2>/dev/null)
+            do
                 rar_dir=${file%/*}
                 rar_file=${file##*/}
                 [ "$rar_dir" = "$last_dir" ] && continue
                 last_dir=$rar_dir
                 unrarred_lock="$rar_dir/.$rar_file.unrarred"
+                echo "$unrarred_lock"
                 [ -e "$unrarred_lock" ] && continue
 
                 sfv_file="${rar_file%.*}".sfv
@@ -158,36 +152,33 @@ transmit --torrent all --info | while IFS= read -r line; do
                 touch "$unrarred_lock"
 
                 if ! nice -n 15 unrar x -inul -y -p- -o+ -r \
-                        "$rar_dir/$rar_file" "$rar_dir"
+                    "$rar_dir/$rar_file" "$rar_dir"
                 then
                     warn "Unable to extract RAR: ${rar_dir##~/}/$rar_file\n"
                     continue
                 fi
 
-                unrarred=1
-
                 if [ 1 = "$VERBOSE" ]; then
                     printf "Unrarred %s/%s\n" "${rar_dir##~/}" "$rar_file"
                 fi
             done
+            IFS="$SAVED_IFS"
         fi
 
-        if [ 'Idle' = "$state" ] && is_expired "$started" "$last_active"
+        if ([ 'Idle' = "$state" ] && is_expired "$started") ||
+            [ 'Stopped' = "$state" ]
         then
             transmit --torrent "$id" --remove >/dev/null 2>&1
-            removed=1
-            [ 1 = "$VERBOSE" ] && printf "Removed idle torrent: $name\n"
-        elif [ 'Stopped' = "$state" ]; then
-            transmit --torrent "$id" --remove >/dev/null 2>&1
-            removed=1
-            [ 1 = "$VERBOSE" ] && printf "Removed completed torrent: $name\n"
+            [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
+
+            if [ -n "$unrarred_lock" ]; then
+                find "$dir/$name" -type f \( -name '*.rar' -o      \
+                    -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
+                    -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
+                    -name '*.nfo' \) -print0 2>/dev/null | xargs -0 rm -f
+                [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
+            fi
         fi
-    fi
-    if [ 1 = "$removed" ] && [ 1 = "$unrarred" ]; then
-        find "$dir/$name" -type f -name '*.rar' -o -name '*.r[0-9]' -o \
-            -name '*.r[0-9][0-9]' -o -name '*.r[0-9][0-9][0-9]' -o     \
-            -name '*.sfv' -o -name '*.nfo' -print0 | xargs -0 rm -f
-        [ 1 = "$VERBOSE" ] && printf "Removed RAR archives: $name\n"
     fi
 
     # TODO: treat demonoid.com tracker as public since ratios don't matter.
