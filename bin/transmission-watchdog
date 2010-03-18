@@ -135,7 +135,6 @@ transmit --torrent all --info | while IFS= read -r line; do
                 [ "$rar_dir" = "$last_dir" ] && continue
                 last_dir=$rar_dir
                 unrarred_lock="$rar_dir/.$rar_file.unrarred"
-                echo "$unrarred_lock"
                 [ -e "$unrarred_lock" ] && continue
 
                 sfv_file="${rar_file%.*}".sfv
