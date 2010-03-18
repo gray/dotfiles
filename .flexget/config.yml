@@ -10,9 +10,8 @@ presets:
       max: 1750
     regexp:
       reject_excluding:
-        - '[\W_]+b[dr]rip'
-        - '[\W_]+dvd(?:rip|scr)'
-        - '[\W_]+r5'
+        - '[\W_]+(?:r5|b[dr]rip|dvd(?:rip|scr))':
+            from: title
     seen_movies: strict
     imdb:
       min_score: 6.2
