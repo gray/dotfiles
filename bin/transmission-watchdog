@@ -27,6 +27,8 @@ PUBLIC_RATIO=0
 set -o errexit
 set -o nounset
 
+IFS=$(printf "\n\t")
+
 has_cmd () { command -v "$@" >/dev/null 2>&1; }
 warn    () { printf "$@" >&2; }
 
@@ -79,7 +81,7 @@ transmit () {
 }
 
 # Add any new torrent files to transmission.
-find "$WATCH_DIR" -type f -name '*.torrent' | while IFS= read -r file; do
+for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
     dir=${file%/*}
 
     # transmission-remote doesn't yet allow setting the directory for only
@@ -107,7 +109,7 @@ has_cmd unrar && HAS_UNRAR=1
 has_cmd cksfv && HAS_CKSFV=1
 
 do=0
-transmit --torrent all --info | while IFS= read -r line; do
+for line in $(transmit --torrent all --info); do
     val=${line##*: }
     case $line in
         '  Id: '?*)              id=$val      ;;
@@ -127,7 +129,6 @@ transmit --torrent all --info | while IFS= read -r line; do
 
     if [ '100%' = "$percent" ]; then
         if [ 1 = "$HAS_UNRAR" ]; then
-            SAVED_IFS="$IFS"; IFS=
             for file in $(find "$dir/$name" -type f -name '*.rar' 2>/dev/null)
             do
                 rar_dir=${file%/*}
@@ -161,7 +162,6 @@ transmit --torrent all --info | while IFS= read -r line; do
                     printf "Unrarred %s/%s\n" "${rar_dir##~/}" "$rar_file"
                 fi
             done
-            IFS="$SAVED_IFS"
         fi
 
         if ([ 'Idle' = "$state" ] && is_expired "$started") ||
@@ -174,7 +174,7 @@ transmit --torrent all --info | while IFS= read -r line; do
                 find "$dir/$name" -type f \( -name '*.rar' -o      \
                     -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
                     -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
-                    -name '*.nfo' \) -print0 2>/dev/null | xargs -0 rm -f
+                    -name '*.nfo' \) -exec rm -f \{\} \; 2>/dev/null
                 [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
             fi
         fi
