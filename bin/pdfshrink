@@ -7,12 +7,11 @@
 #     3 fonts are detected. this should prevent jagged/blurry text.
 
 for file in "$@"; do
-    ext=`expr "$file" : '.*\.\(.*\)'`
-    if test pdf != "$ext" || test ! -s "$file"; then
+    if [ pdf != "${file##*.}" ] || [ ! -s "$file" ]; then
         continue
     fi
 
-    out=$file.shrunk
+    out="$file.shrunk"
 
     if ! command -v gs >/dev/null 2>&1; then
         echo "Can't find ghostscript (gs)" >&2
@@ -31,17 +30,15 @@ for file in "$@"; do
         "$file" > /dev/null 2>&1
     ret=$?
 
-    test -f "$out" || continue
+    [ -f "$out" ] || continue
 
-    fsize=`wc -c < "$file"`
-    osize=`wc -c < "$out"`
+    fsize=$(wc -c < "$file")
+    osize=$(wc -c < "$out")
 
     # Replace the original file if the new one is smaller.
-    if test 0 -eq $ret && test 0 -lt $osize && test $osize -lt $fsize; then
+    if [ 0 -eq $ret ] && [ 0 -lt $osize ] && [ $osize -lt $fsize ]; then
         mv -f "$out" "$file"
     else
         rm -f "$out"
     fi
 done
-
-exit 0
