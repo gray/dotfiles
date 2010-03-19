@@ -12,6 +12,8 @@
 #   - removes RAR archives after torrent has been removed
 #
 # TODO:
+#   - deselect sample files
+#   - use getopts to accept command-line options
 #   - make idle expiration test portable- don't rely on gnu date
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
@@ -75,7 +77,7 @@ else
     }
 fi
 
-transmit () {
+remote () {
     # TODO: add retry and kill logic
     timeout 30 transmission-remote -N $NETRC "$@"
 }
@@ -84,43 +86,63 @@ transmit () {
 for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
     dir=${file%/*}
 
-    # transmission-remote doesn't yet allow setting the directory for only
-    # the current torrent.
-    transmit --download-dir "$dir"       >/dev/null 2>&1
-    transmit --add "$file"               >/dev/null 2>&1
-    transmit --download-dir "$WATCH_DIR" >/dev/null 2>&1
+    # This sets the global directory; it must be reset later.
+    remote --download-dir "$dir" >/dev/null 2>&1
+
+    # Successfully adding a torrent prints no useful information, so parse
+    # the debug output. Use the torrent hash because the ids are not stable
+    # across restarts.
+    hash=$(
+        remote --debug --add "$file" 2>&1 |
+        awk -F'"' '/^{"arguments":{"torrent-added":/{print$8;exit}'
+    )
+
+    if [ 1 = "$NO_SAMPLES" ]; then
+        :
+        # TODO: deselect sample files
+    fi
+
+    remote --download-dir "$WATCH_DIR" >/dev/null 2>&1
     rm -f "$file"
 
-    [ 1 = "$VERBOSE" ] && printf "Added torrent: ${file##*/}\n"
+    [ 1 = "$VERBOSE" ] && printf "Added torrent ${hash}: ${file##*/}\n"
 done
 
 # TODO: make this portable.
 is_expired () {
-    [ -z "$1" ] && return 1
+    [ -z "$1" ] || [ -z "$2" ] && return 1
 
     _expired=$(($IDLE_EXPIRED_HOURS * 3600))
     _now=$(date +%s)
     _started=$(gdate --date "$1" +%s)
+    _finished=$(gdate --date "$2" +%s)
 
-    [ $(($_now - $_started)) -gt $_expired ] && return 1
+    # The start date resets when a torrent is restarted (pause/start or
+    # transmission itself restarts).
+    if [ "$_started" -gt "$_finished" ]; then
+        [ $(($_now - $_finished)) -gt "$_expired" ] && return 1
+    else
+        [ $(($_now - $_started)) -gt "$_expired" ] && return 1
+    fi
 }
 
 has_cmd unrar && HAS_UNRAR=1
 has_cmd cksfv && HAS_CKSFV=1
 
 do=0
-for line in $(transmit --torrent all --info); do
+for line in $(remote --torrent all --info); do
     val=${line##*: }
-    case $line in
-        '  Id: '?*)              id=$val      ;;
-        '  Name: '?*)            name=$val    ;;
-        '  State: '?*)           state=$val   ;;
-        '  Location: '?*)        dir=$val     ;;
-        '  Percent Done: '?*)    percent=$val ;;
-        '  Date started: '?*)    started=$val ;;
-        '  Public torrent: '?*)  public=$val  ;;
+    case "$line" in
+        '  Hash: '?*)            hash=$val     ;;
+        '  Name: '?*)            name=$val     ;;
+        '  State: '?*)           state=$val    ;;
+        '  Location: '?*)        dir=$val      ;;
+        '  Percent Done: '?*)    percent=$val  ;;
+        '  Date finished: '?*)   finished=$val ;;
+        '  Date started: '?*)    started=$val  ;;
+        '  Public torrent: '?*)  public=$val   ;;
         '  Upload Limit: '?*)    up_rate=$val
-                                 do=1         ;;
+                                 do=1          ;;
     esac
 
     [ 1 != "$do" ] && continue
@@ -135,10 +157,10 @@ for line in $(transmit --torrent all --info); do
                 rar_file=${file##*/}
                 [ "$rar_dir" = "$last_dir" ] && continue
                 last_dir=$rar_dir
-                unrarred_lock="$rar_dir/.$rar_file.unrarred"
+                unrarred_lock=$rar_dir/.$rar_file.unrarred
                 [ -e "$unrarred_lock" ] && continue
 
-                sfv_file="${rar_file%.*}".sfv
+                sfv_file=${rar_file%.*}.sfv
                 if [ 1 = "$HAS_CKSFV" ] && [ -e "$sfv_file" ]; then
                     if ! nice -n 15 cksfv -vg "$rar_dir/$sfv_file"; then
                         touch "$unrarred_lock"
@@ -164,10 +186,10 @@ for line in $(transmit --torrent all --info); do
             done
         fi
 
-        if ([ 'Idle' = "$state" ] && is_expired "$started") ||
+        if ([ 'Idle' = "$state" ] && is_expired "$started" "$finished") ||
             [ 'Stopped' = "$state" ]
         then
-            transmit --torrent "$id" --remove >/dev/null 2>&1
+            remote --torrent "$hash" --remove >/dev/null 2>&1
             [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
 
             if [ -n "$unrarred_lock" ]; then
@@ -183,7 +205,7 @@ for line in $(transmit --torrent all --info); do
     # TODO: treat demonoid.com tracker as public since ratios don't matter.
     if [ 'Yes' = "$public" ] && [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
     then
-        transmit --torrent "$id" --torrent-uplimit "$PUBLIC_UP_RATE" \
+        remote --torrent "$hash" --torrent-uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null 2>&1
         [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
     fi
