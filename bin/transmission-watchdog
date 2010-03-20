@@ -204,6 +204,7 @@ for line in $(remote --torrent all --info); do
                     -name '*.nfo' \) -exec rm -f {} \; 2>/dev/null
                 ! find "$dir/$name/"[Ss]ample -type f -exec rm -f {} \; \
                     2>/dev/null
+                rm -f "$unrarred_lock"
                 ! find "$dir/$name" -type d -depth -exec rmdir {} \; \
                     2>/dev/null
                 [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
