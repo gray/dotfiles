@@ -4,6 +4,7 @@
 #   - finds torrents under a directory (including its subdirectories) and
 #     adds them to transmission, specifying the directory from where the
 #     torrent was located to be the completed directory for the data
+#   - deselects sample files
 #   - throttles public torrents
 #   - removes completed, stopped torrents
 #   - removes idle, expired torrents
@@ -12,7 +13,6 @@
 #   - removes RAR archives after torrent has been removed
 #
 # TODO:
-#   - deselect sample files
 #   - use getopts to accept command-line options
 #   - make idle expiration test portable- don't rely on gnu date
 #   - kill transmission if it's hanging so it can be restarted by some
@@ -90,22 +90,26 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
     remote --download-dir "$dir" >/dev/null 2>&1
 
     # Successfully adding a torrent prints no useful information, so parse
-    # the debug output. Use the torrent hash because the ids are not stable
-    # across restarts.
+    # the debug output. Use the torrent hash because the ids are not
+    # persistent across sessions.
     hash=$(
         remote --debug --add "$file" 2>&1 |
         awk -F'"' '/^{"arguments":{"torrent-added":/{print$8;exit}'
     )
 
-    if [ 1 = "$NO_SAMPLES" ]; then
-        :
-        # TODO: deselect sample files
-    fi
-
     remote --download-dir "$WATCH_DIR" >/dev/null 2>&1
     rm -f "$file"
 
+    [ -n "$hash" ] || continue
+
     [ 1 = "$VERBOSE" ] && printf "Added torrent ${hash}: ${file##*/}\n"
+
+    ids=$(
+        remote --torrent "$hash" --files | \
+        sed -n 's/^ *\([0-9]\{1,\}\):.*\/Sample\/.*/\1/p' | \
+        paste -d ',' -s -
+    )
+    [ -n "$ids" ] && remote --torrent "$hash" --no-get "$ids"
 done
 
 # TODO: make this portable.
@@ -193,10 +197,15 @@ for line in $(remote --torrent all --info); do
             [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
 
             if [ -n "$unrarred_lock" ]; then
-                find "$dir/$name" -type f \( -name '*.rar' -o      \
+                # Negate the return status to avoid triggering ERR.
+                ! find "$dir/$name" -type f \( -name '*.rar' -o    \
                     -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
                     -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
-                    -name '*.nfo' \) -exec rm -f \{\} \; 2>/dev/null
+                    -name '*.nfo' \) -exec rm -f {} \; 2>/dev/null
+                ! find "$dir/$name/"[Ss]ample -type f -exec rm -f {} \; \
+                    2>/dev/null
+                ! find "$dir/$name" -type d -depth -exec rmdir {} \; \
+                    2>/dev/null
                 [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
             fi
         fi
