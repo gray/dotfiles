@@ -45,9 +45,8 @@ elif has_cmd lockfile; then
     lockfile -r 0 -l 300 "$LOCK" >/dev/null 2>&1 || exit
     trap 'rm -f "$LOCK"; exit' EXIT
 else
-   [ -e "$LOCK" ] && exit
-   trap 'rm -f "$LOCK"; exit' EXIT HUP INT QUIT TERM
-   touch "$LOCK"
+    ln -s /dev/null "$LOCK" 2>/dev/null || exit
+    trap 'rm -f "$LOCK"; exit' EXIT HUP INT QUIT TERM
 fi
 
 # Prefer the timeout program from GNU coreutils.
