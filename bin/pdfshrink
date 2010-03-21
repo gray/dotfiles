@@ -3,8 +3,6 @@
 # TODO:
 #   - remove empty pages
 #   - add options for image resolution, overwriting files, verbosity
-#   - replace type 3 fonts (bitmapped) with type 1- or at least bail if type
-#     3 fonts are detected. this should prevent jagged/blurry text.
 
 for file in "$@"; do
     if [ pdf != "${file##*.}" ] || [ ! -s "$file" ]; then
@@ -37,7 +35,13 @@ for file in "$@"; do
 
     # Replace the original file if the new one is smaller.
     if [ 0 -eq $ret ] && [ 0 -lt $osize ] && [ $osize -lt $fsize ]; then
-        mv -f "$out" "$file"
+        # If the original contained type3 fonts, don't overwrite.
+        if grep -l '/Subtype/Type3' "$out" >/dev/null; then
+            printf "Type3 font detected. New file at: %s.pdf\n" "$out" >&2
+            mv -f "$out" "$out".pdf
+        else
+            mv -f "$out" "$file"
+        fi
     else
         rm -f "$out"
     fi
