@@ -14,7 +14,6 @@
 #
 # TODO:
 #   - use getopts to accept command-line options
-#   - make idle expiration test portable- don't rely on gnu date
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
 
@@ -49,32 +48,26 @@ else
     trap 'rm -f "$LOCK"; exit' EXIT HUP INT QUIT TERM
 fi
 
-# Prefer the timeout program from GNU coreutils.
-if   has_cmd timeout;  then :
-elif has_cmd gtimeout; then timeout () { gtimeout "$@"; }
-else
-    # From "Beginning Portable Shell Scripting", 2008.
-    timeout () {
-        timeout=$1
-        shift
-        "$@" &
-        child_pid=$!
-        (
-            trap 'kill -s TERM $sleep_pid 2>/dev/null; exit 0' TERM
-            sleep "$timeout" &
-            sleep_pid=$!
-            wait $sleep_pid 2>/dev/null
-            kill -s TERM $child_pid 2>/dev/null
-            sleep 2
-            kill -s KILL $child_pid 2>/dev/null
-        ) &
-        alarm_pid=$!
-        wait $child_pid 2>/dev/null
-        status=$?
-        kill -s TERM $alarm_pid 2>/dev/null
-        return $status
-    }
-fi
+timeout () {
+    timeout=$1
+    shift
+    "$@" &
+    child_pid=$!
+    (
+        trap 'kill -s TERM $sleep_pid 2>/dev/null; exit 0' TERM
+        sleep "$timeout" &
+        sleep_pid=$!
+        wait $sleep_pid 2>/dev/null
+        kill -s TERM $child_pid 2>/dev/null
+        sleep 2
+        kill -s KILL $child_pid 2>/dev/null
+    ) &
+    alarm_pid=$!
+    wait $child_pid 2>/dev/null
+    status=$?
+    kill -s TERM $alarm_pid 2>/dev/null
+    return $status
+}
 
 remote () {
     # TODO: add retry and kill logic
@@ -111,22 +104,49 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
     [ -n "$ids" ] && remote --torrent "$hash" --no-get "$ids"
 done
 
-# TODO: make this portable.
+epoch () {
+    SAVED_IFS="$IFS"
+    IFS=" "; set -f -- $1; m=$2; d=$3; time=$4; y=$5
+    IFS=":"; set -f -- $time; hh=${1#0}; mm=${2#0}; ss=${3#0}
+    IFS="$SAVED_IFS"
+
+    case $m in
+        Jan) m=1 ;;  Feb) m=2  ;;  Mar) m=3  ;;  Apr) m=4  ;;
+        May) m=5 ;;  Jun) m=6  ;;  Jul) m=7  ;;  Aug) m=8  ;;
+        Sep) m=9 ;;  Oct) m=10 ;;  Nov) m=11 ;;  Dec) m=12 ;;
+    esac
+
+    if [ $(($m > 2)) ]; then
+        m=$(($m+1))
+    else
+        $(($m+=13; $y-=1))
+    fi
+
+    _epoch=$(( 86400*($y*365 + $y/4 - $y/100 + $y/400 + $m*306001/10000 +
+        $d-719591) + $hh*3600 + $mm*60 + $ss ))
+}
+
+now=
 is_expired () {
     [ -z "$1" ] || [ -z "$2" ] && return 1
 
-    _expired=$(($IDLE_EXPIRED_HOURS * 3600))
-    _now=$(date +%s)
-    _started=$(gdate --date "$1" +%s)
-    _finished=$(gdate --date "$2" +%s)
+    if [ -z "$now" ]; then
+        expired=$(($IDLE_EXPIRED_HOURS * 3600))
+        epoch "$(date '+%a %b %e %H:%M:%S %Y')"
+        now=$_epoch
+    fi
+
+    epoch "$1"; _started=$_epoch
+    epoch "$2"; _finished=$_epoch
 
     # The start date resets when a torrent is restarted (pause/start or
     # transmission itself restarts).
     if [ "$_started" -gt "$_finished" ]; then
-        [ $(($_now - $_finished)) -gt "$_expired" ] && return 1
+        [ $(($now - $_finished)) -gt "$expired" ] && return 0
     else
-        [ $(($_now - $_started)) -gt "$_expired" ] && return 1
+        [ $(($now - $_started)) -gt "$expired" ] && return 0
     fi
+    return 1
 }
 
 has_cmd unrar && HAS_UNRAR=1
@@ -200,7 +220,8 @@ for line in $(remote --torrent all --info); do
                 ! find "$dir/$name" -type f \( -name '*.rar' -o    \
                     -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
                     -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
-                    -name '*.nfo' \) -exec rm -f {} \; 2>/dev/null
+                    -name '*.nfo' -o -name '.DS_Store' \) -exec rm -f {} \; \
+                    2>/dev/null
                 ! find "$dir/$name/"[Ss]ample -type f -exec rm -f {} \; \
                     2>/dev/null
                 rm -f "$unrarred_lock"
