@@ -79,7 +79,7 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
     dir=${file%/*}
 
     # This sets the global directory; it must be reset later.
-    remote --download-dir "$dir" >/dev/null 2>&1
+    remote --download-dir "$dir" >/dev/null
 
     # Successfully adding a torrent prints no useful information, so parse
     # the debug output. Use the torrent hash because the ids are not
@@ -89,7 +89,7 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
         awk -F'"' '/^{"arguments":{"torrent-added":/{print$8;exit}'
     )
 
-    remote --download-dir "$WATCH_DIR" >/dev/null 2>&1
+    remote --download-dir "$WATCH_DIR" >/dev/null
     rm -f "$file"
 
     [ -n "$hash" ] || continue
@@ -101,7 +101,7 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
         sed -n 's/^ *\([0-9]\{1,\}\):.*\/Sample\/.*/\1/p' | \
         paste -d ',' -s -
     )
-    [ -n "$ids" ] && remote --torrent "$hash" --no-get "$ids"
+    [ -n "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
 done
 
 epoch () {
@@ -212,19 +212,18 @@ for line in $(remote --torrent all --info); do
         if ([ 'Idle' = "$state" ] && is_expired "$started" "$finished") ||
             [ 'Stopped' = "$state" ]
         then
-            remote --torrent "$hash" --remove >/dev/null 2>&1
+            remote --torrent "$hash" --remove >/dev/null
             [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
 
             if [ -n "$unrarred_lock" ]; then
                 # Negate the return status to avoid triggering ERR.
-                ! find "$dir/$name" -type f \( -name '*.rar' -o    \
-                    -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
-                    -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
-                    -name '*.nfo' -o -name '.DS_Store' -o          \
-                    -name '*.part' \) -exec rm -f {} \; 2>/dev/null
+                ! find "$dir/$name" -type f \( -name '*.rar' -o             \
+                    -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o            \
+                    -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o          \
+                    -name '*.nfo' -o -name '.DS_Store' -o -name '*.part' -o \
+                    -name '.*.unrarred' \) -exec rm -f {} \; 2>/dev/null
                 ! find "$dir/$name/"[Ss]ample -type f -exec rm -f {} \; \
                     2>/dev/null
-                rm -f "$unrarred_lock"
                 ! find "$dir/$name" -type d -depth -exec rmdir {} \; \
                     2>/dev/null
                 [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
@@ -236,7 +235,7 @@ for line in $(remote --torrent all --info); do
     if [ 'Yes' = "$public" ] && [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
     then
         remote --torrent "$hash" --torrent-uplimit "$PUBLIC_UP_RATE" \
-            --seedratio "$PUBLIC_RATIO" >/dev/null 2>&1
+            --seedratio "$PUBLIC_RATIO" >/dev/null
         [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
     fi
 done
