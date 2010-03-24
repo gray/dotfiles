@@ -13,6 +13,7 @@
 #   - removes RAR archives after torrent has been removed
 #
 # TODO:
+#   - verify data location is under $WATCH_DIR
 #   - use getopts to accept command-line options
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
@@ -170,6 +171,7 @@ for line in $(remote --torrent all --info); do
 
     if [ '100%' = "$percent" ]; then
         if [ 1 = "$HAS_UNRAR" ]; then
+            # TODO: verify $dir exists and is contained in $WATCH_DIR
             for file in $(find "$dir/$name" -type f -name '*.rar' 2>/dev/null)
             do
                 rar_dir=${file%/*}
@@ -180,8 +182,8 @@ for line in $(remote --torrent all --info); do
                 [ -e "$unrarred_lock" ] && continue
 
                 sfv_file=${rar_file%.*}.sfv
-                if [ 1 = "$HAS_CKSFV" ] && [ -e "$sfv_file" ]; then
-                    if ! nice -n 15 cksfv -vg "$rar_dir/$sfv_file"; then
+                if [ 1 = "$HAS_CKSFV" ] && [ -e "$rar_dir/$sfv_file" ]; then
+                    if ! nice -n 15 cksfv -qg "$rar_dir/$sfv_file"; then
                         touch "$unrarred_lock"
                         if [ 1 = "$VERBOSE" ]; then
                             warn "Invalid RAR: ${rar_dir##~/}/$rar_file\n"
