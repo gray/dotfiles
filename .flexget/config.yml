@@ -31,6 +31,8 @@ presets:
       settings:
         tv:
           path: ~/Media/TV/%(series_name)s/.
+        documentaries:
+          path: ~/Media/Documentaries/%(series_name)s/.
     include:
       - private/series.yml
     # Grab the first episode of any new program.
