@@ -132,7 +132,7 @@ feeds:
       path: ~/Media/Talks/.
     exec: |
       # Extract the audio stream from the video.
-      ffmpeg -y -vn -acodec copy -i %(output)s -map_meta_data
+      ffmpeg -y -vn -acodec copy -ss 13 -i %(output)s -map_meta_data
         %(output)s:%(output)s.m4a %(output)s.m4a >/dev/null 2>&1 &&
       # Change the file extension so it is recognized as an audiobook.
       mv -f %(output)s.m4a %(output)s.m4b &&
