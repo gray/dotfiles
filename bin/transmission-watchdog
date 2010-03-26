@@ -153,16 +153,18 @@ do=0
 for line in $(remote --torrent all --info); do
     val=${line##*: }
     case "$line" in
-        '  Hash: '?*)            hash=$val     ;;
-        '  Name: '?*)            name=$val     ;;
-        '  State: '?*)           state=$val    ;;
-        '  Location: '?*)        dir=$val      ;;
-        '  Percent Done: '?*)    percent=$val  ;;
-        '  Date finished: '?*)   finished=$val ;;
-        '  Date started: '?*)    started=$val  ;;
-        '  Public torrent: '?*)  public=$val   ;;
+        '  Hash: '?*)            hash=$val        ;;
+        '  Name: '?*)            name=$val        ;;
+        '  State: '?*)           state=$val       ;;
+        '  Location: '?*)        dir=$val         ;;
+        '  Percent Done: '?*)    percent=$val     ;;
+        '  Ratio: '?*)           ratio=$val       ;;
+        '  Ratio Limit: '?*)     ratio_limit=$val ;;
+        '  Date finished: '?*)   finished=$val    ;;
+        '  Date started: '?*)    started=$val     ;;
+        '  Public torrent: '?*)  public=$val      ;;
         '  Upload Limit: '?*)    up_rate=$val
-                                 do=1          ;;
+                                 do=1             ;;
     esac
 
     [ 1 != "$do" ] && continue
@@ -208,7 +210,9 @@ for line in $(remote --torrent all --info); do
         fi
 
         if ([ 'Idle' = "$state" ] && is_expired "$started" "$finished") ||
-            [ 'Stopped' = "$state" ]
+           ([ 'Stopped' = "$state" ] && [ 'Unlimited' != "$ratio_limit" ] &&
+            [ ${ratio%.*} -ge ${ratio_limit%.*} ] &&
+            [ ${ratio#*.} -ge ${ratio_limit#*.} ])
         then
             remote --torrent "$hash" --remove >/dev/null
             [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
