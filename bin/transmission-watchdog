@@ -13,7 +13,6 @@
 #   - removes RAR archives after torrent has been removed
 #
 # TODO:
-#   - verify data location is under $WATCH_DIR
 #   - use getopts to accept command-line options
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
@@ -146,6 +145,13 @@ is_expired () {
     return 1
 }
 
+real_dir () {
+    real_dir=
+    cd -P -- "$1" && _real_dir="$(pwd -P)"
+}
+
+real_dir "$WATCH_DIR" && WATCH_DIR="$_real_dir"
+
 has_cmd unrar && HAS_UNRAR=1
 has_cmd cksfv && HAS_CKSFV=1
 
@@ -172,7 +178,13 @@ for line in $(remote --torrent all --info); do
 
     if [ '100%' = "$percent" ]; then
         if [ 1 = "$HAS_UNRAR" ]; then
-            # TODO: verify $dir exists and is contained in $WATCH_DIR
+            # Verify directory is valid and in expected location.
+            real_dir "$dir" >/dev/null 2>&1 && dir="$_real_dir"
+            case $dir in
+                $WATCH_DIR/*) ;;
+                *) warn "Suspicious directory: $dir\n"; continue ;;
+            esac
+
             for file in $(find "$dir/$name" -type f -name '*.rar' 2>/dev/null)
             do
                 rar_dir=${file%/*}
@@ -187,7 +199,7 @@ for line in $(remote --torrent all --info); do
                     if ! nice -n 15 cksfv -qg "$rar_dir/$sfv_file"; then
                         touch "$unrarred_lock"
                         if [ 1 = "$VERBOSE" ]; then
-                            warn "Invalid RAR: ${rar_dir##~/}/$rar_file\n"
+                            warn "Invalid RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
                         fi
                         continue
                     fi
@@ -198,12 +210,12 @@ for line in $(remote --torrent all --info); do
                 if ! nice -n 15 unrar x -inul -y -p- -o+ -r \
                     "$rar_dir/$rar_file" "$rar_dir"
                 then
-                    warn "Unable to extract RAR: ${rar_dir##~/}/$rar_file\n"
+                    warn "Unable to extract RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
                     continue
                 fi
 
                 if [ 1 = "$VERBOSE" ]; then
-                    printf "Unrarred %s/%s\n" "${rar_dir##~/}" "$rar_file"
+                    printf "Unrarred %s/%s\n" "${rar_dir##$WATCH_DIR/}" "$rar_file"
                 fi
             done
         fi
