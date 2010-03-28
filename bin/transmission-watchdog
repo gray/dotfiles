@@ -181,8 +181,7 @@ for line in $(remote --torrent all --info); do
             # Verify directory is valid and in expected location.
             real_dir "$dir" >/dev/null 2>&1 && dir="$_real_dir"
             case $dir in
-                $WATCH_DIR/*) ;;
-                *) warn "Suspicious directory: $dir\n"; continue ;;
+                $WATCH_DIR) ;; $WATCH_DIR/*) ;; *) continue ;;
             esac
 
             for file in $(find "$dir/$name" -type f -name '*.rar' 2>/dev/null)
