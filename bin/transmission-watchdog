@@ -240,7 +240,7 @@ for line in $(remote --torrent all --info); do
                         2>/dev/null
                     ! find "$dir/$name" -type d -depth -exec rmdir {} \; \
                         2>/dev/null
-                elif [ -e "$dir/$name" ]; then
+                elif [ -f "$dir/$name" ]; then
                     [ rar = "${file##*.}" ] && rm -f "$dir/$name"
                     rm -f "$unrarred_lock"
                 fi
