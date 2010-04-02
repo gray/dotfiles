@@ -168,6 +168,8 @@ for line in $(remote --torrent all --info); do
         '  Ratio Limit: '?*)     ratio_limit=$val   ;;
         '  Date finished: '?*)   finished=$val      ;;
         '  Date started: '?*)    started=$val       ;;
+        '  Tracker #'*': www.h33t.com'*)
+                                 override_private=1 ;;
         '  Tracker #'*': inferno.demonoid.com'*)
                                  override_private=1 ;;
         '  Public torrent: '?*)  public=$val        ;;
@@ -176,6 +178,14 @@ for line in $(remote --torrent all --info); do
     esac
 
     [ 1 != "$do" ] && continue
+
+    if ([ 'Yes' = "$public" ] || [ 1 = "$override_private" ]) &&
+        [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
+    then
+        remote --torrent "$hash" --torrent-uplimit "$PUBLIC_UP_RATE" \
+            --seedratio "$PUBLIC_RATIO" >/dev/null
+        [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
+    fi
 
     do=; last_dir=; unrarred_lock=
 
@@ -247,11 +257,5 @@ for line in $(remote --torrent all --info); do
                 [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
             fi
         fi
-    elif ([ 'Yes' = "$public" ] || [ 1 = "$override_private" ]) &&
-        [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
-    then
-        remote --torrent "$hash" --torrent-uplimit "$PUBLIC_UP_RATE" \
-            --seedratio "$PUBLIC_RATIO" >/dev/null
-        [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
     fi
 done
