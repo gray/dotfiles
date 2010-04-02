@@ -165,6 +165,7 @@ for line in $(remote --torrent all --info); do
         '  State: '?*)           state=$val         ;;
         '  Location: '?*)        dir=$val           ;;
         '  Percent Done: '?*)    percent=$val       ;;
+        '  Ratio: '?*)           ratio=$val         ;;
         '  Ratio Limit: '?*)     ratio_limit=$val   ;;
         '  Date finished: '?*)   finished=$val      ;;
         '  Date started: '?*)    started=$val       ;;
@@ -233,7 +234,9 @@ for line in $(remote --torrent all --info); do
         fi
 
         if ([ 'Idle' = "$state" ] && is_expired "$started" "$finished") ||
-           ([ 'Stopped' = "$state" ] && [ 'Unlimited' = "$ratio_limit" ])
+           ([ 'Stopped' = "$state" ] && [ 'Unlimited' != "$ratio_limit" ] &&
+            [ ${ratio%.*} -ge ${ratio_limit%.*} ] &&
+            [ ${ratio#*.} -ge ${ratio_limit#*.} ])
         then
             remote --torrent "$hash" --remove >/dev/null
             [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
