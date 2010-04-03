@@ -22,7 +22,7 @@ LOCK=/tmp/transmission-watchdog.lock
 NETRC=~/.netrc
 WATCH_DIR=~/Media/.
 IDLE_EXPIRED_HOURS=24
-PUBLIC_UP_RATE=5
+PUBLIC_UP_RATE=2
 PUBLIC_RATIO=0
 
 set -o errexit
@@ -155,6 +155,11 @@ real_dir "$WATCH_DIR" && WATCH_DIR="$_real_dir"
 has_cmd unrar && HAS_UNRAR=1
 has_cmd cksfv && HAS_CKSFV=1
 
+# Waiting on http://trac.transmissionbt.com/ticket/1869
+default_ratio_limit=$(
+    remote --session-info | awk '/Default seed ratio limit:/{print $5}'
+)
+
 do=0
 for line in $(remote --torrent all --info); do
     val=${line##*: }
@@ -180,7 +185,7 @@ for line in $(remote --torrent all --info); do
 
     [ 1 != "$do" ] && continue
 
-    if ([ 'Yes' = "$public" ] || [ 1 = "$override_private" ]) &&
+    if ([ Yes = "$public" ] || [ 1 = "$override_private" ]) &&
         [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
     then
         remote --torrent "$hash" --torrent-uplimit "$PUBLIC_UP_RATE" \
@@ -233,8 +238,9 @@ for line in $(remote --torrent all --info); do
             done
         fi
 
-        if ([ 'Idle' = "$state" ] && is_expired "$started" "$finished") ||
-           ([ 'Stopped' = "$state" ] && [ 'Unlimited' != "$ratio_limit" ] &&
+        [ Default = "$ratio_limit" ] && ratio_limit=$default_ratio_limit
+        if ([ Idle = "$state" ] && is_expired "$started" "$finished") ||
+           ([ Stopped = "$state" ] && [ Unlimited != "$ratio_limit" ] &&
             [ ${ratio%.*} -ge ${ratio_limit%.*} ] &&
             [ ${ratio#*.} -ge ${ratio_limit#*.} ])
         then
