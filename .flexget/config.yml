@@ -33,6 +33,8 @@ presets:
           path: ~/Media/TV/%(series_name)s/.
         documentaries:
           path: ~/Media/Documentaries/%(series_name)s/.
+        talk_shows:
+          path: ~/Media/TV/Talk Shows/%(series_name)s/.
     include:
       - private/series.yml
     # Grab the first episode of any new program.
@@ -49,14 +51,24 @@ presets:
         - '[\W_]+x264'
         - '[\W_]+(?:72|108)0p'
         - '[\W_]+nuked'
+    include:
+      - private/email.yml
     exec: |
-      echo %(title)s | growlnotify -a Transmission -t 'Torrent added'
+      echo %(title)s | growlnotify -a Transmission -t 'Torrent downloaded'
 
 feeds:
   xtremespeeds_tv:
     interval: 5 minutes
     include:
       - private/xtremespeeds_tv-rss.yml
+    # allow_invalid: yes
+    preset:
+      - torrent
+      - tv
+  torrentvault_tv:
+    interval: 5 minutes
+    include:
+      - private/torrentvault_tv-rss.yml
     preset:
       - torrent
       - tv
@@ -84,20 +96,6 @@ feeds:
       reject:
         # This feed uses a different episode numbering for this series.
         - ^[\W_]*midsomer[\W_]+murders
-  torrentvault_tv:
-    interval: 10 minutes
-    include:
-      - private/torrentvault_tv-rss.yml
-    preset:
-      - torrent
-      - tv
-  unscene_tv:
-    interval: 24 hours
-    include:
-      - private/unscene_tv-rss.yml
-    preset:
-      - torrent
-      - tv
 
   xtremespeeds_movies:
     interval: 15 minutes
@@ -111,7 +109,7 @@ feeds:
     interval: 4 hours
     html:
       url: http://www.davestrailerpage.co.uk/
-      title_from: contents
+      title_from: link
     limit_new: 1
     regexp:
       accept:
