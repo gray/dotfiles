@@ -155,11 +155,6 @@ real_dir "$WATCH_DIR" && WATCH_DIR="$_real_dir"
 has_cmd unrar && HAS_UNRAR=1
 has_cmd cksfv && HAS_CKSFV=1
 
-# Waiting on http://trac.transmissionbt.com/ticket/1869
-default_ratio_limit=$(
-    remote --session-info | awk '/Default seed ratio limit:/{print $5}'
-)
-
 do=0
 for line in $(remote --torrent all --info); do
     val=${line##*: }
@@ -170,10 +165,14 @@ for line in $(remote --torrent all --info); do
         '  State: '?*)           state=$val         ;;
         '  Location: '?*)        dir=$val           ;;
         '  Percent Done: '?*)    percent=$val       ;;
-        '  Ratio: '?*)           ratio=$val         ;;
-        '  Ratio Limit: '?*)     ratio_limit=$val   ;;
         '  Date finished: '?*)   finished=$val      ;;
         '  Date started: '?*)    started=$val       ;;
+        '  Tracker #'*': *openbittorrent.com'*)
+                                 override_private=1 ;;
+        '  Tracker #'*': tracker.publicbt.'*)
+                                 override_private=1 ;;
+        '  Tracker #'*': tracker.prq.to'*)
+                                 override_private=1 ;;
         '  Tracker #'*': www.h33t.com'*)
                                  override_private=1 ;;
         '  Tracker #'*': inferno.demonoid.com'*)
@@ -238,11 +237,8 @@ for line in $(remote --torrent all --info); do
             done
         fi
 
-        [ Default = "$ratio_limit" ] && ratio_limit=$default_ratio_limit
-        if ([ Idle = "$state" ] && is_expired "$started" "$finished") ||
-           ([ Stopped = "$state" ] && [ Unlimited != "$ratio_limit" ] &&
-            [ ${ratio%.*} -ge ${ratio_limit%.*} ] &&
-            [ ${ratio#*.} -ge ${ratio_limit#*.} ])
+        if [ Finished = "$state" ] ||
+           ([ Idle = "$state" ] && is_expired "$started" "$finished")
         then
             remote --torrent "$hash" --remove >/dev/null
             [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
