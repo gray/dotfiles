@@ -167,7 +167,7 @@ for line in $(remote --torrent all --info); do
         '  Percent Done: '?*)    percent=$val       ;;
         '  Date finished: '?*)   finished=$val      ;;
         '  Date started: '?*)    started=$val       ;;
-        '  Tracker #'*': *openbittorrent.com'*)
+        '  Tracker #'*': '*'openbittorrent.com'*)
                                  override_private=1 ;;
         '  Tracker #'*': tracker.publicbt.'*)
                                  override_private=1 ;;
