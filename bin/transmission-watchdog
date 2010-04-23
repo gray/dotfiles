@@ -173,7 +173,7 @@ for line in $(remote --torrent all --info); do
                                  override_private=1 ;;
         '  Tracker #'*': tracker.prq.to'*)
                                  override_private=1 ;;
-        '  Tracker #'*': www.h33t.com'*)
+        '  Tracker #'*': '*'h33t.com'*)
                                  override_private=1 ;;
         '  Tracker #'*': inferno.demonoid.com'*)
                                  override_private=1 ;;
