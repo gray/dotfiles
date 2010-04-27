@@ -37,9 +37,11 @@ presets:
           path: ~/Media/TV/Talk Shows/%(series_name)s/.
     include:
       - private/series.yml
-    # Grab the first episode of any new program.
-    # TODO: use thetvdb or tvrage to avoid downloading duplicates, old
-    #   shows, and shows with unwanted genres, etc.
+
+  # Grab the first episode of any new program.
+  # TODO: use thetvdb or tvrage to avoid downloading duplicates, old
+  #   shows, and shows with unwanted genres, etc.
+  tv-new:
     regexp:
       accept:
         - '[\W_]+(?:s0?1[\W_]*ep?0?1|0?1x0?1)(?!\d)':
@@ -51,21 +53,25 @@ presets:
         - '[\W_]+x264'
         - '[\W_]+(?:72|108)0p'
         - '[\W_]+nuked'
-    include:
-      - private/email.yml
+    # TODO: expand the folder in the finder
     exec: |
-      echo %(title)s | growlnotify -a Transmission -t 'Torrent downloaded'
+      echo %(title)s | growlnotify -a Transmission -t 'Torrent downloaded' &&
+      transmission-watchdog &&
+      find ~/Media/TV -maxdepth 2 -type f -name '.DS_Store' -delete &&
+      find ~/Media/TV -maxdepth 1 -type d -empty -exec rmdir \{\} \\;
 
 feeds:
   xtremespeeds_tv:
+    priority: 1
     interval: 5 minutes
     include:
       - private/xtremespeeds_tv-rss.yml
-    # allow_invalid: yes
     preset:
       - torrent
       - tv
+      - tv-new
   torrentvault_tv:
+    priority: 2
     interval: 5 minutes
     include:
       - private/torrentvault_tv-rss.yml
@@ -73,6 +79,7 @@ feeds:
       - torrent
       - tv
   eztv:
+    priority: 3
     interval: 10 minutes
     rss: http://ezrss.it/feed/
     preset:
@@ -82,6 +89,14 @@ feeds:
       - hexagon\.cc
       - '\.onion:'
       - tor2web\.com
+  supertorrents_tv:
+    priority: 4
+    interval: 10 minutes
+    include:
+      - private/supertorrents_tv-rss.yml
+    preset:
+      - torrent
+      - tv
   thebox:
     interval: 15 minutes
     rss: http://thebox.bz/rssdd.xml
@@ -110,11 +125,11 @@ feeds:
     html:
       url: http://www.davestrailerpage.co.uk/
       title_from: link
-    limit_new: 1
     regexp:
       accept:
         - '^(?:hd 480p|trailer(?: |$))':
             from: title
+    extension: mov
     # Some of the links are to apple.com
     headers:
       User-Agent: QuickTime/7.6.2
