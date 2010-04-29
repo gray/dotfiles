@@ -78,18 +78,14 @@ remote () {
 for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
     dir=${file%/*}
 
-    # This sets the global directory; it must be reset later.
-    remote --download-dir "$dir" >/dev/null
-
     # Successfully adding a torrent prints no useful information, so parse
     # the debug output. Use the torrent hash because the ids are not
     # persistent across sessions.
     hash=$(
-        remote --debug --add "$file" 2>&1 |
+        remote --debug --add "$file" --download-dir "$dir" 2>&1 |
         awk -F'"' '/^{"arguments":{"torrent-added":/{print$8;exit}'
     )
 
-    remote --download-dir "$WATCH_DIR" >/dev/null
     rm -f "$file"
 
     [ -n "$hash" ] || continue
@@ -187,7 +183,7 @@ for line in $(remote --torrent all --info); do
     if ([ Yes = "$public" ] || [ 1 = "$override_private" ]) &&
         [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
     then
-        remote --torrent "$hash" --torrent-uplimit "$PUBLIC_UP_RATE" \
+        remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
         [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
     fi
