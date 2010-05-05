@@ -245,7 +245,8 @@ for line in $(remote --torrent all --info); do
                         -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
                         -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
                         -name '*.nfo' -o -name '.DS_Store' -o          \
-                        -name '*.part' -o -name '.*.unrarred' \)       \
+                        -name '*.part' -o -name '.*.unrarred' -o       \
+                        -name 'www.TorrentDay.com.txt' \)              \
                         -exec rm -f {} \; 2>/dev/null
                     ! find "$dir/$name/"[Ss]ample -type f -exec rm -f {} \; \
                         2>/dev/null
