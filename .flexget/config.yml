@@ -144,22 +144,3 @@ feeds:
       User-Agent: QuickTime/7.6.2
     set:
       path: ~/Media/Movies/Trailers/.
-
-  ted_talks:
-    interval: 3 hours
-    limit_new: 1
-    rss: http://feeds.feedburner.com/tedtalks_video
-    accept_all: yes
-    set:
-      path: ~/Media/Talks/.
-    exec: |
-      # Extract the audio stream from the video.
-      ffmpeg -y -vn -acodec copy -ss 13 -i %(output)s -map_meta_data
-        %(output)s:%(output)s.m4a %(output)s.m4a >/dev/null 2>&1 &&
-      # Change the file extension so it is recognized as an audiobook.
-      mv -f %(output)s.m4a %(output)s.m4b &&
-      # Add the new audio file to iTunes.
-      osascript -e '
-        tell application "iTunes" to add posix file "%(output)s.m4b"
-      ' >/dev/null 2>&1 &&
-      rm -f %(output)s %(output)s.m4b
