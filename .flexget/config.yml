@@ -2,6 +2,8 @@
 presets:
   global:
     download: ~/Downloads/.
+    rss:
+      silent: yes
 
   movies:
     interval: 2 hours
@@ -98,7 +100,8 @@ feeds:
   eztv:
     priority: 5
     interval: 10 minutes
-    rss: http://ezrss.it/feed/
+    rss:
+      url: http://ezrss.it/feed/
     preset:
       - torrent
       - tv
@@ -108,7 +111,8 @@ feeds:
       - tor2web\.com
   thebox:
     interval: 15 minutes
-    rss: http://thebox.bz/rssdd.xml
+    rss:
+      url: http://thebox.bz/rssdd.xml
     include:
       - private/thebox-headers.yml
     preset:
