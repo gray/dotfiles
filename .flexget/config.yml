@@ -31,6 +31,7 @@ presets:
       settings:
         tv:
           path: ~/Media/TV/%(series_name)s/.
+          propers: 3 hours
         documentaries:
           path: ~/Media/Documentaries/%(series_name)s/.
         talk_shows:
@@ -56,16 +57,14 @@ presets:
     # TODO: expand the folder in the finder
     exec: |
       echo %(title)s | growlnotify -a Transmission -t 'Torrent downloaded' &&
-      transmission-watchdog &&
-      find ~/Media/TV -maxdepth 2 -type f -name '.DS_Store' -delete &&
-      find ~/Media/TV -maxdepth 1 -type d -empty -exec rmdir \{\} \\;
+      transmission-watchdog
 
 feeds:
-  xtremespeeds_tv:
+  supertorrents_tv:
     priority: 1
     interval: 5 minutes
     include:
-      - private/xtremespeeds_tv-rss.yml
+      - private/supertorrents_tv-rss.yml
     preset:
       - torrent
       - tv
@@ -78,8 +77,26 @@ feeds:
     preset:
       - torrent
       - tv
-  eztv:
+      - tv-new
+  torrentday_tv:
     priority: 3
+    interval: 5 minutes
+    include:
+      - private/torrentday_tv-rss.yml
+    preset:
+      - torrent
+      - tv
+  xtremespeeds_tv:
+    priority: 4
+    interval: 5 minutes
+    include:
+      - private/xtremespeeds_tv-rss.yml
+    preset:
+      - torrent
+      - tv
+      - tv-new
+  eztv:
+    priority: 5
     interval: 10 minutes
     rss: http://ezrss.it/feed/
     preset:
@@ -89,14 +106,6 @@ feeds:
       - hexagon\.cc
       - '\.onion:'
       - tor2web\.com
-  supertorrents_tv:
-    priority: 4
-    interval: 10 minutes
-    include:
-      - private/supertorrents_tv-rss.yml
-    preset:
-      - torrent
-      - tv
   thebox:
     interval: 15 minutes
     rss: http://thebox.bz/rssdd.xml
@@ -107,7 +116,7 @@ feeds:
       - tv
     regexp:
       reject_excluding:
-        - 2010\b.*xvid\b.*(?:drama|mystery)
+        - 201\d\).*\(XviD\).*\((?:Drama|Mystery|Gardening)
       reject:
         # This feed uses a different episode numbering for this series.
         - ^[\W_]*midsomer[\W_]+murders
