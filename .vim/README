@@ -39,6 +39,8 @@ zoomwin:
 
 installed syntaxes:
 
+asciidoc:
+    http://asciidoc.googlecode.com/hg/vim/syntax/asciidoc.vim
 csv:
     http://vim.wikia.com/wiki/Working_with_CSV_files
 go:
