@@ -435,7 +435,6 @@ if has("autocmd")
 
     autocmd BufRead .vimrc setlocal foldmethod=marker
     autocmd BufNewFile,BufRead *.t compiler perlprove
-    autocmd BufRead quickfix setlocal nobuflisted wrap number
 
     " Custom filetype mapping is defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
@@ -449,12 +448,16 @@ if has("autocmd")
     autocmd FileType make setlocal noexpandtab nolist
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
+    autocmd BufRead quickfix setlocal nobuflisted wrap number
     autocmd FileType svn setlocal nobackup spell wrap
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml
         \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
         \ setlocal matchpairs+=<:>
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
+
+    autocmd BufReadPre *.pdf set readonly
+    autocmd BufReadPost *.pdf silent %!pdftotext -q -nopgbrk "%" - | fmt -sw78
 
     autocmd BufWinEnter *
         \ if &filetype == 'perl' |
