@@ -13,6 +13,7 @@
 #   - removes RAR archives after torrent has been removed
 #
 # TODO:
+#   - remove certain trackers (when support for this is added to remote)
 #   - use getopts to accept command-line options
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
@@ -21,7 +22,7 @@ VERBOSE=1
 LOCK=/tmp/transmission-watchdog.lock
 NETRC=~/.netrc
 WATCH_DIR=~/Media/.
-IDLE_EXPIRED_HOURS=24
+IDLE_EXPIRED_HOURS=72
 PUBLIC_UP_RATE=2
 PUBLIC_RATIO=0
 
@@ -88,7 +89,10 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
 
     rm -f "$file"
 
-    [ -n "$hash" ] || continue
+    if [ -z "$hash" ]; then
+        warn "Failed to add torrent: $file"
+        continue
+    fi
 
     [ 1 = "$VERBOSE" ] && printf "Added torrent ${hash}: ${file##*/}\n"
 
@@ -131,7 +135,7 @@ is_expired () {
     epoch "$1"; _started=$_epoch
     epoch "$2"; _finished=$_epoch
 
-    # The start date resets when a torrent is restarted (pause/start or
+    # The start date resets when a torrent is restarted (pause+start or
     # transmission itself restarts).
     if [ "$_started" -gt "$_finished" ]; then
         [ $(($now - $_finished)) -gt "$expired" ] && return 0
@@ -163,13 +167,13 @@ for line in $(remote --torrent all --info); do
         '  Percent Done: '?*)    percent=$val       ;;
         '  Date finished: '?*)   finished=$val      ;;
         '  Date started: '?*)    started=$val       ;;
-        '  Tracker #'*': '*'openbittorrent.com'*)
-                                 override_private=1 ;;
         '  Tracker #'*': tracker.publicbt.'*)
                                  override_private=1 ;;
         '  Tracker #'*': tracker.prq.to'*)
                                  override_private=1 ;;
         '  Tracker #'*': '*'h33t.com'*)
+                                 override_private=1 ;;
+        '  Tracker #'*': '*'mvgroup.org'*)
                                  override_private=1 ;;
         '  Tracker #'*': inferno.demonoid.com'*)
                                  override_private=1 ;;
@@ -234,7 +238,7 @@ for line in $(remote --torrent all --info); do
         fi
 
         if [ Finished = "$state" ] ||
-           ([ Idle = "$state" ] && is_expired "$started" "$finished")
+           ([ Idle = "$state" ] && is_expired "$started" "${finished:-}")
         then
             remote --torrent "$hash" --remove >/dev/null
             [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
