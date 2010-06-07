@@ -79,18 +79,27 @@ remote () {
 for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
     dir=${file%/*}
 
-    # Successfully adding a torrent prints no useful information, so parse
-    # the debug output. Use the torrent hash because the ids are not
-    # persistent across sessions.
-    hash=$(
-        remote --debug --add "$file" --download-dir "$dir" 2>&1 |
-        awk -F'"' '/^{"arguments":{"torrent-added":/{print$8;exit}'
+    # Parse the debug output.
+    # Use the torrent hash because the ids are not persistent across sessions.
+    response=$(
+        remote --debug --add "$file" --download-dir "$dir" 2>&1 | \
+        awk '/^{"arguments":{.*?"result":/ {x=$0}; END{print x}'
     )
 
     rm -f "$file"
 
+    if echo $response | grep '"result":"duplicate torrent"' >/dev/null 2>&1
+    then
+        warn "Skipping already added torrent: $file\n"
+        continue
+    fi
+
+    hash=$(
+        echo $response | \
+        awk -F'"' '/^{"arguments":{"torrent-added":/{print$8;exit}'
+    )
     if [ -z "$hash" ]; then
-        warn "Failed to add torrent: $file"
+        warn "Failed to add torrent: $file\n"
         continue
     fi
 
@@ -190,6 +199,7 @@ for line in $(remote --torrent all --info); do
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
         [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
+        [ '100%' = "$percent" ] && state=Finished
     fi
 
     do=; last_dir=; unrarred_lock=
@@ -252,10 +262,8 @@ for line in $(remote --torrent all --info); do
                         -name '*.part' -o -name '.*.unrarred' -o       \
                         -name 'www.TorrentDay.com.txt' \)              \
                         -exec rm -f {} \; 2>/dev/null
-                    ! find "$dir/$name/"[Ss]ample -type f -exec rm -f {} \; \
-                        2>/dev/null
-                    ! find "$dir/$name" -type d -depth -exec rmdir {} \; \
-                        2>/dev/null
+                    ! find "$dir/$name/" -type d -depth                \
+                        -name [Ss]ample -exec rm -rf {} \; 2>/dev/null
                 elif [ -f "$dir/$name" ]; then
                     [ rar = "${file##*.}" ] && rm -f "$dir/$name"
                     rm -f "$unrarred_lock"
