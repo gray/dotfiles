@@ -2,8 +2,6 @@
 presets:
   global:
     download: ~/Downloads/.
-    rss:
-      silent: yes
 
   movies:
     interval: 2 hours
@@ -17,7 +15,7 @@ presets:
     seen_movies: strict
     imdb:
       min_score: 6.2
-      min_votes: 200
+      min_votes: 100
       min_year: 2006
       reject_genres:
         - music
@@ -28,7 +26,7 @@ presets:
   tv:
     content_size:
       min: 150
-      max: 800
+      max: 1500
     series:
       settings:
         tv:
@@ -47,7 +45,7 @@ presets:
   tv-new:
     regexp:
       accept:
-        - '[\W_]+(?:s0?1[\W_]*ep?0?1|0?1x0?1)(?!\d)':
+        - '[\W_]+(?:s0?1[\W_]*ep?0?1|0?1x0?1)[\W_]+':
             path: ~/Media/TV/_NEW_/.
 
   torrent:
@@ -58,24 +56,30 @@ presets:
         - '[\W_]+nuked'
     # TODO: expand the folder in the finder
     exec: |
-      echo %(title)s | growlnotify -a Transmission -t 'Torrent downloaded' &&
-      transmission-watchdog
+      echo %(title)s | growlnotify -t \'FlexGet: torrent downloaded\' &&
+      # This is also run from cron every few minutes.
+      transmission-watchdog 2>&1 | tee -a /tmp/transmission-watchdog.log |
+        # Need to verify some input is present because growlnotify is happy
+        # displaying empty messages.
+        while read -r l;
+          do growlnotify -t \'transmission-watchdog via flexget\' -m \"$l\";
+        done
 
 feeds:
-  supertorrents_tv:
+  torrentvault_tv:
     priority: 1
     interval: 5 minutes
     include:
-      - private/supertorrents_tv-rss.yml
+      - private/torrentvault_tv-rss.yml
     preset:
       - torrent
       - tv
       - tv-new
-  torrentvault_tv:
+  supertorrents_tv:
     priority: 2
     interval: 5 minutes
     include:
-      - private/torrentvault_tv-rss.yml
+      - private/supertorrents_tv-rss.yml
     preset:
       - torrent
       - tv
@@ -88,20 +92,12 @@ feeds:
     preset:
       - torrent
       - tv
-  xtremespeeds_tv:
-    priority: 4
-    interval: 5 minutes
-    include:
-      - private/xtremespeeds_tv-rss.yml
-    preset:
-      - torrent
-      - tv
-      - tv-new
   eztv:
-    priority: 5
+    priority: 4
     interval: 10 minutes
     rss:
       url: http://ezrss.it/feed/
+      silent: yes
     preset:
       - torrent
       - tv
@@ -110,9 +106,11 @@ feeds:
       - '\.onion:'
       - tor2web\.com
   thebox:
+    priority: 5
     interval: 15 minutes
     rss:
       url: http://thebox.bz/rssdd.xml
+      silent: yes
     include:
       - private/thebox-headers.yml
     preset:
@@ -120,15 +118,28 @@ feeds:
       - tv
     regexp:
       reject_excluding:
-        - 201\d\).*\(XviD\).*\((?:Drama|Mystery|Gardening)
+        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Drama|Mystery)
       reject:
         # This feed uses a different episode numbering for this series.
         - ^[\W_]*midsomer[\W_]+murders
 
+  supertorrents_movies:
+    interval: 15 minutes
+    include:
+      - private/supertorrents_movies-rss.yml
+    preset:
+      - torrent
+      - movies
   xtremespeeds_movies:
     interval: 15 minutes
     include:
       - private/xtremespeeds_movies-rss.yml
+    preset:
+      - torrent
+      - movies
+  rlslog:
+    interval: 30 minutes
+    rlslog: http://www.rlslog.net/category/movies/dvdrip/
     preset:
       - torrent
       - movies
