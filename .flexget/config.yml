@@ -55,15 +55,18 @@ presets:
         - '[\W_]+(?:72|108)0p'
         - '[\W_]+nuked'
     # TODO: expand the folder in the finder
-    exec: |
-      echo %(title)s | growlnotify -t \'FlexGet: torrent downloaded\' &&
-      # This is also run from cron every few minutes.
-      transmission-watchdog 2>&1 | tee -a /tmp/transmission-watchdog.log |
-        # Need to verify some input is present because growlnotify is happy
-        # displaying empty messages.
-        while read -r l;
-          do growlnotify -t \'transmission-watchdog via flexget\' -m \"$l\";
-        done
+    adv_exec:
+      on_output:
+        for_accepted: |
+          echo %(title)s | growlnotify -t \'FlexGet: torrent downloaded\'
+        event: |
+          # This is also run from cron every few minutes.
+          transmission-watchdog 2>&1 | tee -a /tmp/transmission-watchdog.log |
+            # Need to verify some input is present because growlnotify is happy
+            # displaying empty messages.
+            while read -r l;
+              do growlnotify -t 'transmission-watchdog via flexget' -m "$l";
+            done
 
 feeds:
   torrentvault_tv:
@@ -118,7 +121,7 @@ feeds:
       - tv
     regexp:
       reject_excluding:
-        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Drama|Mystery)
+        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Documentary|Drama|Mystery)
       reject:
         # This feed uses a different episode numbering for this series.
         - ^[\W_]*midsomer[\W_]+murders
