@@ -103,11 +103,11 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
         continue
     fi
 
-    [ 1 = "$VERBOSE" ] && printf "Added torrent ${hash}: ${file##*/}\n"
+    [ 1 = "$VERBOSE" ] && printf "Added torrent ${file##*/}: ${hash}\n"
 
     ids=$(
         remote --torrent "$hash" --files | \
-        sed -n 's/^ *\([0-9]\{1,\}\):.*\/Sample\/.*/\1/p' | \
+        sed -n 's/^ *\([0-9]\{1,\}\):.*\/[Ss][Aa][Mm][Pp][Ll][Ee]\/.*/\1/p' | \
         paste -d ',' -s -
     )
     [ -n "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
@@ -169,31 +169,33 @@ for line in $(remote --torrent all --info); do
     val=${line##*: }
     case "$line" in
         '  Hash: '?*)            hash=$val
-                                 override_private=0 ;;
-        '  Name: '?*)            name=$val          ;;
-        '  State: '?*)           state=$val         ;;
-        '  Location: '?*)        dir=$val           ;;
-        '  Percent Done: '?*)    percent=$val       ;;
-        '  Date finished: '?*)   finished=$val      ;;
-        '  Date started: '?*)    started=$val       ;;
+                                 force_public=0 ;;
+        '  Name: '?*)            name=$val      ;;
+        '  State: '?*)           state=$val     ;;
+        '  Location: '?*)        dir=$val       ;;
+        '  Percent Done: '?*)    percent=$val   ;;
+        '  Date finished: '?*)   finished=$val  ;;
+        '  Date started: '?*)    started=$val   ;;
+        '  Tracker #'*': tracker.openbittorrent.com'*)
+                                 force_public=1 ;;
         '  Tracker #'*': tracker.publicbt.'*)
-                                 override_private=1 ;;
+                                 force_public=1 ;;
         '  Tracker #'*': tracker.prq.to'*)
-                                 override_private=1 ;;
+                                 force_public=1 ;;
         '  Tracker #'*': '*'h33t.com'*)
-                                 override_private=1 ;;
+                                 force_public=1 ;;
         '  Tracker #'*': '*'mvgroup.org'*)
-                                 override_private=1 ;;
+                                 force_public=1 ;;
         '  Tracker #'*': inferno.demonoid.com'*)
-                                 override_private=1 ;;
-        '  Public torrent: '?*)  public=$val        ;;
+                                 force_public=1 ;;
+        '  Public torrent: '?*)  public=$val    ;;
         '  Upload Limit: '?*)    up_rate=$val
-                                 do=1               ;;
+                                 do=1           ;;
     esac
 
     [ 1 != "$do" ] && continue
 
-    if ([ Yes = "$public" ] || [ 1 = "$override_private" ]) &&
+    if ([ Yes = "$public" ] || [ 1 = "$force_public" ]) &&
         [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
     then
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
@@ -258,12 +260,13 @@ for line in $(remote --torrent all --info); do
                     ! find "$dir/$name" -type f \( -name '*.rar' -o    \
                         -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
                         -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
-                        -name '*.nfo' -o -name '.DS_Store' -o          \
+                        -name '*.[Nn][Ff][Oo]' -o -name '.DS_Store' -o \
                         -name '*.part' -o -name '.*.unrarred' -o       \
                         -name 'www.TorrentDay.com.txt' \)              \
                         -exec rm -f {} \; 2>/dev/null
                     ! find "$dir/$name/" -type d -depth                \
-                        -name [Ss]ample -exec rm -rf {} \; 2>/dev/null
+                        -name [Ss][Aa][Mm][Pp][Ll][Ee]                 \
+                        -exec rm -rf {} \; 2>/dev/null
                 elif [ -f "$dir/$name" ]; then
                     [ rar = "${file##*.}" ] && rm -f "$dir/$name"
                     rm -f "$unrarred_lock"
