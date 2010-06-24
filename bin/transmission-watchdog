@@ -76,7 +76,7 @@ remote () {
 }
 
 # Add any new torrent files to transmission.
-for file in $(find "$WATCH_DIR" -type f -name '*.torrent'); do
+for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
     dir=${file%/*}
 
     # Parse the debug output.
@@ -195,8 +195,12 @@ for line in $(remote --torrent all --info); do
 
     [ 1 != "$do" ] && continue
 
+    case "$state" in
+        Verifying*) continue ;;
+    esac
+
     if ([ Yes = "$public" ] || [ 1 = "$force_public" ]) &&
-        [ "$PUBLIC_UP_RATE" != "${up_rate%% *}" ]
+        [ "$PUBLIC_UP_RATE" != "${up_rate%%[. ]*}" ]
     then
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
@@ -267,6 +271,8 @@ for line in $(remote --torrent all --info); do
                     ! find "$dir/$name/" -type d -depth                \
                         -name [Ss][Aa][Mm][Pp][Ll][Ee]                 \
                         -exec rm -rf {} \; 2>/dev/null
+                    ! find "$dir/$name" -type d -depth                 \
+                        -exec rmdir {} \; 2>/dev/null
                 elif [ -f "$dir/$name" ]; then
                     [ rar = "${file##*.}" ] && rm -f "$dir/$name"
                     rm -f "$unrarred_lock"
