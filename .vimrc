@@ -453,7 +453,7 @@ if has("autocmd")
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml
         \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
-        \ setlocal matchpairs+=<:>
+        \     matchpairs+=<:>
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd BufReadPre *.pdf set readonly
