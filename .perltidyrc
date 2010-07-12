@@ -5,3 +5,4 @@
 --opening-token-right
 --stack-opening-tokens
 --stack-closing-tokens
+--nohanging-side-comments
