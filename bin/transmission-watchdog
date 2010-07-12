@@ -86,21 +86,21 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
         awk '/^{"arguments":{.*?"result":/ {x=$0}; END{print x}'
     )
 
-    rm -f "$file"
-
-    if echo $response | grep '"result":"duplicate torrent"' >/dev/null 2>&1
-    then
-        warn "Skipping already added torrent: $file\n"
-        continue
-    fi
-
     hash=$(
         echo $response | \
         awk -F'"' '/^{"arguments":{"torrent-added":/{print$8;exit}'
     )
     if [ -z "$hash" ]; then
         warn "Failed to add torrent: $file\n"
+        mv -f "$file" "$file.failed"
         continue
+    elif echo $response | grep '"result":"duplicate torrent"' >/dev/null 2>&1
+    then
+        warn "Skipping already added torrent: $file\n"
+        rm -f "$file"
+        continue
+    else
+        rm -f "$file"
     fi
 
     [ 1 = "$VERBOSE" ] && printf "Added torrent ${file##*/}: ${hash}\n"
@@ -266,7 +266,8 @@ for line in $(remote --torrent all --info); do
                         -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
                         -name '*.[Nn][Ff][Oo]' -o -name '.DS_Store' -o \
                         -name '*.part' -o -name '.*.unrarred' -o       \
-                        -name 'www.TorrentDay.com.txt' \)              \
+                        -name 'www.TorrentDay.com.txt' -o              \
+                        -name '.message' \)                            \
                         -exec rm -f {} \; 2>/dev/null
                     ! find "$dir/$name/" -type d -depth                \
                         -name [Ss][Aa][Mm][Pp][Ll][Ee]                 \
