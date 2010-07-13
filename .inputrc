@@ -6,64 +6,63 @@ $include /etc/inputrc
 set bell-style none
 
 # Allow the command prompt to wrap to the next line
-set horizontal-scroll-mode Off
+set horizontal-scroll-mode off
 
 # Ignore case when doing completion
-set completion-ignore-case On
+set completion-ignore-case on
 
 # Enable one-tab completion
-set show-all-if-ambiguous On
+set show-all-if-ambiguous on
 
 # Completed dir names have a slash appended
-set mark-directories On
+set mark-directories on
 
 # Completed names which are symlinks to dirs have a slash appended
-set mark-symlinked-directories On
+set mark-symlinked-directories on
 
 # Don't match hidden files unless '.' is the first character.
-set match-hidden-files Off
+set match-hidden-files off
 
-set page-completions Off
+set page-completions off
 set completion-query-items 350
-set expand-tilde On
+set expand-tilde on
 
 # Adds trailing symbols like `ls -F`
-set visible-stats On
+set visible-stats on
 
 # Don't strip characters to 7 bits when reading
-set input-meta On
+set input-meta on
 
 # Allow latin1 characters to be inserted rather than converted to
 # prefix-meta sequences
-set convert-meta Off
+set convert-meta off
 
 # Display characters with the eighth bit set directly rather than as
 # meta-prefixed characters
-set output-meta On
+set output-meta on
 
-# Incremental searching with Up and Down
-"\e[A": history-search-backward
-"\e[B": history-search-forward
-# Prevent the previous from breaking Left and Right
-"\e[C": forward-char
-"\e[D": backward-char
+set blink-matching-paren on
 
-# Edit the path
-"\C-xp": "PATH=${PATH}\e\C-e\C-a\ef\C-f"
+set editing-mode vi
 
-# Prepare to type a quoted word -- insert open and close double quotes.
-"\C-x\"": "\"\"\C-b"
+$if mode=vi
+    set keymap vi-command
 
-# Insert a backslash (testing backslash escapes in sequences and macros)
-"\C-x\\": "\\"
+    # Incremental searching with Up and Down
+    "\e[A": history-search-backward
+    "\e[B": history-search-forward
 
-# Quote the current or previous word
-"\C-xq": "\eb\"\ef\""
+    set keymap vi-insert
 
-# Add a binding to refresh the line, which is unbound
-"\C-xr": redraw-current-line
+    "\C-l": clear-screen
 
-# Edit variable on current line.
-"\C-xe": "\C-a\C-k$\C-y\M-\C-e\C-a\C-y="
+    # Incremental searching with Up and Down
+    "\e[A": history-search-backward
+    "\e[B": history-search-forward
+$else
+    # Bash mode
 
-set blink-matching-paren On
+    # Incremental searching with Up and Down
+    "\e[A": history-search-backward
+    "\e[B": history-search-forward
+$endif
