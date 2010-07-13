@@ -22,7 +22,7 @@ VERBOSE=1
 LOCK=/tmp/transmission-watchdog.lock
 NETRC=~/.netrc
 WATCH_DIR=~/Media/.
-IDLE_EXPIRED_HOURS=72
+IDLE_EXPIRED_HOURS=48
 PUBLIC_UP_RATE=2
 PUBLIC_RATIO=0
 
@@ -110,7 +110,7 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
         sed -n 's/^ *\([0-9]\{1,\}\):.*\/[Ss][Aa][Mm][Pp][Ll][Ee]\/.*/\1/p' | \
         paste -d ',' -s -
     )
-    [ -n "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
+    [ "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
 done
 
 epoch () {
@@ -161,8 +161,8 @@ real_dir () {
 
 real_dir "$WATCH_DIR" && WATCH_DIR="$_real_dir"
 
-has_cmd unrar && HAS_UNRAR=1
-has_cmd cksfv && HAS_CKSFV=1
+has_cmd unrar && HAS_UNRAR=1 || HAS_UNRAR=0
+has_cmd cksfv && HAS_CKSFV=1 || HAS_CKSFV=0
 
 do=0
 for line in $(remote --torrent all --info); do
@@ -259,7 +259,7 @@ for line in $(remote --torrent all --info); do
             remote --torrent "$hash" --remove >/dev/null
             [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
 
-            if [ -n "$unrarred_lock" ]; then
+            if [ "$unrarred_lock" ]; then
                 if [ -d "$dir/$name" ]; then
                     ! find "$dir/$name" -type f \( -name '*.rar' -o    \
                         -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
