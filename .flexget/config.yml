@@ -34,19 +34,27 @@ presets:
           propers: 3 hours
         documentaries:
           path: ~/Media/Documentaries/%(series_name)s/.
+          propers: 3 hours
         talk_shows:
           path: ~/Media/TV/Talk Shows/%(series_name)s/.
+          propers: 3 hours
     include:
       - private/series.yml
 
   # Grab the first episode of any new program.
-  # TODO: use thetvdb or tvrage to avoid downloading duplicates, old
-  #   shows, and shows with unwanted genres, etc.
   tv-new:
     regexp:
       accept:
-        - '[\W_]+(?:s0?1[\W_]*ep?0?1|0?1x0?1)[\W_]+':
+        - '[\W_]+(?:s0?1[\W_]*e0[01]|0?1x0?[01])[\W_]+':
             path: ~/Media/TV/_NEW_/.
+    # TODO: use the tvrage api to avoid downloading duplicates, old shows,
+    # and shows with unwanted genres, etc.
+    # tvrage:
+      # accept_status:
+      #   - new series
+      # reject_classification:
+        # - reality
+        # - game show
 
   torrent:
     regexp:
@@ -142,7 +150,7 @@ feeds:
       - movies
   rlslog:
     interval: 30 minutes
-    rlslog: http://www.rlslog.net/category/movies/dvdrip/
+    rlslog: http://www.rlslog.net/category/movies/
     preset:
       - torrent
       - movies
