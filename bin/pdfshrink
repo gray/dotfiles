@@ -4,6 +4,11 @@
 #   - remove empty pages
 #   - add options for image resolution, overwriting files, verbosity
 
+if ! command -v gs >/dev/null 2>&1; then
+    echo "Can't find ghostscript (gs)" >&2
+    exit 1
+fi
+
 for file in "$@"; do
     if [ pdf != "${file##*.}" ] || [ ! -s "$file" ]; then
         continue
@@ -11,21 +16,18 @@ for file in "$@"; do
 
     out="$file.shrunk"
 
-    if ! command -v gs >/dev/null 2>&1; then
-        echo "Can't find ghostscript (gs)" >&2
-        exit 1
-    fi
-
     gs -q -dNOPAUSE -dBATCH -dSAFER \
         -sDEVICE=pdfwrite           \
+        -dNumRenderingThreads=2     \
         -dCompatibilityLevel=1.3    \
         -dPDFSETTINGS=/ebook        \
         -dColorImageResolution=72   \
         -dGrayImageResolution=72    \
         -dMonoImageResolution=72    \
         -sOutputFile="$out"         \
-        -c .setpdfwrite -f          \
-        "$file" > /dev/null 2>&1
+        -c .setpdfwrite             \
+        -f "$file"                  \
+        >/dev/null 2>&1
     ret=$?
 
     [ -f "$out" ] || continue
