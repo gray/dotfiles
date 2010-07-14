@@ -420,8 +420,9 @@ if has("autocmd")
     autocmd CursorHold * nohlsearch | redraw
 
     " Set 'updatetime' to 15 seconds when in insert mode.
-    autocmd InsertEnter * let orig_updatetime=&updatetime| set updatetime=15000
-    autocmd InsertLeave * let &updatetime=orig_updatetime
+    autocmd InsertEnter * let b:orig_updatetime=&l:updatetime |
+        \ setlocal updatetime=15000
+    autocmd InsertLeave * let &l:updatetime=b:orig_updatetime
 
     " Turn off insert mode when idle.
     autocmd CursorHoldI * stopinsert
