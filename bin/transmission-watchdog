@@ -125,26 +125,13 @@ do=0
 for line in $(remote --torrent all --info); do
     val=${line##*: }
     case "$line" in
-        '  Hash: '?*)            hash=$val
-                                 force_public=0 ;;
+        '  Hash: '?*)            hash=$val      ;;
         '  Name: '?*)            name=$val      ;;
         '  State: '?*)           state=$val     ;;
         '  Location: '?*)        dir=$val       ;;
         '  Percent Done: '?*)    percent=$val   ;;
         '  Date finished: '?*)   finished=$val  ;;
         '  Date started: '?*)    started=$val   ;;
-        '  Tracker #'*': tracker.openbittorrent.com'*)
-                                 force_public=1 ;;
-        '  Tracker #'*': tracker.publicbt.'*)
-                                 force_public=1 ;;
-        '  Tracker #'*': tracker.prq.to'*)
-                                 force_public=1 ;;
-        '  Tracker #'*': '*'h33t.com'*)
-                                 force_public=1 ;;
-        '  Tracker #'*': '*'mvgroup.org'*)
-                                 force_public=1 ;;
-        '  Tracker #'*': inferno.demonoid.com'*)
-                                 force_public=1 ;;
         '  Public torrent: '?*)  public=$val    ;;
         '  Upload Limit: '?*)    up_rate=$val
                                  do=1           ;;
@@ -156,8 +143,7 @@ for line in $(remote --torrent all --info); do
         Verifying*) continue ;;
     esac
 
-    if ([ Yes = "$public" ] || [ 1 = "$force_public" ]) &&
-        [ "$PUBLIC_UP_RATE" != "${up_rate%%[. ]*}" ]
+    if [ Yes = "$public" ] && [ "$PUBLIC_UP_RATE" != "${up_rate%%[. ]*}" ]
     then
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
@@ -165,76 +151,76 @@ for line in $(remote --torrent all --info); do
         [ '100%' = "$percent" ] && state=Finished
     fi
 
+    [ '100%' != "$percent" ] && continue
+
     do=; last_dir=; unrarred_lock=
 
-    if [ '100%' = "$percent" ]; then
-        if [ 1 = "$HAS_UNRAR" ]; then
-            # Verify directory is valid and in expected location.
-            real_dir "$dir" >/dev/null 2>&1 && dir="$_real_dir"
-            case $dir in
-                $WATCH_DIR) ;; $WATCH_DIR/*) ;; *) continue ;;
-            esac
+    if [ 1 = "$HAS_UNRAR" ]; then
+        # Verify directory is valid and in expected location.
+        real_dir "$dir" >/dev/null 2>&1 && dir="$_real_dir"
+        case $dir in
+            $WATCH_DIR) ;; $WATCH_DIR/*) ;; *) continue ;;
+        esac
 
-            for file in $(find "$dir/$name" -type f -name '*.rar' 2>/dev/null)
-            do
-                rar_dir=${file%/*}
-                rar_file=${file##*/}
-                [ "$rar_dir" = "$last_dir" ] && continue
-                last_dir=$rar_dir
-                unrarred_lock=$rar_dir/.$rar_file.unrarred
-                [ -e "$unrarred_lock" ] && continue
+        for file in $(find "$dir/$name" -type f -name '*.rar' 2>/dev/null)
+        do
+            rar_dir=${file%/*}
+            rar_file=${file##*/}
+            [ "$rar_dir" = "$last_dir" ] && continue
+            last_dir=$rar_dir
+            unrarred_lock=$rar_dir/.$rar_file.unrarred
+            [ -e "$unrarred_lock" ] && continue
 
-                sfv_file=${rar_file%.*}.sfv
-                if [ 1 = "$HAS_CKSFV" ] && [ -e "$rar_dir/$sfv_file" ]; then
-                    if ! nice -n 15 cksfv -qg "$rar_dir/$sfv_file"; then
-                        touch "$unrarred_lock"
-                        if [ 1 = "$VERBOSE" ]; then
-                            warn "Invalid RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
-                        fi
-                        continue
+            sfv_file=${rar_file%.*}.sfv
+            if [ 1 = "$HAS_CKSFV" ] && [ -e "$rar_dir/$sfv_file" ]; then
+                if ! nice -n 15 cksfv -qg "$rar_dir/$sfv_file"; then
+                    touch "$unrarred_lock"
+                    if [ 1 = "$VERBOSE" ]; then
+                        warn "Invalid RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
                     fi
-                fi
-
-                touch "$unrarred_lock"
-
-                if ! nice -n 15 unrar x -inul -y -p- -o+ -r \
-                    "$rar_dir/$rar_file" "$rar_dir"
-                then
-                    warn "Unable to extract RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
                     continue
                 fi
-
-                if [ 1 = "$VERBOSE" ]; then
-                    printf "Unrarred %s/%s\n" "${rar_dir##$WATCH_DIR/}" "$rar_file"
-                fi
-            done
-        fi
-
-        if [ Finished = "$state" ]; then
-            remote --torrent "$hash" --remove >/dev/null
-            [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
-
-            if [ "$unrarred_lock" ]; then
-                if [ -d "$dir/$name" ]; then
-                    ! find "$dir/$name" -type f \( -name '*.rar' -o    \
-                        -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
-                        -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
-                        -name '*.[Nn][Ff][Oo]' -o -name '.DS_Store' -o \
-                        -name '*.part' -o -name '.*.unrarred' -o       \
-                        -name 'www.TorrentDay.com.txt' -o              \
-                        -name '.message' \)                            \
-                        -exec rm -f {} \; 2>/dev/null
-                    ! find "$dir/$name/" -type d -depth                \
-                        -name [Ss][Aa][Mm][Pp][Ll][Ee]                 \
-                        -exec rm -rf {} \; 2>/dev/null
-                    ! find "$dir/$name" -type d -depth                 \
-                        -exec rmdir {} \; 2>/dev/null
-                elif [ -f "$dir/$name" ]; then
-                    [ rar = "${file##*.}" ] && rm -f "$dir/$name"
-                    rm -f "$unrarred_lock"
-                fi
-                [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
             fi
+
+            touch "$unrarred_lock"
+
+            if ! nice -n 15 unrar x -inul -y -p- -o+ -r \
+                "$rar_dir/$rar_file" "$rar_dir"
+            then
+                warn "Unable to extract RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
+                continue
+            fi
+
+            if [ 1 = "$VERBOSE" ]; then
+                printf "Unrarred %s/%s\n" "${rar_dir##$WATCH_DIR/}" "$rar_file"
+            fi
+        done
+    fi
+
+    if [ Finished = "$state" ]; then
+        remote --torrent "$hash" --remove >/dev/null
+        [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
+
+        if [ "$unrarred_lock" ]; then
+            if [ -d "$dir/$name" ]; then
+                ! find "$dir/$name" -type f \( -name '*.rar' -o    \
+                    -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
+                    -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
+                    -name '*.[Nn][Ff][Oo]' -o -name '.DS_Store' -o \
+                    -name '*.part' -o -name '.*.unrarred' -o       \
+                    -name 'www.TorrentDay.com.txt' -o              \
+                    -name '.message' \)                            \
+                    -exec rm -f {} \; 2>/dev/null
+                ! find "$dir/$name/" -type d -depth                \
+                    -name [Ss][Aa][Mm][Pp][Ll][Ee]                 \
+                    -exec rm -rf {} \; 2>/dev/null
+                ! find "$dir/$name" -type d -depth                 \
+                    -exec rmdir {} \; 2>/dev/null
+            elif [ -f "$dir/$name" ]; then
+                [ rar = "${file##*.}" ] && rm -f "$dir/$name"
+                rm -f "$unrarred_lock"
+            fi
+            [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
         fi
     fi
 done
