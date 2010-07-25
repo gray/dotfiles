@@ -69,6 +69,7 @@ timeout () {
 }
 
 remote () {
+    # TODO: catch "Couldn't connect to server" error and exit
     # TODO: add retry and kill logic
     timeout 30 transmission-remote -N $NETRC "$@"
 }
@@ -109,6 +110,8 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
         paste -d ',' -s -
     )
     [ "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
+
+    # TODO: force public if the torrent is using large public trackers
 done
 
 real_dir () {
@@ -137,23 +140,26 @@ for line in $(remote --torrent all --info); do
                                  do=1           ;;
     esac
 
-    [ 1 != "$do" ] && continue
+    [ 1 != "$do" ] && continue || do=0
 
     case "$state" in
         Verifying*) continue ;;
     esac
 
+    # TODO: move this outside the loop to when torrents are first added.
     if [ Yes = "$public" ] && [ "$PUBLIC_UP_RATE" != "${up_rate%%[. ]*}" ]
     then
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
         [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
+        # The torrent might have already been downloaded before the above
+        # was ever performed.
         [ '100%' = "$percent" ] && state=Finished
     fi
 
     [ '100%' != "$percent" ] && continue
 
-    do=; last_dir=; unrarred_lock=
+    last_dir=; unrarred_lock=
 
     if [ 1 = "$HAS_UNRAR" ]; then
         # Verify directory is valid and in expected location.
