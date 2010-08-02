@@ -85,22 +85,22 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
         awk '/^{"arguments":{.*?"result":/ {x=$0}; END{print x}'
     )
 
-    hash=$(
-        echo $response | \
-        awk -F'"' '/^{"arguments":{"torrent-added":/{print$8;exit}'
-    )
-    if [ -z "$hash" ]; then
-        warn "Failed to add torrent: $file\n"
-        mv -f "$file" "$file.failed"
-        continue
-    elif echo $response | grep '"result":"duplicate torrent"' >/dev/null 2>&1
-    then
-        warn "Skipping already added torrent: $file\n"
-        rm -f "$file"
-        continue
-    else
-        rm -f "$file"
-    fi
+    case "$response" in
+        '{"arguments":{"torrent-added":{"hashString":'*)
+            hash=$( echo $response | awk -F'"' '{print $8}' )
+            rm -f "$file"
+            ;;
+        '{"arguments":{},"result":"duplicate torrent"'*)
+            warn "Skipping already added torrent: $file\n"
+            rm -f "$file"
+            continue
+            ;;
+        *)
+            warn "Failed to add torrent: $file\n"
+            mv -f "$file" "$file.failed"
+            continue
+            ;;
+    esac
 
     [ 1 = "$VERBOSE" ] && printf "Added torrent ${file##*/}: ${hash}\n"
 
