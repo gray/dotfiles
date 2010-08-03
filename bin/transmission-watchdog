@@ -87,7 +87,9 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
 
     case "$response" in
         '{"arguments":{"torrent-added":{"hashString":'*)
-            hash=$( echo $response | awk -F'"' '{print $8}' )
+            SAVED_IFS="$IFS"; IFS='"';
+            set -- $response; hash=$8;
+            IFS="$SAVED_IFS"
             rm -f "$file"
             ;;
         '{"arguments":{},"result":"duplicate torrent"'*)
