@@ -6,13 +6,13 @@
 #     torrent was located to be the completed directory for the data
 #   - deselects sample files
 #   - throttles public torrents
+#   - removes certain "bad" trackers from torrents
 #   - removes completed, stopped torrents
 #   - verifies RAR archives with cksfv
 #   - unrars RAR archives
 #   - removes RAR archives after torrent has been removed
 #
 # TODO:
-#   - remove certain trackers (when support for this is added to remote)
 #   - use getopts to accept command-line options
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
@@ -87,25 +87,30 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
 
     case "$response" in
         '{"arguments":{"torrent-added":{"hashString":'*)
-            SAVED_IFS="$IFS"; IFS='"';
+            SAVED_IFS=$IFS; IFS='"';
             set -- $response; hash=$8;
-            IFS="$SAVED_IFS"
-            rm -f "$file"
-            ;;
+            IFS=$SAVED_IFS
+            rm -f "$file" ;;
         '{"arguments":{},"result":"duplicate torrent"'*)
             warn "Skipping already added torrent: $file\n"
             rm -f "$file"
-            continue
-            ;;
+            continue ;;
         *)
             warn "Failed to add torrent: $file\n"
             mv -f "$file" "$file.failed"
-            continue
-            ;;
+            continue ;;
     esac
 
-    [ 1 = "$VERBOSE" ] && printf "Added torrent ${file##*/}: ${hash}\n"
+    for line in $(remote --torrent "$hash" --info); do
+        case "$line" in
+            '  Public torrent: '?*) public=${line#*: } ;;
+            '  Name: '?*)           name=${line#*: }   ;;
+        esac
+    done
 
+    [ 1 = "$VERBOSE" ] && printf "Added torrent: $name\n"
+
+    # Deselect sample files.
     ids=$(
         remote --torrent "$hash" --files | \
         sed -n 's/^ *\([0-9]\{1,\}\):.*\/[Ss][Aa][Mm][Pp][Ll][Ee]\/.*/\1/p' | \
@@ -113,51 +118,58 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
     )
     [ "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
 
-    # TODO: force public if the torrent is using large public trackers
+    for line in $(remote --torrent "$hash" --info-trackers); do
+        case "$line" in
+            '  Tracker #'*': tracker.openbittorrent.com'* | \
+            '  Tracker #'*': tracker.publicbt.'*          | \
+            '  Tracker #'*': '*'tracker.prq.to'*          | \
+            '  Tracker #'*': '*'h33t.com'*                | \
+            '  Tracker #'*': '*'mvgroup.org'*             | \
+            '  Tracker #'*': inferno.demonoid.com'*)
+                force_public=1 ;;
+            '  Tracker #'*': '*'thepiratebay.org'*        | \
+            '  Tracker #'*': '*'hexagon.cc'*              | \
+            '  Tracker #'*': '*'.onion'*                  | \
+            '  Tracker #'*': '*'.tor2web.com'*)
+                id=${line#*#}; id=${id%%:*}
+                remote --torrent "$hash" --tracker-remove "$id" >/dev/null ;;
+        esac
+    done
+
+    # Throttle public torrents.
+    if [ Yes = "$public" ] || [ 1 = "${force_public-0}" ]; then
+        remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
+            --seedratio "$PUBLIC_RATIO" >/dev/null
+        [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
+    fi
 done
 
 real_dir () {
-    real_dir=
+    _real_dir=
     cd -P -- "$1" && _real_dir="$(pwd -P)"
 }
 
-real_dir "$WATCH_DIR" && WATCH_DIR="$_real_dir"
+real_dir "$WATCH_DIR" && WATCH_DIR=$_real_dir
 
 has_cmd unrar && HAS_UNRAR=1 || HAS_UNRAR=0
 has_cmd cksfv && HAS_CKSFV=1 || HAS_CKSFV=0
 
-do=0
 for line in $(remote --torrent all --info); do
-    val=${line##*: }
+    val=${line#*: }
     case "$line" in
-        '  Hash: '?*)            hash=$val      ;;
-        '  Name: '?*)            name=$val      ;;
-        '  State: '?*)           state=$val     ;;
-        '  Location: '?*)        dir=$val       ;;
-        '  Percent Done: '?*)    percent=$val   ;;
-        '  Date finished: '?*)   finished=$val  ;;
-        '  Date started: '?*)    started=$val   ;;
-        '  Public torrent: '?*)  public=$val    ;;
-        '  Upload Limit: '?*)    up_rate=$val
-                                 do=1           ;;
+        '  Hash: '?*)         hash=$val    ;;
+        '  Name: '?*)         name=$val    ;;
+        '  State: '?*)        state=$val   ;;
+        '  Location: '?*)     dir=$val     ;;
+        '  Percent Done: '?*) percent=$val
+                              do=1         ;;
     esac
 
-    [ 1 != "$do" ] && continue || do=0
+    [ 1 != "${do-0}" ] && continue || do=0
 
     case "$state" in
         Verifying*) continue ;;
     esac
-
-    # TODO: move this outside the loop to when torrents are first added.
-    if [ Yes = "$public" ] && [ "$PUBLIC_UP_RATE" != "${up_rate%%[. ]*}" ]
-    then
-        remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
-            --seedratio "$PUBLIC_RATIO" >/dev/null
-        [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
-        # The torrent might have already been downloaded before the above
-        # was ever performed.
-        [ '100%' = "$percent" ] && state=Finished
-    fi
 
     [ '100%' != "$percent" ] && continue
 
@@ -165,7 +177,7 @@ for line in $(remote --torrent all --info); do
 
     if [ 1 = "$HAS_UNRAR" ]; then
         # Verify directory is valid and in expected location.
-        real_dir "$dir" >/dev/null 2>&1 && dir="$_real_dir"
+        real_dir "$dir" >/dev/null 2>&1 && dir=$_real_dir
         case $dir in
             $WATCH_DIR) ;; $WATCH_DIR/*) ;; *) continue ;;
         esac
