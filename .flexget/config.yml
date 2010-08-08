@@ -134,6 +134,20 @@ feeds:
       reject:
         # This feed uses a different episode numbering for this series.
         - ^[\W_]*midsomer[\W_]+murders
+  theempire:
+    priority: 6
+    interval: 45 minutes
+    rss:
+      url: http://theempire.bz/rssdd.xml
+      silent: yes
+    include:
+      - private/theempire-headers.yml
+    preset:
+      - torrent
+      - tv
+    regexp:
+      reject_excluding:
+        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Documentary|Drama|Mystery)
 
   supertorrents_movies:
     interval: 15 minutes
