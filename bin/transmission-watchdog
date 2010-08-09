@@ -226,10 +226,10 @@ for line in $(remote --torrent all --info); do
                 ! find "$dir/$name" -type f \( -name '*.rar' -o    \
                     -name '*.r[0-9]' -o -name '*.r[0-9][0-9]' -o   \
                     -name '*.r[0-9][0-9][0-9]' -o -name '*.sfv' -o \
-                    -name '*.[Nn][Ff][Oo]' -o -name '.DS_Store' -o \
+                    -name '*.[Nn][Ff][Oo]' -o -name '.message' -o  \
                     -name '*.part' -o -name '.*.unrarred' -o       \
                     -name 'www.TorrentDay.com.txt' -o              \
-                    -name '.message' \)                            \
+                    -name '.DS_Store' -o -name '.localized' \)     \
                     -exec rm -f {} \; 2>/dev/null
                 ! find "$dir/$name/" -type d -depth                \
                     -name [Ss][Aa][Mm][Pp][Ll][Ee]                 \
