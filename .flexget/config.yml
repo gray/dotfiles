@@ -41,11 +41,11 @@ presets:
     include:
       - private/series.yml
 
-  # Grab the first episode of any new program.
+  # Grab the first episode of any new series.
   tv-new:
     regexp:
       accept:
-        - '[\W_]+(?:s0?1[\W_]*e0[01]|0?1x0?[01])[\W_]+':
+        - '[\W_]+(?:s0?1[\W_]*e0[01]|0?1x0?[01]|1[\W_]*of[\W_]*\d+)[\W_]+':
             set:
               path: ~/Media/TV/_NEW_/.
     exists_series: ~/Media/TV/_NEW_/.
