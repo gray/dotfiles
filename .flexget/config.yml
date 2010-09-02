@@ -48,7 +48,7 @@ presets:
         - '[\W_]+(?:s0?1[\W_]*e0[01]|0?1x0?[01]|1[\W_]*of[\W_]*\d+)[\W_]+':
             set:
               path: ~/Media/TV/_NEW_/.
-    exists_series: ~/Media/TV/_NEW_/.
+    exists_series: ~/Media/TV/.
     # TODO: use the tvrage api to avoid downloading old shows and shows with
     # unwanted genres, etc.
     # tvrage:
