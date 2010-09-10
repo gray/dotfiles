@@ -4,7 +4,7 @@ presets:
     download: ~/Downloads/.
 
   movies:
-    interval: 2 hours
+    interval: 30 minutes
     content_size:
       min: 650
       max: 1750
@@ -22,6 +22,7 @@ presets:
         - musical
     set:
       path: ~/Media/Movies/.
+    foreign_movie: ~/Media/Movies/Foreign/.
 
   tv:
     content_size:
