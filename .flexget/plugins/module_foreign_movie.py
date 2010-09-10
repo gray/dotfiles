@@ -32,6 +32,5 @@ class ForeignMovie(object):
             if langs and 'english' != langs[0]:
                 entry['path'] = feed.config.get('foreign_movie')
                 log.debug('%s is a foreign film' % (entry['imdb_name']))
-                break
 
 register_plugin(ForeignMovie, 'foreign_movie', debug=True)
