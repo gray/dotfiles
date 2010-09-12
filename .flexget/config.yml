@@ -49,16 +49,15 @@ presets:
         - '[\W_]+(?:s0?1[\W_]*e0[01]|0?1x0?[01]|1[\W_]*of[\W_]*\d+)[\W_]+':
             set:
               path: ~/Media/TV/_NEW_/.
-    # TODO: use the tvrage api to avoid downloading old shows and shows with
-    # unwanted genres, etc.
-    # tvrage:
-      # accept_status:
-      #   - new series
-      # reject_classification:
-        # - reality
-        # - game show
+  # tv-new:
+    # series_premiere:
+      # path: ~/Media/TV/_NEW_/.
+      # tvrage:
+        # reject_classification:
+          # - reality
+          # - game show
 
-  torrent:
+  torrents:
     regexp:
       reject:
         - '[\W_]+x264'
@@ -85,7 +84,7 @@ feeds:
     include:
       - private/torrentvault_tv-rss.yml
     preset:
-      - torrent
+      - torrents
       - tv
       - tv-new
   supertorrents_tv:
@@ -94,7 +93,7 @@ feeds:
     include:
       - private/supertorrents_tv-rss.yml
     preset:
-      - torrent
+      - torrents
       - tv
       - tv-new
   torrentday_tv:
@@ -103,7 +102,7 @@ feeds:
     include:
       - private/torrentday_tv-rss.yml
     preset:
-      - torrent
+      - torrents
       - tv
   eztv:
     priority: 4
@@ -112,7 +111,7 @@ feeds:
       url: http://ezrss.it/feed/
       silent: yes
     preset:
-      - torrent
+      - torrents
       - tv
       - tv-new
     remove_trackers:
@@ -128,21 +127,21 @@ feeds:
     include:
       - private/thebox-headers.yml
     preset:
-      - torrent
+      - torrents
       - tv
     regexp:
       reject_excluding:
         - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Documentary|Drama|Mystery)
   theempire:
     priority: 6
-    interval: 45 minutes
+    interval: 15 minutes
     rss:
       url: http://theempire.bz/rssdd.xml
       silent: yes
     include:
       - private/theempire-headers.yml
     preset:
-      - torrent
+      - torrents
       - tv
     regexp:
       reject_excluding:
@@ -153,20 +152,20 @@ feeds:
     include:
       - private/supertorrents_movies-rss.yml
     preset:
-      - torrent
+      - torrents
       - movies
   xtremespeeds_movies:
     interval: 15 minutes
     include:
       - private/xtremespeeds_movies-rss.yml
     preset:
-      - torrent
+      - torrents
       - movies
   rlslog:
     interval: 30 minutes
     rlslog: http://www.rlslog.net/category/movies/
     preset:
-      - torrent
+      - torrents
       - movies
 
   daves_trailer_page:
