@@ -1,6 +1,5 @@
 import logging
 from flexget.plugin import *
-import re
 
 log = logging.getLogger('foreign_movie')
 
