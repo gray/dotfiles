@@ -42,20 +42,10 @@ presets:
     include:
       - private/series.yml
 
-  # Grab the first episode of any new series.
   tv-new:
-    regexp:
-      accept:
-        - '[\W_]+(?:s0?1[\W_]*e0[01]|0?1x0?[01]|1[\W_]*of[\W_]*\d+)[\W_]+':
-            set:
-              path: ~/Media/TV/_NEW_/.
-  # tv-new:
-    # series_premiere:
-      # path: ~/Media/TV/_NEW_/.
-      # tvrage:
-        # reject_classification:
-          # - reality
-          # - game show
+    # Grab the first episode of any new series.
+    series_premiere:
+      path: ~/Media/TV/_NEW_/.
 
   torrents:
     regexp:
@@ -110,6 +100,13 @@ feeds:
     rss:
       url: http://ezrss.it/feed/
       silent: yes
+    # The series_premiere plugin will only look at the entry title, but this
+    # feed uses a non-standard title format. The url field does use the
+    # standard format, so replace the title using it.
+    manipulate:
+      - title:
+          from: url
+          extract: http://torrent\.zoink\.it/(.*?)\.torrent
     preset:
       - torrents
       - tv
