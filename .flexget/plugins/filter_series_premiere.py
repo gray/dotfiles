@@ -98,17 +98,22 @@ class SeriesPremiere(object):
                 return series
 
     def on_feed_filter(self, feed):
+        config = self.get_config(feed)
+
         for entry in feed.entries:
             if 'series_name' in entry or entry in feed.accepted + feed.rejected:
                 continue
-            series = self.guess_series(entry['title'])
 
+            series = self.guess_series(entry['title'])
             if not series or 1 != series['season'] or 1 != series['episode']:
                 continue
 
             entry['series_name'] = series['name']
             entry['series_season'] = series['season']
             entry['series_episode'] = series['episode']
+
+            if 'path' in config:
+                entry['path'] = config['path']
 
             feed.accept(entry, 'series premiere episode')
 
