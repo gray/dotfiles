@@ -6,6 +6,8 @@ ack:
     http://www.vim.org/scripts/script.php?script_id=2572
 camelcasemotion:
     http://www.vim.org/scripts/script.php?script_id=1905
+delimitMate:
+    http://www.vim.org/scripts/script.php?script_id=2754
 fuzzy finder:
     http://www.vim.org/scripts/script.php?script_id=1984
 largefile:
