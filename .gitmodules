@@ -42,7 +42,7 @@
 	url = git://github.com/tpope/vim-unimpaired.git
 [submodule ".vim/bundle/vcscommand"]
 	path = .vim/bundle/vcscommand
-	url = git://repo.or.cz/r/vcscommand.git
+	url = http://repo.or.cz/r/vcscommand.git
 [submodule ".vim/bundle/vividchalk"]
 	path = .vim/bundle/vividchalk
 	url = git://github.com/tpope/vim-vividchalk.git
