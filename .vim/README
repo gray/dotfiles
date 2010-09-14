@@ -14,8 +14,14 @@ nerd commenter:
     http://www.vim.org/scripts/script.php?script_id=1218
 nerd tree:
     http://www.vim.org/scripts/script.php?script_id=1658
+pathogen:
+    http://www.vim.org/scripts/script.php?script_id=2332
+perlprove:
+    http://www.vim.org/scripts/script.php?script_id=1319
 ragtag:
     http://www.vim.org/scripts/script.php?script_id=1896
+repeat:
+    http://www.vim.org/scripts/script.php?script_id=2136
 sherlock:
     http://www.vim.org/scripts/script.php?script_id=2731
 snipmate:
@@ -46,23 +52,19 @@ go:
 json:
     http://www.vim.org/scripts/script.php?script_id=1945
 markdown:
-    http://www.vim.org/scripts/script.php?script_id=1242
+    http://github.com/tpope/vim-markdown
 nginx:
     http://www.vim.org/scripts/script.php?script_id=1886
-perl (updated):
+perl:
     http://github.com/petdance/vim-perl
-perl xs (updated):
-    http://www.profvince.com/perl/xs.vim
 puppet:
-    http://reductivelabs.com/downloads/puppet/puppet.vim
+    http://github.com/reductivelabs/puppet/blob/master/ext/vim/syntax/puppet.vim
 python:
     http://www.vim.org/scripts/script.php?script_id=790
 scala:
     http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
-tt2:
-    http://www.vim.org/scripts/script.php?script_id=830
 yaml:
-    http://github.com/ingydotnet/yaml_vim
+    http://github.com/ingydotnet/yaml-vim
 
 installed colors:
 

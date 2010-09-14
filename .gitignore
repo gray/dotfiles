@@ -1,2 +1,4 @@
 .DS_Store
-.VimballRecord
+.vim/.VimballRecord
+.vim/doc/tags
+.vim/bundle/*/doc/tags

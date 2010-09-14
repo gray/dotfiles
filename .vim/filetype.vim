@@ -6,7 +6,6 @@ augroup filetypedetect
 
 autocmd BufNewFile,BufRead *.csv setfiletype csv
 autocmd BufNewFile,BufRead *.json setfiletype json
-autocmd BufNewFile,BufRead *.markdown,*.md setfiletype mkd
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
 autocmd BufNewFile,BufRead *.scala setfiletype scala
 autocmd BufNewFile,BufRead *.t setfiletype perl

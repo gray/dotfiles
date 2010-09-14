@@ -1,5 +1,8 @@
 " Files, Backup -----------------------------------------------------------{{{1
 
+" Adds .vim/bundle/* to runtimepath
+call pathogen#runtime_append_all_bundles()
+
 set history=1000    " Size of command/search history
 set viminfo='1000   " Save marks for N files
 set viminfo+=<1000  " Save N lines for each register
