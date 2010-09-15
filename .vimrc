@@ -219,6 +219,18 @@ function! CurrentSyntaxGroup()
     return synIDattr(synID(line('.'),col('.'),1),'name')
 endfunction
 
+" Must pass the line numbers as arguments instead of using a range because
+" calling this function from a ranged-command triggers a bug that resets
+" the cursor position to 1,1 before the function is called; so the cursor
+" position could not be restored.
+function! StripWhitespace(line1, line2)
+    let l:orig_pos = getpos('.')
+    let l:orig_search = @/
+    execute 'silent! keepjumps ' . a:line1.','.a:line2 . 's/\s\+$//e'
+    call setpos('.', l:orig_pos)
+    let @/ = l:orig_search
+endfunction
+
 
 " Commands ----------------------------------------------------------------{{{1
 
@@ -237,6 +249,8 @@ command! DiffOff execute "bwipeout " . t:diff_bufnr | diffoff |
 
 command! -nargs=? -bar HighlightLongLinesToggle
     \ call s:HighlightLongLinesToggle('<args>')
+
+command! -range=% -bar StripWhitespace call StripWhitespace(<line1>, <line2>)
 
 
 " Plugin Settings ---------------------------------------------------------{{{1
