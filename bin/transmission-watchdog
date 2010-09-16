@@ -74,6 +74,16 @@ remote () {
     timeout 30 transmission-remote -N $NETRC "$@"
 }
 
+real_dir () {
+    _real_dir=
+    cd -P -- "$1" 2>/dev/null && _real_dir=$(pwd -P)
+}
+
+real_dir "$WATCH_DIR" && WATCH_DIR=$_real_dir || {
+    warn 'WATCH_DIR directory "%s" does not exist\n' "$WATCH_DIR"
+    exit -1
+}
+
 # Add any new torrent files to transmission.
 for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
     dir=${file%/*}
@@ -144,13 +154,6 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
     fi
 done
 
-real_dir () {
-    _real_dir=
-    cd -P -- "$1" && _real_dir="$(pwd -P)"
-}
-
-real_dir "$WATCH_DIR" && WATCH_DIR=$_real_dir
-
 has_cmd unrar && HAS_UNRAR=1 || HAS_UNRAR=0
 has_cmd cksfv && HAS_CKSFV=1 || HAS_CKSFV=0
 
@@ -177,7 +180,7 @@ for line in $(remote --torrent all --info); do
 
     if [ 1 = "$HAS_UNRAR" ]; then
         # Verify directory is valid and in expected location.
-        real_dir "$dir" >/dev/null 2>&1 && dir=$_real_dir
+        real_dir "$dir" && dir=$_real_dir
         case $dir in
             $WATCH_DIR) ;; $WATCH_DIR/*) ;; *) continue ;;
         esac
