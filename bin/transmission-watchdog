@@ -13,6 +13,8 @@
 #   - removes RAR archives after torrent has been removed
 #
 # TODO:
+#   - delete only rar files listed in torrent
+#   - handle multiple rar files in the same directory
 #   - use getopts to accept command-line options
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
@@ -97,9 +99,8 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
 
     case "$response" in
         '{"arguments":{"torrent-added":{"hashString":'*)
-            SAVED_IFS=$IFS; IFS='"';
-            set -- $response; hash=$8;
-            IFS=$SAVED_IFS
+            SAVED_IFS=$IFS; IFS='"'; set -- $response; IFS=$SAVED_IFS
+            hash=$8;
             rm -f "$file" ;;
         '{"arguments":{},"result":"duplicate torrent"'*)
             warn "Skipping already added torrent: $file\n"
@@ -121,11 +122,16 @@ for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
     [ 1 = "$VERBOSE" ] && printf "Added torrent: $name\n"
 
     # Deselect sample files.
-    ids=$(
-        remote --torrent "$hash" --files | \
-        sed -n '3,$ s/^ *\([0-9]\{1,\}\):.*\/[Ss][Aa][Mm][Pp][Ll][Ee]\/.*/\1/p' | \
-        paste -d ',' -s -
-    )
+    ids=; count=0
+    for line in $(remote --torrent "$hash" --files); do
+        # Skip header lines
+        [ $count -lt 2 ] && count=$((count+1)) && continue
+        case "$line" in
+            */[Ss][Aa][Mm][Pp][Ll][Ee]/*)
+                SAVED_IFS=$IFS; IFS='[: ]'; set -- $line; IFS=$SAVED_IFS
+                [ "$ids" ] && ids=$ids,$1 || ids=$1
+        esac
+    done
     [ "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
 
     for line in $(remote --torrent "$hash" --info-trackers); do
