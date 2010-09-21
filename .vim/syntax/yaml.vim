@@ -1,3 +1,9 @@
+" Vim syntax file
+" Language:         YAML (YAML Ain't Markup Language) 1.2
+" Maintainer:       Nikolai Pavlov <zyx.vim@gmail.com>
+" First author:     Nikolai Weibull <now@bitwi.se>
+" Latest Revision:  2010-09-16
+
 if exists('b:current_syntax')
     finish
 endif
@@ -5,41 +11,50 @@ endif
 let s:cpo_save = &cpo
 set cpo&vim
 
-let s:ns_word_char='\%(\w\|-\)'
-let s:ns_uri_char='\%(%\x\x\|'.s:ns_word_char.'\|[#/;?:@&=+$,.!~*''()\[\]]\)'
-let s:c_verbatim_tag='!<'.s:ns_uri_char.'\+>'
-let s:c_named_tag_handle='!'.s:ns_word_char.'\+!'
-let s:c_secondary_tag_handle='!!'
-let s:c_primary_tag_handle='!'
-let s:c_tag_handle='\%('.s:c_named_tag_handle.
-            \       '\|'.s:c_secondary_tag_handle.
-            \       '\|'.s:c_primary_tag_handle.'\)'
-let s:ns_tag_char='\%(%\x\x\|'.s:ns_word_char.'\|[#/;?:@&=+$.~*''()]\)'
-let s:c_ns_shorthand_tag=s:c_tag_handle.s:ns_tag_char.'\+'
-let s:c_non_specific_tag='!'
-let s:c_ns_tag_property=s:c_verbatim_tag.
-            \      '\|'.s:c_ns_shorthand_tag.
-            \      '\|'.s:c_non_specific_tag
-let s:c_ns_anchor_char='\%(\%([\n\r\uFEFF \t,\[\]{}]\)\@!\p\)'
-let s:c_ns_anchor_name=s:c_ns_anchor_char.'\+'
-let s:c_ns_anchor_property='&'.s:c_ns_anchor_name
-let s:c_ns_alias_node='\*'.s:c_ns_anchor_name
-let s:ns_char='\%(\%([\n\r\uFEFF \t]\)\@!\p\)'
-let s:ns_directive_name=s:ns_char.'\+'
-let s:ns_local_tag_prefix='!'.s:ns_uri_char.'*'
-let s:ns_global_tag_prefix=s:ns_tag_char.s:ns_uri_char.'*'
-let s:ns_tag_prefix=s:ns_local_tag_prefix.
-            \  '\|'.s:ns_global_tag_prefix
-let s:c_indicator='[\-?:,\[\]{}#&*!|>''"%@`]'
-let s:ns_plain_safe_out=s:ns_char
-let s:c_flow_indicator='[,\[\]{}]'
-let s:ns_plain_safe_in='\%('.s:c_flow_indicator.'\@!'.s:ns_char.'\)'
-let s:ns_plain_first_in='\%('.s:c_indicator.'\@!'.s:ns_char.'\|[?:\-]\%('.s:ns_plain_safe_in.'\)\@=\)'
-let s:ns_plain_first_out='\%('.s:c_indicator.'\@!'.s:ns_char.'\|[?:\-]\%('.s:ns_plain_safe_out.'\)\@=\)'
-let s:ns_plain_char_in='\%('.s:ns_char.'#\|:'.s:ns_plain_safe_in.'\|[:#]\@!'.s:ns_plain_safe_in.'\)'
-let s:ns_plain_char_out='\%('.s:ns_char.'#\|:'.s:ns_plain_safe_out.'\|[:#]\@!'.s:ns_plain_safe_out.'\)'
-let s:ns_plain_out=s:ns_plain_first_out.s:ns_plain_char_out.'*'
-let s:ns_plain_in=s:ns_plain_first_in.s:ns_plain_char_in.'*'
+let s:ns_char = '\%(\%([\n\r\uFEFF \t]\)\@!\p\)'
+let s:ns_word_char = '\%(\w\|-\)'
+let s:ns_uri_char  = '\%(%\x\x\|'.s:ns_word_char.'\|[#/;?:@&=+$,.!~*''()\[\]]\)'
+let s:ns_tag_char  = '\%(%\x\x\|'.s:ns_word_char.'\|[#/;?:@&=+$.~*''()]\)'
+let s:c_ns_anchor_char = '\%(\%([\n\r\uFEFF \t,\[\]{}]\)\@!\p\)'
+let s:c_indicator      = '[\-?:,\[\]{}#&*!|>''"%@`]'
+let s:c_flow_indicator = '[,\[\]{}]'
+
+let s:c_verbatim_tag = '!<'.s:ns_uri_char.'\+>'
+let s:c_named_tag_handle     = '!'.s:ns_word_char.'\+!'
+let s:c_secondary_tag_handle = '!!'
+let s:c_primary_tag_handle   = '!'
+let s:c_tag_handle = '\%('.s:c_named_tag_handle.
+            \         '\|'.s:c_secondary_tag_handle.
+            \         '\|'.s:c_primary_tag_handle.'\)'
+let s:c_ns_shorthand_tag = s:c_tag_handle . s:ns_tag_char.'\+'
+let s:c_non_specific_tag = '!'
+let s:c_ns_tag_property = s:c_verbatim_tag.
+            \        '\|'.s:c_ns_shorthand_tag.
+            \        '\|'.s:c_non_specific_tag
+
+let s:c_ns_anchor_name = s:c_ns_anchor_char.'\+'
+let s:c_ns_anchor_property =  '&'.s:c_ns_anchor_name
+let s:c_ns_alias_node      = '\*'.s:c_ns_anchor_name
+
+let s:ns_directive_name = s:ns_char.'\+'
+
+let s:ns_local_tag_prefix  = '!'.s:ns_uri_char.'*'
+let s:ns_global_tag_prefix = s:ns_tag_char.s:ns_uri_char.'*'
+let s:ns_tag_prefix = s:ns_local_tag_prefix.
+            \    '\|'.s:ns_global_tag_prefix
+
+let s:ns_plain_safe_out = s:ns_char
+let s:ns_plain_safe_in  = '\%('.s:c_flow_indicator.'\@!'.s:ns_char.'\)'
+
+let s:ns_plain_first_in  = '\%('.s:c_indicator.'\@!'.s:ns_char.'\|[?:\-]\%('.s:ns_plain_safe_in.'\)\@=\)'
+let s:ns_plain_first_out = '\%('.s:c_indicator.'\@!'.s:ns_char.'\|[?:\-]\%('.s:ns_plain_safe_out.'\)\@=\)'
+
+let s:ns_plain_char_in  = '\%('.s:ns_char.'#\|:'.s:ns_plain_safe_in.'\|[:#]\@!'.s:ns_plain_safe_in.'\)'
+let s:ns_plain_char_out = '\%('.s:ns_char.'#\|:'.s:ns_plain_safe_out.'\|[:#]\@!'.s:ns_plain_safe_out.'\)'
+
+let s:ns_plain_out = s:ns_plain_first_out . s:ns_plain_char_out.'*'
+let s:ns_plain_in  = s:ns_plain_first_in  . s:ns_plain_char_in.'*'
+
 
 syn keyword yamlTodo            contained TODO FIXME XXX NOTE
 
@@ -74,10 +89,13 @@ syn match  yamlSingleEscape contained "''"
 
 syn match yamlBlockScalarHeader contained '\s\+\zs[|>]\%([+-]\=[1-9]\|[1-9]\=[+-]\)\='
 
-syn region yamlFlowMapping    matchgroup=yamlFlowIndicator start='{' end='}'
-            \ contains=yamlFlowString,yamlFlowMapping,yamlFlowCollection,yamlFlowMappingKey,yamlFlowMappingMerge,yamlConstant,yamlPlainScalar,yamlFloat,yamlTimestamp,yamlInteger,yamlMappingKeyStart,yamlComment
-syn region yamlFlowCollection matchgroup=yamlFlowIndicator start='\[' end='\]'
-            \ contains=yamlFlowString,yamlFlowMapping,yamlFlowCollection,yamlFlowMappingKey,yamlFlowMappingMerge,yamlConstant,yamlPlainScalar,yamlFloat,yamlTimestamp,yamlInteger,yamlMappingKeyStart,yamlComment
+syn cluster yamlFlow contains=yamlFlowString,yamlFlowMapping,yamlFlowCollection
+syn cluster yamlFlow      add=yamlFlowMappingKey,yamlFlowMappingMerge
+syn cluster yamlFlow      add=yamlConstant,yamlPlainScalar,yamlFloat
+syn cluster yamlFlow      add=yamlTimestamp,yamlInteger,yamlMappingKeyStart
+syn cluster yamlFlow      add=yamlComment
+syn region yamlFlowMapping    matchgroup=yamlFlowIndicator start='{' end='}' contains=@yamlFlow
+syn region yamlFlowCollection matchgroup=yamlFlowIndicator start='\[' end='\]' contains=@yamlFlow
 
 execute 'syn match yamlPlainScalar /'.s:ns_plain_out.'/'
 execute 'syn match yamlPlainScalar contained /'.s:ns_plain_in.'/'

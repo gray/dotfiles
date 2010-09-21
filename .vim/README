@@ -66,7 +66,7 @@ python:
 scala:
     http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
 yaml:
-    http://yamlvim.hg.sourceforge.net/hgweb/yamlvim/yamlvim/raw-file/tip/syntax/yaml.vim
+    http://vim.googlecode.com/hg/runtime/syntax/yaml.vim
 
 installed colors:
 
