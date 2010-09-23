@@ -131,7 +131,7 @@ do
         [ $count -lt 2 ] && count=$((count+1)) && continue
         case "$line" in
             */[Ss][Aa][Mm][Pp][Ll][Ee]/*)
-                SAVED_IFS=$IFS; IFS='[: ]'; set -- $line; IFS=$SAVED_IFS
+                SAVED_IFS=$IFS; IFS=': '; set -- $line; IFS=$SAVED_IFS
                 [ "$ids" ] && ids=$ids,$1 || ids=$1
         esac
     done
