@@ -87,7 +87,10 @@ real_dir "$WATCH_DIR" && WATCH_DIR=$_real_dir || {
 }
 
 # Add any new torrent files to transmission.
-for file in $(find "$WATCH_DIR" -type f -name '*.torrent' 2>/dev/null); do
+for file in $(
+    find "$WATCH_DIR" -type f -name '*.torrent' \! -size 0 2>/dev/null
+)
+do
     dir=${file%/*}
 
     # Parse the debug output.
