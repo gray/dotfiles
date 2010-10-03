@@ -204,7 +204,7 @@ for line in $(remote --torrent all --info); do
 
             sfv_file=${rar_file%.*}.sfv
             if [ 1 = "$HAS_CKSFV" ] && [ -e "$rar_dir/$sfv_file" ]; then
-                if ! nice -n 15 cksfv -qg "$rar_dir/$sfv_file"; then
+                if ! cksfv -qg "$rar_dir/$sfv_file"; then
                     touch "$unrarred_lock"
                     if [ 1 = "$VERBOSE" ]; then
                         warn "Invalid RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
@@ -215,8 +215,7 @@ for line in $(remote --torrent all --info); do
 
             touch "$unrarred_lock"
 
-            if ! nice -n 15 unrar x -inul -y -p- -o+ -r \
-                "$rar_dir/$rar_file" "$rar_dir"
+            if ! unrar x -inul -y -p- -o+ -r "$rar_dir/$rar_file" "$rar_dir"
             then
                 warn "Unable to extract RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
                 continue
@@ -251,17 +250,17 @@ for line in $(remote --torrent all --info); do
         fi
 
         if [ -d "$dir/$name" ]; then
-            ! find "$dir/$name" -type f \(                          \
-                -name '*.[Nn][Ff][Oo]' -o -name '.message' -o       \
-                -name '*.part' -o -name '.*.unrarred' -o            \
-                -name 'www.TorrentDay.com.txt' -o -name 'ST.txt' -o \
-                -name 'Torrent downloaded from Demonoid.com.txt'    \
-                -name '.DS_Store' -o -name '.localized'             \
+            ! find "$dir/$name" -type f \(                                   \
+                -name '*.[Nn][Ff][Oo]' -o -name '.message' -o                \
+                -name '*.part' -o -name '.*.unrarred' -o                     \
+                -name 'ST.txt' -o                                            \
+                -name 'Torrent[ _]downloaded[ _]from[ _]Demonoid.com.txt' -o \
+                -name '.DS_Store' -o -name '.localized'                      \
                 \) -exec rm -f {} \; 2>/dev/null
             ! find "$dir/$name/" -type d -depth \
                 -name [Ss][Aa][Mm][Pp][Ll][Ee]  \
                 -exec rm -rf {} \; 2>/dev/null
-            ! find "$dir/$name" -type d -depth  \
+            ! find "$dir/$name" -type d -depth \
                 -exec rmdir {} \; 2>/dev/null
         fi
 
