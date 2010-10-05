@@ -26,7 +26,6 @@ presets:
 
   tv:
     content_size:
-      min: 150
       max: 1500
     series:
       settings:
@@ -58,13 +57,16 @@ presets:
       on_output:
         for_accepted: |
           echo %(title)s | growlnotify -t \'FlexGet: torrent downloaded\'
+            >/dev/null 2>&1
         event: |
           # This is also run from cron every few minutes.
-          transmission-watchdog 2>&1 | tee -a /tmp/transmission-watchdog.log |
+          nice -n 19 transmission-watchdog 2>&1 |
+            tee -a /tmp/transmission-watchdog.log |
             # Need to verify some input is present because growlnotify is happy
             # displaying empty messages.
-            while read -r l;
-              do growlnotify -t 'transmission-watchdog via flexget' -m "$l";
+            while read -r l; do
+              growlnotify -t 'transmission-watchdog via flexget' -m "$l" \
+                >/dev/null 2>&1
             done
 
 feeds:
@@ -86,14 +88,15 @@ feeds:
       - torrents
       - tv
       - tv-new
-  torrentday_tv:
+  scenetime_tv:
     priority: 3
     interval: 5 minutes
     include:
-      - private/torrentday_tv-rss.yml
+      - private/scenetime_tv-rss.yml
     preset:
       - torrents
       - tv
+      - tv-new
   eztv:
     priority: 4
     interval: 10 minutes
@@ -106,7 +109,8 @@ feeds:
     manipulate:
       - title:
           from: url
-          extract: http://torrent\.zoink\.it/(.*?)\.torrent
+          extract: ([^/]+)(?:\.\[[^\]]+\])?\.torrent$
+          event: metainfo
     preset:
       - torrents
       - tv
@@ -165,18 +169,9 @@ feeds:
       - torrents
       - movies
 
-  daves_trailer_page:
+  apple_trailers:
     interval: 4 hours
-    html:
-      url: http://www.davestrailerpage.co.uk/
-      title_from: link
-    regexp:
-      accept:
-        - '^(?:hd 480p|trailer(?: |$))':
-            from: title
-    extension: mov
-    # Some of the links are to apple.com
-    headers:
-      User-Agent: QuickTime/7.6.2
+    apple_trailers: 480p
+    accept_all: yes
     set:
       path: ~/Media/Movies/Trailers/.
