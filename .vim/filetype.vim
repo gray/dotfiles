@@ -4,6 +4,7 @@ endif
 
 augroup filetypedetect
 
+autocmd BufNewFile,BufRead *.applescript setfiletype applescript
 autocmd BufNewFile,BufRead *.csv setfiletype csv
 autocmd BufNewFile,BufRead *.json setfiletype json
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
