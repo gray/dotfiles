@@ -49,3 +49,6 @@
 [submodule ".vim/bundle/gentooish"]
 	path = .vim/bundle/gentooish
 	url = git://github.com/briancarper/gentooish.vim.git
+[submodule ".vim/bundle/endwise"]
+	path = .vim/bundle/endwise
+	url = git://github.com/tpope/vim-endwise.git
