@@ -262,7 +262,6 @@ let g:is_posix = 1
 let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplModSelTarget = 1
 
-map <c-w><c-t> :WMToggle<cr>
 "let g:SuperTabDefaultCompletionType = "context"
 "let g:SuperTabDefaultCompletionTypeDiscovery = [
 "    \ "&completefunc:<c-x><c-u>",
@@ -380,9 +379,6 @@ vnoremap Q gq
 " Avoid accidentally calling up the command history
 nnoremap q: <silent>
 
-" Pressing return selects the menu choice
-inoremap <expr> <cr> pumvisible() ? "\<c-y>" : "\<c-g>u\<cr>"
-
 " Toggle various plugins
 noremap <silent> <localleader>nt :NERDTreeToggle<cr>
 noremap <silent> <localleader>tl :TlistToggle<cr>
@@ -400,7 +396,6 @@ nmap <localleader>z <plug>ZoomWin
 
 vnoremap <silent> * :call VisualSearch('f')<cr>
 vnoremap <silent> # :call VisualSearch('b')<cr>
-
 
 
 " Autocommands -------------------------------------------------------------{{{1
