@@ -110,7 +110,6 @@ feeds:
       - title:
           from: url
           extract: ([^/]+)(?:\.\[[^\]]+\])?\.torrent$
-          event: metainfo
     preset:
       - torrents
       - tv
