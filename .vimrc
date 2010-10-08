@@ -262,6 +262,9 @@ let g:is_posix = 1
 let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplModSelTarget = 1
 
+" Allow endwise.vim to work.
+let g:SuperTabCrMapping = 0
+
 "let g:SuperTabDefaultCompletionType = "context"
 "let g:SuperTabDefaultCompletionTypeDiscovery = [
 "    \ "&completefunc:<c-x><c-u>",
