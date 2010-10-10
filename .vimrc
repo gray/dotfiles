@@ -48,20 +48,20 @@ set shortmess+=t      " Truncate filename at start if too long
 set shortmess+=o      " Do not prompt to overwrite file
 set shortmess+=O      " Message for reading file overwrites previous
 
-if $TERM_PROGRAM == "iTerm.app"
+if $TERM_PROGRAM == 'iTerm.app'
     " Fixes arrow keys
     set term=linux
     set t_Co=256
-elseif &term =~ "xterm"
+elseif &term =~ 'xterm'
     set t_Co=16
 endif
 
 set encoding=utf-8
-if &termencoding == ""
+if &termencoding == ''
     set termencoding=utf-8
 endif
-if &termencoding == "utf-8"
-    let &showbreak = nr2char(8618) . " "
+if &termencoding == 'utf-8'
+    let &showbreak = nr2char(8618) . ' '
 endif
 
 set nowrap            " Don't wrap long lines
@@ -96,7 +96,7 @@ set nostartofline    " Keep the cursor in the same column
 
 " Text-Formatting, Identing, Tabbing ---------------------------------------{{{1
 
-if has("eval")
+if has('eval')
     filetype plugin on
     filetype indent on
 endif
@@ -140,7 +140,6 @@ set complete+=k            " Use dictionary files for completion
 set completeopt=longest    " Insert longest completion match
 set completeopt+=menu      " Use popup menu with completions
 set completeopt+=menuone   " Show popup even with one match
-"set completeopt=menu,preview,longest,menuone
 set infercase              " Try to adjust insert completions for case
 
 set wildmenu                    " Enable wildmenu for completion
@@ -156,13 +155,13 @@ set showfulltag
 
 " Highlighting, Colors -----------------------------------------------------{{{1
 
-if has("syntax") && !&diff
+if has('syntax') && !&diff
     syntax on
 endif
 
 set background=dark
 
-if has("gui_running")
+if has('gui_running')
     colorscheme gentooish
     highlight! Normal guibg=#000000
 else
@@ -189,25 +188,25 @@ set tabpagemax=128     " Maximum number of tabs open
 " Functions ----------------------------------------------------------------{{{1
 
 function! s:HighlightLongLinesToggle(toggle)
-    if !exists('w:long_line_warning') && ("" == a:toggle || a:toggle)
+    if !exists('w:long_line_warning') && ('' == a:toggle || a:toggle)
         let w:long_line_warning = matchadd('MatchParen', '\%<81v.\%>77v', -1)
         let w:long_line_error = matchadd('ErrorMsg', '\%>80v.\+', -1)
-        echom "Highlight long lines ON"
-    elseif exists('w:long_line_warning') && ("" == a:toggle || !a:toggle)
+        echom 'Highlight long lines ON'
+    elseif exists('w:long_line_warning') && ('' == a:toggle || !a:toggle)
         call matchdelete(w:long_line_warning)
         call matchdelete(w:long_line_error)
         unlet w:long_line_warning w:long_line_error
-        echom "Highlight long lines OFF"
+        echom 'Highlight long lines OFF'
     endif
 endfunction
 
 " Search with * or # for current visual selection.
 function! VisualSearch(direction) range
     let l:saved_reg = @"
-    execute "normal! vgvy"
+    execute 'normal! vgvy'
     let l:pattern = escape(@", '\\/.*$^~[]')
-    let l:pattern = substitute(l:pattern, "\n$", "", "")
-    execute "normal " . ("b" == a:direction ? "?" : "/") . l:pattern
+    let l:pattern = substitute(l:pattern, '\n$', '', '')
+    execute 'normal ' . ('b' == a:direction ? '?' : '/') . l:pattern
     let @/ = l:pattern
     let @" = l:saved_reg
 endfunction
@@ -234,15 +233,15 @@ endfunction
 " Show unsaved changes to current buffer
 " TODO: if window size can be changed, double it and make new window vertical,
 "     else make new window horizontal.
-command! DiffBuff vertical new | let t:diff_bufnr = bufnr("$") |
+command! DiffBuff vertical new | let t:diff_bufnr = bufnr('$') |
     \ setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile filetype= |
     \ r # | 0d_ | diffthis | wincmd p | diffthis |
-    \ if exists("b:current_syntax") | let b:orig_syntax = b:current_syntax |
+    \ if exists('b:current_syntax') | let b:orig_syntax = b:current_syntax |
     \ endif | syntax clear
 
 " Close DiffBuff's diff window and reset syntax
-command! DiffOff execute "bwipeout " . t:diff_bufnr | diffoff |
-    \ if exists("b:orig_syntax") | let &l:syntax = b:orig_syntax | endif
+command! DiffOff execute 'bwipeout ' . t:diff_bufnr | diffoff |
+    \ if exists('b:orig_syntax') | let &l:syntax = b:orig_syntax | endif
 
 command! -nargs=? -bar HighlightLongLinesToggle
     \ call s:HighlightLongLinesToggle('<args>')
@@ -261,10 +260,10 @@ let g:miniBufExplModSelTarget = 1
 " Allow endwise.vim to work.
 let g:SuperTabCrMapping = 0
 
-"let g:SuperTabDefaultCompletionType = "context"
+"let g:SuperTabDefaultCompletionType = 'context'
 "let g:SuperTabDefaultCompletionTypeDiscovery = [
-"    \ "&completefunc:<c-x><c-u>",
-"    \ "&omnifunc:<c-x><c-o>", ]
+"    \ '&completefunc:<c-x><c-u>',
+"    \ '&omnifunc:<c-x><c-o>', ]
 
 let g:NERDSpaceDelims = 1
 let g:NERDTreeShowHidden = 1
@@ -284,8 +283,8 @@ let g:netrw_dirhistmax = 0
 
 " Mappings -----------------------------------------------------------------{{{1
 
-let maplocalleader = ","
-let mapleader = ","
+let maplocalleader = ','
+let mapleader = ','
 
 " Use ,, to work around , as leader
 noremap ,, ,
@@ -399,7 +398,7 @@ vnoremap <silent> # :call VisualSearch('b')<cr>
 
 " Autocommands -------------------------------------------------------------{{{1
 
-if has("autocmd")
+if has('autocmd')
     augroup vimrc
     autocmd!
 
@@ -408,24 +407,24 @@ if has("autocmd")
 
     " Restore cursor position.
     autocmd BufReadPost *
-        \ if !&diff && line("'\"") > 1 && line("'\"") <= line("$") |
-        \     execute "normal! g`\"" |
+        \ if !&diff && line("'\"") > 1 && line("'\"") <= line('$') |
+        \     execute 'normal! g`"' |
         \     let b:restored_pos = 1 |
         \ endif
     " Open any containing folds when restoring cursor position.
     autocmd BufWinEnter *
-        \ if exists("b:restored_pos") |
-        \     execute "normal! zv" |
+        \ if exists('b:restored_pos') |
+        \     execute 'normal! zv' |
         \     unlet b:restored_pos |
         \ endif
 
     " Make new scripts executable
     autocmd BufNewFile * let b:isa_new = 1
     autocmd BufWritePost,FileWritePost *
-        \ if exists("b:isa_new") |
+        \ if exists('b:isa_new') |
         \     unlet b:isa_new |
-        \     if getline(1) =~ "^#!.*/bin/" |
-        \          silent! execute "!chmod +x <afile>" |
+        \     if getline(1) =~ '^#!.*/bin/' |
+        \          silent! execute '!chmod +x <afile>' |
         \     endif |
         \ endif
 
@@ -471,7 +470,7 @@ if has("autocmd")
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd BufReadPre *.pdf set readonly
-    autocmd BufReadPost *.pdf silent %!pdftotext -q -nopgbrk "%" - | fmt -sw78
+    autocmd BufReadPost *.pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
 
     autocmd BufWinEnter *
         \ if &filetype == 'perl' |
@@ -482,9 +481,9 @@ if has("autocmd")
         \ if &filetype == 'perl' | silent HighlightLongLinesToggle 0 | endif
 
     " Use syntax highlighting keywords for keyword completion
-    "if exists("+omnifunc")
+    "if exists('+omnifunc')
     "    autocmd Filetype *
-    "        \ if &omnifunc == "" |
+    "        \ if &omnifunc == '' |
     "        \     setlocal omnifunc=syntaxcomplete#Complete |
     "        \ endif
     "endif
@@ -495,7 +494,7 @@ endif
 
 " GUI ----------------------------------------------------------------------{{{1
 
-if has("gui_running")
+if has('gui_running')
     set lines=40
     set columns=85
 
@@ -504,11 +503,11 @@ if has("gui_running")
     set guioptions+=e  " Show the tabline
     set guioptions-=m  " Hide menubar
 
-    if has("gui_macvim")
+    if has('gui_macvim')
         set guifont=Monaco:h10.00
         set noantialias
         set transparency=10
-    elseif has("gui_gtk")
+    elseif has('gui_gtk')
         set guifont=Monaco\ 9
     endif
 endif
