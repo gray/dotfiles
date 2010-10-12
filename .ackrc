@@ -1,2 +1,2 @@
---pager=less -r
+--pager=less -R
 --color-match=bold magenta
