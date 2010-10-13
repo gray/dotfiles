@@ -33,7 +33,7 @@ presets:
           path: ~/Media/TV/%(series_name)s/.
           propers: 3 hours
         documentaries:
-          path: ~/Media/Documentaries/%(series_name)s/.
+          path: ~/Media/TV/Documentaries/%(series_name)s/.
           propers: 3 hours
         talk_shows:
           path: ~/Media/TV/Talk Shows/%(series_name)s/.
@@ -43,7 +43,11 @@ presets:
 
   tv-new:
     # Grab the first episode of any new series.
-    series_premiere:
+    series_premiere: yes
+    regexp:
+      reject:
+        - '[\W_]+(?:AU(?:TV)?|Australia(?:''?s)?)[\W_]+'
+    set:
       path: ~/Media/TV/_NEW_/.
 
   torrents:
@@ -56,7 +60,7 @@ presets:
     adv_exec:
       on_output:
         for_accepted: |
-          echo %(title)s | growlnotify -t \'FlexGet: torrent downloaded\'
+          growlnotify -t \'FlexGet: torrent downloaded\' -m "%(title)s"
             >/dev/null 2>&1
         event: |
           # This is also run from cron every few minutes.
@@ -70,6 +74,7 @@ presets:
             done
 
 feeds:
+  # TV series.
   torrentvault_tv:
     priority: 1
     interval: 5 minutes
@@ -78,7 +83,6 @@ feeds:
     preset:
       - torrents
       - tv
-      - tv-new
   supertorrents_tv:
     priority: 2
     interval: 5 minutes
@@ -87,7 +91,6 @@ feeds:
     preset:
       - torrents
       - tv
-      - tv-new
   scenetime_tv:
     priority: 3
     interval: 5 minutes
@@ -96,24 +99,15 @@ feeds:
     preset:
       - torrents
       - tv
-      - tv-new
   eztv:
     priority: 4
     interval: 10 minutes
     rss:
       url: http://ezrss.it/feed/
       silent: yes
-    # The series_premiere plugin will only look at the entry title, but this
-    # feed uses a non-standard title format. The url field does use the
-    # standard format, so replace the title using it.
-    manipulate:
-      - title:
-          from: url
-          extract: ([^/]+)(?:\.\[[^\]]+\])?\.torrent$
     preset:
       - torrents
       - tv
-      - tv-new
     remove_trackers:
       - hexagon\.cc
       - '\.onion:'
@@ -131,7 +125,7 @@ feeds:
       - tv
     regexp:
       reject_excluding:
-        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Documentary|Drama|Mystery)
+        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Drama|Horizon|Mystery)
   theempire:
     priority: 6
     interval: 15 minutes
@@ -147,22 +141,66 @@ feeds:
       reject_excluding:
         - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Documentary|Drama|Mystery)
 
+  # TV series premieres.
+  torrentvault_tv_new:
+    interval: 5 minutes
+    include:
+      - private/torrentvault_tv-rss.yml
+    preset:
+      - torrents
+      - tv-new
+  supertorrents_tv_new:
+    interval: 5 minutes
+    include:
+      - private/supertorrents_tv-rss.yml
+    preset:
+      - torrents
+      - tv-new
+  torrentday_tv_new:
+    interval: 5 minutes
+    include:
+      - private/torrentday_tv-rss.yml
+    preset:
+      - torrents
+      - tv-new
+  eztv_new:
+    interval: 10 minutes
+    rss:
+      url: http://ezrss.it/feed/
+      silent: yes
+    # The series_premiere plugin will only look at the entry title, but this
+    # feed uses a non-standard title format. The guid field does use the
+    # standard format, so replace the title using it.
+    manipulate:
+      - title:
+          from: guid
+          extract: ([^/]+)/?$
+    preset:
+      - torrents
+      - tv-new
+    regexp:
+      reject_excluding:
+        # Only want documentaries from this feed.
+        - mvgroup
+    remove_trackers:
+      - hexagon\.cc
+      - '\.onion:'
+      - tor2web\.com
+
+  # Movies
   supertorrents_movies:
-    interval: 15 minutes
     include:
       - private/supertorrents_movies-rss.yml
     preset:
       - torrents
       - movies
   xtremespeeds_movies:
-    interval: 15 minutes
     include:
       - private/xtremespeeds_movies-rss.yml
     preset:
       - torrents
       - movies
   rlslog:
-    interval: 30 minutes
     rlslog: http://www.rlslog.net/category/movies/
     preset:
       - torrents
