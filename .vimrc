@@ -1,7 +1,7 @@
 " Files, Backup ------------------------------------------------------------{{{1
 
 " Adds .vim/bundle/* to runtimepath
-call pathogen#runtime_append_all_bundles()
+silent! call pathogen#runtime_append_all_bundles()
 
 set history=1000    " Size of command/search history
 set viminfo='1000   " Save marks for N files
@@ -50,7 +50,7 @@ set shortmess+=O      " Message for reading file overwrites previous
 
 if $TERM_PROGRAM == 'iTerm.app'
     " Fixes arrow keys
-    set term=linux
+    set term=builtin_ansi
     set t_Co=256
 elseif &term =~ 'xterm'
     set t_Co=16
@@ -201,7 +201,7 @@ function! s:HighlightLongLinesToggle(toggle)
 endfunction
 
 " Search with * or # for current visual selection.
-function! VisualSearch(direction) range
+function! s:VisualSearch(direction) range
     let l:saved_reg = @"
     execute 'normal! vgvy'
     let l:pattern = escape(@", '\\/.*$^~[]')
@@ -211,7 +211,7 @@ function! VisualSearch(direction) range
     let @" = l:saved_reg
 endfunction
 
-function! CurrentSyntaxGroup()
+function! s:CurrentSyntaxGroup()
     return synIDattr(synID(line('.'),col('.'),1),'name')
 endfunction
 
@@ -219,7 +219,7 @@ endfunction
 " calling this function from a ranged-command triggers a bug that resets
 " the cursor position to 1,1 before the function is called; so the cursor
 " position could not be restored.
-function! StripWhitespace(line1, line2)
+function! s:StripWhitespace(line1, line2)
     let l:orig_pos = getpos('.')
     let l:orig_search = @/
     execute 'silent! keepjumps ' . a:line1.','.a:line2 . 's/\s\+$//e'
@@ -246,7 +246,7 @@ command! DiffOff execute 'bwipeout ' . t:diff_bufnr | diffoff |
 command! -nargs=? -bar HighlightLongLinesToggle
     \ call s:HighlightLongLinesToggle('<args>')
 
-command! -range=% -bar StripWhitespace call StripWhitespace(<line1>, <line2>)
+command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 
 
 " Plugin Settings ----------------------------------------------------------{{{1
@@ -256,6 +256,9 @@ let g:is_posix = 1
 
 let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplModSelTarget = 1
+
+let delimitMate_expand_cr = 1
+let delimitMate_expand_space = 1
 
 " Allow endwise.vim to work.
 let g:SuperTabCrMapping = 0
@@ -392,8 +395,8 @@ nmap <localleader>z <plug>ZoomWin
 
 " cnoremap <silent> <tab> <c-\>esherlock#completeForward()<cr>
 
-vnoremap <silent> * :call VisualSearch('f')<cr>
-vnoremap <silent> # :call VisualSearch('b')<cr>
+vnoremap <silent> * :call s:VisualSearch('f')<cr>
+vnoremap <silent> # :call s:VisualSearch('b')<cr>
 
 
 " Autocommands -------------------------------------------------------------{{{1
@@ -511,4 +514,3 @@ if has('gui_running')
         set guifont=Monaco\ 9
     endif
 endif
-iab thsi this
