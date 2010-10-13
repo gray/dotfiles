@@ -22,7 +22,9 @@ presets:
         - musical
     set:
       path: ~/Media/Movies/.
-    foreign_movie: ~/Media/Movies/Foreign/.
+    custom_movie_path:
+      documentary: ~/Media/Movies/Documentaries/.
+      foreign: ~/Media/Movies/Foreign/.
 
   tv:
     content_size:
