@@ -1,4 +1,5 @@
-PATH=~/bin:/opt/local/bin:/usr/local/bin:/usr/bin:/bin
+PATH=./bin:/opt/local/bin:/usr/local/bin:/usr/bin:/bin
 
-1-59/5  * * * * nice -n 19 ~/bin/flexget --cron
-1-59/2 * * * * transmission-watchdog 2>&1 | tee -a /tmp/transmission-watchdog.log | while read l; do growlnotify -t 'transmission-watchdog via cron' -m "$l"; done
+1-59/5 * * * * nice -n 19 flexget --cron
+1-59/2 * * * * nice -n 19 transmission-watchdog 2>&1 | tee -a /tmp/transmission-watchdog.log | while read l; do growlnotify -t 'transmission-watchdog via cron' -m "$l" >/dev/null 2>&1; done
+
