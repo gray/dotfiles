@@ -20,9 +20,8 @@ presets:
       reject_genres:
         - music
         - musical
-    set:
-      path: ~/Media/Movies/.
     custom_movie_path:
+      default: ~/Media/Movies/.
       documentary: ~/Media/Movies/Documentaries/.
       foreign: ~/Media/Movies/Foreign/.
 
