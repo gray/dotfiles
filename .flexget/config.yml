@@ -48,6 +48,37 @@ presets:
     regexp:
       reject:
         - '[\W_]+(?:AU(?:TV)?|Australia(?:n|''?s)?)[\W_]+'
+    ## This plugin doesn't exist yet.
+    # tvrage:
+    #   reject_status:
+    #     - canceled/ended
+    #   reject_genres:
+    #     - children
+    #     - dance
+    #     - fashion/make-up
+    #     - music
+    #     - religion
+    #     - romance/dating
+    #     - soaps
+    #     - sports
+    #   reject_classifications:
+    #     - award show
+    #     - game show
+    #     - reality
+    #     - sports
+    #   reject_origin_country:
+    #     - au
+    ## This plugin is broken and the site's data isn't really good for new
+    ## series.
+    # thetvdb:
+    #   reject_status:
+    #     - Ended
+    #   reject_genres:
+    #     - Children
+    #     - Game Show
+    #     - Reality
+    #     - Soap
+    #     - Sport
     set:
       path: ~/Media/TV/_NEW_/.
 
