@@ -47,7 +47,7 @@ presets:
     series_premiere: yes
     regexp:
       reject:
-        - '[\W_]+(?:AU(?:TV)?|Australia(?:''?s)?)[\W_]+'
+        - '[\W_]+(?:AU(?:TV)?|Australia(?:n|''?s)?)[\W_]+'
     set:
       path: ~/Media/TV/_NEW_/.
 
