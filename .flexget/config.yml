@@ -213,6 +213,10 @@ feeds:
       - title:
           from: guid
           extract: ([^/]+)/?$
+      - title:
+          replace:
+            regexp: '-'
+            format: ' '
     preset:
       - torrents
       - tv-new
