@@ -104,11 +104,12 @@ presets:
               growlnotify -t 'transmission-watchdog via flexget' -m "$l" \
                 >/dev/null 2>&1
             done
-          # Remove empty series directories after unrarred media file has
-          # been viewed and deleted and original rar archive has finished
-          # seeding and been removed.
-          find ~/Media/TV/. -type f -name '.DS_Store' -delete 2>/dev/null
-          find ~/Media/TV/. -type d -empty -depth -mindepth 1 \
+          # Remove empty directories after unrarred media file has been
+          # viewed and deleted and original rar archive has finished seeding
+          # and been removed.
+          find ~/Media/{Movies,TV}/. -type f -name '.DS_Store' -delete \
+            2>/dev/null
+          find ~/Media/{Movies,TV}/. -type d -empty -depth -mindepth 1 \
             -exec rmdir {} \; 2>/dev/null
 
 feeds:
