@@ -61,7 +61,7 @@ presets:
     adv_exec:
       on_output:
         for_accepted: |
-          growlnotify -t \'FlexGet: torrent downloaded\' -m "%(title)s"
+          growlnotify -t \'FlexGet: torrent downloaded\' -m "%(title)s" \
             >/dev/null 2>&1
         event: |
           # This is also run from cron every few minutes.
@@ -73,6 +73,12 @@ presets:
               growlnotify -t 'transmission-watchdog via flexget' -m "$l" \
                 >/dev/null 2>&1
             done
+          # Remove empty series directories after unrarred media file has
+          # been viewed and deleted and original rar archive has finished
+          # seeding and been removed.
+          find ~/Media/TV/. -type f -name '.DS_Store' -delete
+          find ~/Media/TV/. -type d -prune -mindepth 1 -maxdepth 1 \
+            -exec rmdir {} \;
 
 feeds:
   # TV series.
