@@ -107,9 +107,9 @@ presets:
           # Remove empty series directories after unrarred media file has
           # been viewed and deleted and original rar archive has finished
           # seeding and been removed.
-          find ~/Media/TV/. -type f -name '.DS_Store' -delete
-          find ~/Media/TV/. -type d -prune -mindepth 1 -maxdepth 1 \
-            -exec rmdir {} \;
+          find ~/Media/TV/. -type f -name '.DS_Store' -delete 2>/dev/null
+          find ~/Media/TV/. -type d -empty -depth -mindepth 1 \
+            -exec rmdir {} \; 2>/dev/null
 
 feeds:
   # TV series.
