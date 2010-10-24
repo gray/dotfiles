@@ -89,10 +89,10 @@ presets:
         - '[\W_]+(?:72|108)0p'
         - '[\W_]+nuked'
     # TODO: expand the folder in the finder
-    adv_exec:
+    exec:
       on_output:
         for_accepted: |
-          growlnotify -t \'FlexGet: torrent downloaded\' -m "%(title)s" \
+          growlnotify -t 'FlexGet: torrent downloaded' -m "%(title)s" \
             >/dev/null 2>&1
         event: |
           # This is also run from cron every few minutes.
@@ -107,10 +107,10 @@ presets:
           # Remove empty directories after unrarred media file has been
           # viewed and deleted and original rar archive has finished seeding
           # and been removed.
-          find ~/Media/{Movies,TV}/. -type f -name '.DS_Store' -delete \
-            2>/dev/null
-          find ~/Media/{Movies,TV}/. -type d -empty -depth -mindepth 1 \
-            -exec rmdir {} \; 2>/dev/null
+          find ~/Media/{Movies,TV}/. -type f -name .DS_Store \
+            -exec rm -f {} + 2>/dev/null
+          find ~/Media/{Movies,TV}/. -type d \! -name . -empty -depth \
+            -exec rmdir {} + 2>/dev/null
 
 feeds:
   # TV series.
