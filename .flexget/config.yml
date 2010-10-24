@@ -92,7 +92,7 @@ presets:
     exec:
       on_output:
         for_accepted: |
-          growlnotify -t 'FlexGet: torrent downloaded' -m "%(title)s" \
+          growlnotify -t \'FlexGet: torrent downloaded\' -m "%(title)s" \
             >/dev/null 2>&1
         event: |
           # This is also run from cron every few minutes.
