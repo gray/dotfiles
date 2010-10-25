@@ -1,6 +1,7 @@
 " Files, Backup ------------------------------------------------------------{{{1
 
 " Adds .vim/bundle/* to runtimepath
+filetype off
 silent! call pathogen#runtime_append_all_bundles()
 
 set history=1000    " Size of command/search history
@@ -262,6 +263,7 @@ let delimitMate_expand_space = 1
 
 " Allow endwise.vim to work.
 let g:SuperTabCrMapping = 0
+let g:SuperTabLeadingSpaceCompletion = 0
 
 "let g:SuperTabDefaultCompletionType = 'context'
 "let g:SuperTabDefaultCompletionTypeDiscovery = [
