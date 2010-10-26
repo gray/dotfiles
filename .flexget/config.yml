@@ -5,13 +5,12 @@ presets:
 
   movies:
     interval: 30 minutes
+    quality:
+      max: bdrip
+      min: r5
     content_size:
       min: 650
       max: 1750
-    regexp:
-      reject_excluding:
-        - '[\W_]+(?:r5|b[dr]rip|dvd(?:rip|scr))':
-            from: title
     seen_movies: strict
     imdb:
       min_score: 6.2
@@ -26,6 +25,9 @@ presets:
       foreign: ~/Media/Movies/Foreign/.
 
   tv:
+    quality:
+      max: hdtv
+      min: dsr
     content_size:
       max: 1500
     series:
@@ -85,14 +87,12 @@ presets:
   torrents:
     regexp:
       reject:
-        - '[\W_]+x264'
-        - '[\W_]+(?:72|108)0p'
         - '[\W_]+nuked'
     # TODO: expand the folder in the finder
     exec:
       on_output:
         for_accepted: |
-          growlnotify -t \'FlexGet: torrent downloaded\' -m "%(title)s" \
+          growlnotify -t \'FlexGet: torrent downloaded\' -m %(title)s \
             >/dev/null 2>&1
         event: |
           # This is also run from cron every few minutes.
