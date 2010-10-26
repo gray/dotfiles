@@ -55,3 +55,6 @@
 [submodule ".vim/bundle/jellybeans"]
 	path = .vim/bundle/jellybeans
 	url = git://github.com/nanotech/jellybeans.vim.git
+[submodule ".vim/bundle/speeddating"]
+	path = .vim/bundle/speeddating
+	url = git://github.com/tpope/vim-speeddating.git
