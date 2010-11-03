@@ -85,7 +85,7 @@ while (my ($lang, $conf) = each %conf) {
             my $title = $entry->title;
             # print "$lang | $name | $title\n" and next;
             unless ($name) {
-                warn "Couldn't extrame name from $title\n";
+                warn "Couldn't extract name from $title\n";
                 next;
             }
 
