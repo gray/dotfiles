@@ -10,9 +10,10 @@ if ! command -v gs >/dev/null 2>&1; then
 fi
 
 for file in "$@"; do
-    if [ pdf != "${file##*.}" ] || [ ! -s "$file" ]; then
-        continue
-    fi
+    case $file in
+        *.[Pp][Dd][Ff]) ;; *) continue
+    esac
+    [ ! -s "$file" ] && continue
 
     out="$file.shrunk"
 
