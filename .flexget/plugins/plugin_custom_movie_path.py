@@ -40,7 +40,7 @@ class CustomMoviePath(object):
             return
 
         for entry in feed.accepted:
-            if foreign and 'english' != entry['imdb_languages'][0]:
+            if foreign and entry['imdb_languages'] and 'english' != entry['imdb_languages'][0]:
                 entry['path'] = foreign
                 log.debug('%s is a foreign film' % (entry['imdb_name']))
             elif documentary and 'documentary' in entry['imdb_genres']:
