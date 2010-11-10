@@ -264,16 +264,13 @@ let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplModSelTarget = 1
 
 let delimitMate_expand_cr = 1
-let delimitMate_expand_space = 1
 
-" Allow endwise.vim to work.
 let g:SuperTabCrMapping = 0
 let g:SuperTabLeadingSpaceCompletion = 0
-
-"let g:SuperTabDefaultCompletionType = 'context'
-"let g:SuperTabDefaultCompletionTypeDiscovery = [
-"    \ '&completefunc:<c-x><c-u>',
-"    \ '&omnifunc:<c-x><c-o>', ]
+let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
+let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
+let g:SuperTabContextDiscoverDiscovery =
+    \ ["&completefunc:<c-x><c-u>", "&omnifunc:<c-x><c-o>"]
 
 let g:NERDSpaceDelims = 1
 let g:NERDTreeShowHidden = 1
