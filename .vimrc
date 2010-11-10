@@ -49,7 +49,11 @@ set shortmess+=t      " Truncate filename at start if too long
 set shortmess+=o      " Do not prompt to overwrite file
 set shortmess+=O      " Message for reading file overwrites previous
 
-if $TERM_PROGRAM == 'iTerm.app'
+if $TERM_PROGRAM == 'Apple_Terminal'
+    set t_Co=16
+    " Fixes backspace interaction with delimitMate.
+    execute "set t_kb=\<c-h>"
+elseif $TERM_PROGRAM == 'iTerm.app'
     " Fixes arrow keys
     set term=builtin_ansi
     set t_Co=256
