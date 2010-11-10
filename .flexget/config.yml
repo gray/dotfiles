@@ -106,7 +106,7 @@ presets:
             # Need to verify some input is present because growlnotify is happy
             # displaying empty messages.
             while read -r l; do
-              growlnotify -t 'transmission-watchdog via flexget' -m $l" \
+              growlnotify -t 'transmission-watchdog via flexget' -m "$l" \
                 >/dev/null 2>&1
             done
           # Remove empty directories after unrarred media file has been
