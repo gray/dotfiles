@@ -8,6 +8,9 @@ presets:
     quality:
       max: bdrip
       min: r5
+    regexp:
+      reject:
+        - '[\W_]r5[\W_]+mic[\W_]'
     content_size:
       min: 650
       max: 1750
@@ -17,7 +20,6 @@ presets:
       min_votes: 100
       min_year: 2006
       reject_genres:
-        - music
         - musical
     custom_movie_path:
       default: ~/Media/Movies/.
@@ -25,11 +27,13 @@ presets:
       foreign: ~/Media/Movies/Foreign/.
 
   tv:
+    content_size:
+      max: 1500
     quality:
       max: hdtv
       min: dsr
-    content_size:
-      max: 1500
+
+  tv-series:
     series:
       settings:
         tv:
@@ -44,12 +48,12 @@ presets:
     include:
       - private/series.yml
 
-  tv-new:
+  tv-premieres:
     # Grab the first episode of any new series.
     series_premiere: yes
     regexp:
       reject:
-        - '[\W_]+(?:AU(?:TV)?|Australia(?:n|''?s)?)[\W_]+'
+        - '[\W_]+(?:PDTV|AU(?:TV)?|Australia(?:n|''?s)?)(_|\b)'
     ## This plugin doesn't exist yet.
     # tvrage:
     #   reject_status:
@@ -87,12 +91,13 @@ presets:
   torrents:
     regexp:
       reject:
-        - '[\W_]+nuked'
+        - '[\W_]+(?:[hx]264|nuked)(?:_|\b)'
     # TODO: expand the folder in the finder
     exec:
+      auto_escape: yes
       on_output:
         for_accepted: |
-          growlnotify -t \'FlexGet: torrent downloaded\' -m %(title)s \
+          growlnotify -t 'FlexGet: torrent downloaded' -m %(title)s \
             >/dev/null 2>&1
         event: |
           # This is also run from cron every few minutes.
@@ -101,7 +106,7 @@ presets:
             # Need to verify some input is present because growlnotify is happy
             # displaying empty messages.
             while read -r l; do
-              growlnotify -t 'transmission-watchdog via flexget' -m "$l" \
+              growlnotify -t 'transmission-watchdog via flexget' -m $l" \
                 >/dev/null 2>&1
             done
           # Remove empty directories after unrarred media file has been
@@ -114,32 +119,8 @@ presets:
 
 feeds:
   # TV series.
-  torrentvault_tv:
-    priority: 1
-    interval: 5 minutes
-    include:
-      - private/torrentvault_tv-rss.yml
-    preset:
-      - torrents
-      - tv
-  supertorrents_tv:
-    priority: 2
-    interval: 5 minutes
-    include:
-      - private/supertorrents_tv-rss.yml
-    preset:
-      - torrents
-      - tv
-  scenetime_tv:
-    priority: 3
-    interval: 5 minutes
-    include:
-      - private/scenetime_tv-rss.yml
-    preset:
-      - torrents
-      - tv
   eztv:
-    priority: 4
+    priority: 1
     interval: 10 minutes
     rss:
       url: http://ezrss.it/feed/
@@ -147,10 +128,41 @@ feeds:
     preset:
       - torrents
       - tv
+      - tv-series
     remove_trackers:
       - hexagon\.cc
       - '\.onion:'
       - tor2web\.com
+  torrentvault_tv:
+    priority: 2
+    interval: 5 minutes
+    include:
+      - private/torrentvault_tv-rss.yml
+    preset:
+      - torrents
+      - tv
+      - tv-series
+  btn:
+    priority: 3
+    interval: 5 minutes
+    include:
+      - private/btn.yml
+    preset:
+      - torrents
+      - tv
+      - tv-series
+    regexp:
+      reject:
+        - \bAutofill Fail(?:ed)?\b
+  scenetime_tv:
+    priority: 4
+    interval: 5 minutes
+    include:
+      - private/scenetime_tv-rss.yml
+    preset:
+      - torrents
+      - tv
+      - tv-series
   thebox:
     priority: 5
     interval: 15 minutes
@@ -162,6 +174,7 @@ feeds:
     preset:
       - torrents
       - tv
+      - tv-series
     regexp:
       reject_excluding:
         - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Drama|Horizon|Mystery)
@@ -176,33 +189,14 @@ feeds:
     preset:
       - torrents
       - tv
+      - tv-series
     regexp:
       reject_excluding:
         - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Documentary|Drama|Mystery)
 
   # TV series premieres.
-  torrentvault_tv_new:
-    interval: 5 minutes
-    include:
-      - private/torrentvault_tv-rss.yml
-    preset:
-      - torrents
-      - tv-new
-  supertorrents_tv_new:
-    interval: 5 minutes
-    include:
-      - private/supertorrents_tv-rss.yml
-    preset:
-      - torrents
-      - tv-new
-  torrentday_tv_new:
-    interval: 5 minutes
-    include:
-      - private/torrentday_tv-rss.yml
-    preset:
-      - torrents
-      - tv-new
-  eztv_new:
+  eztv_premieres:
+    priority: 20
     interval: 10 minutes
     rss:
       url: http://ezrss.it/feed/
@@ -220,7 +214,8 @@ feeds:
             format: ' '
     preset:
       - torrents
-      - tv-new
+      - tv
+      - tv-premieres
     regexp:
       reject_excluding:
         # Only want documentaries from this feed.
@@ -229,27 +224,42 @@ feeds:
       - hexagon\.cc
       - '\.onion:'
       - tor2web\.com
-
-  # Movies
-  supertorrents_movies:
+  torrentvault_tv_premieres:
+    priority: 21
+    interval: 5 minutes
     include:
-      - private/supertorrents_movies-rss.yml
+      - private/torrentvault_tv-rss.yml
     preset:
       - torrents
-      - movies
+      - tv
+      - tv-premieres
+  scenetime_tv_premieres:
+    priority: 22
+    interval: 5 minutes
+    include:
+      - private/scenetime_tv-rss.yml
+    preset:
+      - torrents
+      - tv
+      - tv-premieres
+
+  # Movies
   xtremespeeds_movies:
+    priority: 30
     include:
       - private/xtremespeeds_movies-rss.yml
     preset:
       - torrents
       - movies
   rlslog:
+    priority: 31
     rlslog: http://www.rlslog.net/category/movies/
     preset:
       - torrents
       - movies
 
   apple_trailers:
+    priority: 40
     interval: 4 hours
     apple_trailers: 480p
     accept_all: yes
