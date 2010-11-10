@@ -137,6 +137,7 @@ runtime macros/matchit.vim
 
 " Menus, Completion --------------------------------------------------------{{{1
 
+set complete-=i            " Don't scan included files
 set complete+=k            " Use dictionary files for completion
 set completeopt=longest    " Insert longest completion match
 set completeopt+=menu      " Use popup menu with completions

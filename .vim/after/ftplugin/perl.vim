@@ -9,10 +9,6 @@ setlocal keywordprg=sh\ -c\ 'perldoc\ -f\ \$1\ \|\|\ perldoc\ \$1'\ --
 
 setlocal equalprg=perltidy\ -q
 
-" TODO: $VIMRUNTIME/ftplugin/perl.vim is setting path to @INC, and this
-" slows down keyword matching (C-P, C-N), so reset it
-" let &l:path='.'
-
 let perl_include_pod = 1
 let perl_extended_vars = 1
 let perl_want_scope_in_variables = 1
