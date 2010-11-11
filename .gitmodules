@@ -55,3 +55,6 @@
 [submodule ".vim/bundle/speeddating"]
 	path = .vim/bundle/speeddating
 	url = git://github.com/tpope/vim-speeddating.git
+[submodule ".vim/bundle/pastie"]
+	path = .vim/bundle/pastie
+	url = git://github.com/tpope/vim-pastie.git
