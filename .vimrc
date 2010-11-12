@@ -301,7 +301,7 @@ inoremap <f1> <c-o>:set invpaste paste?<cr>
 set pastetoggle=<f1>
 
 " Save current buffer with root permissions.
-cnoremap <silent> w!! write !sudo tee % >/dev/null
+cnoremap <silent> w!! write !sudo tee % >/dev/null<cr>:edit!<cr><cr><cr>
 
 " Insert a single character.
 noremap <localleader>i i<space><esc>r
