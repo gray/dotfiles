@@ -7,6 +7,7 @@
 #   - deselects sample files
 #   - throttles public torrents
 #   - removes certain "bad" trackers from torrents
+#   - labels files of seeding torrents
 #   - removes completed, stopped torrents
 #   - verifies RAR archives with cksfv
 #   - unrars RAR archives
@@ -162,8 +163,9 @@ do
     fi
 done
 
-has_cmd unrar && HAS_UNRAR=1 || HAS_UNRAR=0
-has_cmd cksfv && HAS_CKSFV=1 || HAS_CKSFV=0
+has_cmd unrar    && HAS_UNRAR=1    || HAS_UNRAR=0
+has_cmd cksfv    && HAS_CKSFV=1    || HAS_CKSFV=0
+has_cmd setlabel && HAS_SETLABEL=1 || HAS_SETLABEl=0
 
 for line in $(remote --torrent all --info); do
     val=${line#*: }
@@ -228,6 +230,7 @@ for line in $(remote --torrent all --info); do
     fi
 
     if [ Finished = "$state" ]; then
+        # Remove each of the RAR files listed in the torrent.
         if [ "$unrarred_lock" ]; then
             count=0
             remote --torrent "$hash" --files |
@@ -247,6 +250,12 @@ for line in $(remote --torrent all --info); do
                 esac
             done
             [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
+        fi
+
+        # Mark files a different color in Finder to indicate they are
+        # finished seeding and can safely be deleted.
+        if [ 1 = "$HAS_SETLABEL" ]; then
+            ! find "$dir/$name" -exec setlabel -s Red {} + 2>/dev/null
         fi
 
         if [ -d "$dir/$name" ]; then
