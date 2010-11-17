@@ -10,7 +10,8 @@ presets:
       min: r5
     regexp:
       reject:
-        - '[\W_]r5[\W_]+mic[\W_]'
+        - '[\W_]r5[\W_].*?[\W_](?:mic|russian)(?:_|\b)'
+
     content_size:
       min: 650
       max: 1750
@@ -85,6 +86,7 @@ presets:
     #     - Reality
     #     - Soap
     #     - Sport
+    # Using 'set' allows the path to be recreated if it doesn't exit.
     set:
       path: ~/Media/TV/_NEW_/.
 
@@ -92,6 +94,10 @@ presets:
     regexp:
       reject:
         - '[\W_]+(?:[hx]264|nuked)(?:_|\b)'
+    content_filter:
+      reject:
+        - '*.m[4k]v'
+
     # TODO: expand the folder in the finder
     exec:
       auto_escape: yes
@@ -121,7 +127,7 @@ feeds:
   # TV series.
   eztv:
     priority: 1
-    interval: 10 minutes
+    interval: 5 minutes
     rss:
       url: http://ezrss.it/feed/
       silent: yes
@@ -133,17 +139,8 @@ feeds:
       - hexagon\.cc
       - '\.onion:'
       - tor2web\.com
-  torrentvault_tv:
-    priority: 2
-    interval: 5 minutes
-    include:
-      - private/torrentvault_tv-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-series
   btn:
-    priority: 3
+    priority: 2
     interval: 5 minutes
     include:
       - private/btn.yml
@@ -155,10 +152,19 @@ feeds:
       reject:
         - \bAutofill Fail(?:ed)?\b
   scenetime_tv:
-    priority: 4
+    priority: 3
     interval: 5 minutes
     include:
       - private/scenetime_tv-rss.yml
+    preset:
+      - torrents
+      - tv
+      - tv-series
+  torrentvault_tv:
+    priority: 4
+    interval: 5 minutes
+    include:
+      - private/torrentvault_tv-rss.yml
     preset:
       - torrents
       - tv
@@ -201,17 +207,6 @@ feeds:
     rss:
       url: http://ezrss.it/feed/
       silent: yes
-    # The series_premiere plugin will only look at the entry title, but this
-    # feed uses a non-standard title format. The guid field does use the
-    # standard format, so replace the title using it.
-    manipulate:
-      - title:
-          from: guid
-          extract: ([^/]+)/?$
-      - title:
-          replace:
-            regexp: '-'
-            format: ' '
     preset:
       - torrents
       - tv
@@ -263,5 +258,6 @@ feeds:
     interval: 4 hours
     apple_trailers: 480p
     accept_all: yes
+    # Using 'set' allows the path to be recreated if it doesn't exit.
     set:
       path: ~/Media/Movies/Trailers/.
