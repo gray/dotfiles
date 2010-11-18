@@ -10,7 +10,7 @@ presets:
       min: r5
     regexp:
       reject:
-        - '[\W_]r5[\W_].*?[\W_](?:mic|russian)(?:_|\b)'
+        - '[\W_]r5[\W_].*?(?:_|\b)(?:mic|russian|cam[\W_]+audio)(?:_|\b)'
 
     content_size:
       min: 650
@@ -97,6 +97,7 @@ presets:
     content_filter:
       reject:
         - '*.m[4k]v'
+        - '*.wmv'
 
     # TODO: expand the folder in the finder
     exec:
