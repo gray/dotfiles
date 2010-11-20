@@ -24,7 +24,7 @@ my %conf = (
         name => sub {
             CPAN::DistnameInfo->new($_[0]->title . '.tgz')->dist
         },
-        whitelist => [ qr/^AnyEvent\b/, ]
+        whitelist => [ qr/^(?:AnyEvent|Digest)\b/, ]
     },
     python => {
         url       => 'http://pypi.python.org/pypi?:action=rss',
@@ -74,6 +74,7 @@ while (my ($lang, $conf) = each %conf) {
         exclude    => { state => 'read' },
         start_time => $subs{$conf->{url}},
     );
+    die $reader->error unless $feed;
 
     my @blacklist = @{ $conf->{blacklist} || [] };
     my @whitelist = @{ $conf->{whitelist} || [] };
