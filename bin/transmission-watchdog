@@ -32,7 +32,8 @@ set -o nounset
 IFS=$(printf "\n\t")
 
 has_cmd () { command -v "$@" >/dev/null 2>&1; }
-warn    () { printf "$@" >&2; }
+warn    () { printf "[$(date +%F\ %T)] $@" >&2; }
+log     () { printf "[$(date +%F\ %T)] $@"; }
 
 if has_cmd flock; then
     flock -nx "$LOCK" || exit
@@ -122,7 +123,7 @@ do
         esac
     done
 
-    [ 1 = "$VERBOSE" ] && printf "Added torrent: $name\n"
+    [ 1 = "$VERBOSE" ] && log "Added torrent: $name\n"
 
     # Deselect sample files.
     ids=; count=0
@@ -159,7 +160,7 @@ do
     if [ Yes = "$public" ] || [ 1 = "${force_public-0}" ]; then
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
-        [ 1 = "$VERBOSE" ] && printf "Throttled public torrent: $name\n"
+        [ 1 = "$VERBOSE" ] && log "Throttled public torrent: $name\n"
     fi
 done
 
@@ -224,7 +225,7 @@ for line in $(remote --torrent all --info); do
             fi
 
             if [ 1 = "$VERBOSE" ]; then
-                printf "Unrarred %s/%s\n" "${rar_dir##$WATCH_DIR/}" "$rar_file"
+                log "Unrarred %s/%s\n" "${rar_dir##$WATCH_DIR/}" "$rar_file"
             fi
         done
         break
@@ -250,7 +251,7 @@ for line in $(remote --torrent all --info); do
                         rm -f "$dir/$file"
                 esac
             done
-            [ 1 = "$VERBOSE" ] && printf "Removed RAR archive: $name\n"
+            [ 1 = "$VERBOSE" ] && log "Removed RAR archive: $name\n"
         fi
 
         # Mark files a different color in Finder to indicate they are
@@ -275,6 +276,6 @@ for line in $(remote --torrent all --info); do
         fi
 
         remote --torrent "$hash" --remove >/dev/null
-        [ 1 = "$VERBOSE" ] && printf "Removed torrent: $name\n"
+        [ 1 = "$VERBOSE" ] && log "Removed torrent: $name\n"
     fi
 done
