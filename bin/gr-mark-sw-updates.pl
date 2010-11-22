@@ -28,7 +28,7 @@ my %conf = (
     },
     python => {
         url       => 'http://pypi.python.org/pypi?:action=rss',
-        blacklist => [ qr/\bdjango\b/i ],
+        blacklist => [ qr/\b(?:django|plone)\b/i ],
         name      => sub {
             my ($name) = $_[0]->link->href =~ m[
                 ^http://pypi\.python\.org/pypi/([^/]+)
@@ -82,9 +82,13 @@ while (my ($lang, $conf) = each %conf) {
     my @unwanted_entries;
     {
         for my $entry ($feed->entries) {
-            my $name  = $conf->{name}($entry);
-            my $title = $entry->title;
-            # print "$lang | $name | $title\n" and next;
+            my $name    = $conf->{name}($entry);
+            my $title   = $entry->title;
+            my $summary = $entry->summary || '';
+            my $desc    = $entry->content || '';
+            $desc &&= $desc->body;
+            # print "$lang | $name | $title | $summary | $desc\n" and next;
+
             unless ($name) {
                 warn "Couldn't extract name from $title\n";
                 next;
@@ -101,10 +105,15 @@ while (my ($lang, $conf) = each %conf) {
 
             my $blacklisted;
             for my $b (@blacklist) {
-                if ('Regexp' eq ref $b ? $name =~ $b : $name eq $b) {
-                    $blacklisted = 1;
-                    last;
+                if ('Regexp' eq ref $b) {
+                    next if $name !~ $b and $summary !~ $b and $desc !~ $b;
                 }
+                else {
+                    next if $name ne $b;
+                }
+
+                $blacklisted = 1;
+                last;
             }
 
             if ($blacklisted or exists $db{"$lang|$name"}
