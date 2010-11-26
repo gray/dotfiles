@@ -121,6 +121,8 @@ presets:
           # Remove empty directories after unrarred media file has been
           # viewed and deleted and original rar archive has finished seeding
           # and been removed.
+          # TODO: prevent race condition by only removing if older than
+          # a few minutes.
           find ~/Media/{Movies,TV}/. -type f -name .DS_Store \
             -exec rm -f {} + 2>/dev/null
           find ~/Media/{Movies,TV}/. -type d \! -name . -empty -depth \
@@ -264,3 +266,21 @@ feeds:
     # Using 'set' allows the path to be recreated if it doesn't exit.
     set:
       path: ~/Media/Movies/Trailers/.
+
+  # No group rips this, so grab the low-quality FLV directly from pbs.org.
+  pbs_need_to_know:
+    priority: 50
+    interval: 2 days
+    rss:
+      url: http://www.pbs.org/wnet/need-to-know/tag/full-episode/feed/
+      silent: yes
+    accept_all: yes
+    limit_new: 1
+    disable_plugin:
+      - download
+    exec:
+      auto_escape: yes
+      on_output:
+        for_accepted: |
+          dir=~/Media/TV/Documentaries/Need\ to\ Know/.
+          mkdir -p "$dir" && cd "$dir" && get_flash_videos %(url)s
