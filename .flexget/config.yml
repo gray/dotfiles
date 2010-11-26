@@ -268,8 +268,26 @@ feeds:
       path: ~/Media/Movies/Trailers/.
 
   # No group rips this, so grab the low-quality FLV directly from pbs.org.
-  pbs_need_to_know:
+  pbs_newshour:
     priority: 50
+    interval: 24 hours
+    rss:
+      url: http://video.pbs.org/program/979359630/rss/
+      silent: yes
+    accept_all: yes
+    limit_new: 1
+    disable_plugin:
+      - download
+    exec:
+      auto_escape: yes
+      on_output:
+        for_accepted: |
+          dir=~/Media/TV/Documentaries/PBS\ NewsHour/.
+          mkdir -p "$dir" && cd "$dir" && get_flash_videos %(url)s
+
+  # No group rips this, so grab the low-quality FLV directly from pbs.org.
+  pbs_need_to_know:
+    priority: 51
     interval: 2 days
     rss:
       url: http://www.pbs.org/wnet/need-to-know/tag/full-episode/feed/
