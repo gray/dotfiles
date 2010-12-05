@@ -30,28 +30,35 @@ presets:
   tv:
     content_size:
       max: 1500
-    quality:
-      max: hdtv
-      min: dsr
 
   tv-series:
     series:
       settings:
         tv:
+          min_quality: dsr
+          max_quality: hdtv
           path: ~/Media/TV/%(series_name)s/.
           propers: 3 hours
         documentaries:
+          min_quality: dsr
+          max_quality: hdtv
           path: ~/Media/TV/Documentaries/%(series_name)s/.
           propers: 3 hours
         talk_shows:
+          min_quality: dsr
+          max_quality: hdtv
           path: ~/Media/TV/Talk Shows/%(series_name)s/.
           propers: 3 hours
     include:
       - private/series.yml
 
+  # Grab the first episode of any new series.
   tv-premieres:
-    # Grab the first episode of any new series.
-    series_premiere: yes
+    series_premiere:
+      min_quality: dsr
+      max_quality: hdtv
+      path: ~/Media/TV/_NEW_/.
+      propers: no
     regexp:
       reject:
         - '[\W_]+(?:PDTV|AU(?:TV)?|Australia(?:n|''?s)?)(_|\b)'
@@ -86,9 +93,6 @@ presets:
     #     - Reality
     #     - Soap
     #     - Sport
-    # Using 'set' allows the path to be recreated if it doesn't exit.
-    set:
-      path: ~/Media/TV/_NEW_/.
 
   torrents:
     regexp:
