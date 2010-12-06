@@ -22,6 +22,9 @@
 [submodule ".vim/bundle/jellybeans"]
 	path = .vim/bundle/jellybeans
 	url = git://github.com/nanotech/jellybeans.vim.git
+[submodule ".vim/bundle/l9"]
+	path = .vim/bundle/l9
+	url = git://github.com/vim-scripts/L9.git
 [submodule ".vim/bundle/largefile"]
 	path = .vim/bundle/largefile
 	url = git://github.com/vim-scripts/LargeFile.git
