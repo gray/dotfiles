@@ -58,3 +58,6 @@
 [submodule ".vim/bundle/pastie"]
 	path = .vim/bundle/pastie
 	url = git://github.com/tpope/vim-pastie.git
+[submodule ".vim/bundle/fuzzyfinder"]
+	path = .vim/bundle/fuzzyfinder
+	url = git://github.com/vim-scripts/FuzzyFinder.git
