@@ -412,6 +412,12 @@ if has('autocmd')
     " GUI startup resets the visual bell; turn it back off
     autocmd GUIEnter * set visualbell t_vb=
 
+    " All dark backgrounds should be black.
+    autocmd GUIEnter,ColorScheme *
+        \ if has('gui_running') && &background == 'dark' |
+        \     highlight Normal guibg=black |
+        \ endif
+
     " Restore cursor position.
     autocmd BufReadPost *
         \ if !&diff && line("'\"") > 1 && line("'\"") <= line('$') |
