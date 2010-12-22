@@ -145,7 +145,7 @@ do
             '  Tracker #'*': '*'tracker.prq.to'*          | \
             '  Tracker #'*': '*'h33t.com'*                | \
             '  Tracker #'*': '*'mvgroup.org'*             | \
-            '  Tracker #'*': inferno.demonoid.com'*)
+            '  Tracker #'*': inferno.demonoid.(com|me)'*)
                 force_public=1 ;;
             '  Tracker #'*': '*'thepiratebay.org'*        | \
             '  Tracker #'*': '*'hexagon.cc'*              | \
@@ -261,12 +261,12 @@ for line in $(remote --torrent all --info); do
         fi
 
         if [ -d "$dir/$name" ]; then
-            ! find "$dir/$name" -type f \(                                   \
-                -name '*.[Nn][Ff][Oo]' -o -name '.message' -o                \
-                -name '*.part' -o -name '.*.unrarred' -o                     \
-                -name 'ST.txt' -o                                            \
-                -name 'Torrent[ _]downloaded[ _]from[ _]Demonoid.com.txt' -o \
-                -name '.DS_Store' -o -name '.localized'                      \
+            ! find "$dir/$name" -type f \(                                    \
+                -name '*.[Nn][Ff][Oo]' -o -name '.message' -o                 \
+                -name '*.part' -o -name '.*.unrarred' -o                      \
+                -name 'ST.txt' -o                                             \
+                -name '[Tt]orrent[ _.][Dd]ownloaded[ _.][Ff]rom[ _.]*.txt' -o \
+                -name '.DS_Store' -o -name '.localized'                       \
                 \) -exec rm -f {} + 2>/dev/null
             ! find "$dir/$name/" -type d -depth \
                 -name [Ss][Aa][Mm][Pp][Ll][Ee]  \
