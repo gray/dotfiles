@@ -1,4 +1,3 @@
----
 presets:
   global:
     download: ~/Downloads/.
@@ -11,6 +10,7 @@ presets:
     regexp:
       reject:
         - '[\W_]r5[\W_].*?(?:_|\b)(?:mic|russian|cam[\W_]+audio)(?:_|\b)'
+        - '[\W_]3-?D(?:BD)?\b'
 
     content_size:
       min: 650
@@ -101,6 +101,7 @@ presets:
     content_filter:
       reject:
         - '*.m[4k]v'
+        - '*.mp4'
         - '*.wmv'
 
     # TODO: expand the folder in the finder
