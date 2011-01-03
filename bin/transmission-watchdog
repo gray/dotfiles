@@ -73,6 +73,7 @@ timeout () {
 
 remote () {
     # TODO: add retry and kill logic
+    # timeout 30 transmission-remote -N $NETRC "$@"
     exec 3>&1 4>&2
     if ! error=$(
         { timeout 30 transmission-remote -N $NETRC "$@" 2>&4 1>&3; } 4>&1
@@ -84,6 +85,7 @@ remote () {
         esac
     fi
     exec 3>&- 4>&-
+    printf "$error" >&2
 }
 
 real_dir () {
@@ -105,14 +107,14 @@ do
 
     # Parse the debug output.
     # Use the torrent hash because the ids are not persistent across sessions.
-    response=$(
-        remote --debug --add "$file" --download-dir "$dir" 2>&1 | \
-        awk '/^{"arguments":{.*?"result":/ {x=$0}; END{print x}'
-    )
+    response=$(remote --debug --add "$file" --download-dir "$dir" 2>&1)
+    for line in $response; do
+        case $line in '{"arguments":{'*'"result":'*) result=$line; esac
+    done
 
-    case $response in
+    case $result in
         '{"arguments":{"torrent-added":{"hashString":'*)
-            SAVED_IFS=$IFS; IFS='"'; set -- $response; IFS=$SAVED_IFS
+            SAVED_IFS=$IFS; IFS='"'; set -- $result; IFS=$SAVED_IFS
             hash=$8;
             rm -f "$file" ;;
         '{"arguments":{},"result":"duplicate torrent"'*)
