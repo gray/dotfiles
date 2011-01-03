@@ -50,26 +50,30 @@ else
     trap 'rm -f "$LOCK"; exit' EXIT HUP INT QUIT TERM
 fi
 
-timeout () {
-    timeout=$1
-    shift
-    "$@" &
-    child_pid=$!
-    (
-        sleep "$timeout" &
-        sleep_pid=$!
-        trap 'kill -s TERM $sleep_pid 2>/dev/null; exit 0' TERM
-        wait $sleep_pid 2>/dev/null
-        kill -s TERM $child_pid 2>/dev/null
-        sleep 2
-        kill -s KILL $child_pid 2>/dev/null
-    ) &
-    alarm_pid=$!
-    wait $child_pid 2>/dev/null
-    status=$?
-    kill -s TERM $alarm_pid 2>/dev/null
-    return $status
-}
+if   has_cmd timeout; then :
+elif has_cmd gtimeout; then timeout () { gtimeout "$@"; }
+else
+    timeout () {
+        timeout=$1
+        shift
+        "$@" &
+        child_pid=$!
+        (
+            sleep "$timeout" &
+            sleep_pid=$!
+            trap 'kill -s TERM $sleep_pid 2>/dev/null; exit 0' TERM
+            wait $sleep_pid 2>/dev/null
+            kill -s TERM $child_pid 2>/dev/null
+            sleep 2
+            kill -s KILL $child_pid 2>/dev/null
+        ) &
+        alarm_pid=$!
+        wait $child_pid 2>/dev/null
+        status=$?
+        kill -s TERM $alarm_pid 2>/dev/null
+        return $status
+    }
+fi
 
 remote () {
     # TODO: add retry and kill logic
