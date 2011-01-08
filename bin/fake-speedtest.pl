@@ -10,7 +10,6 @@ use Pod::Usage;
 use XML::LibXML;
 
 GetOptions(
-    'help|h'       => \my $help,
     'download|d=f' => \my $down,
     'upload|u=f'   => \my $up,
     'ping|p=i'     => \my $ping,
