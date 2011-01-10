@@ -170,7 +170,6 @@ set background=dark
 
 if has('gui_running')
     colorscheme gentooish
-    highlight! Normal guibg=#000000
 else
     colorscheme ir_black
     highlight! link NonText SpecialKey
