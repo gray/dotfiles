@@ -41,7 +41,7 @@ my ($server, $distance);
 for my $node ($dom->findnodes('/settings/servers/server')) {
     my ($id, $slat, $slon) = map { $node->findvalue("\@$_") } qw(id lat lon);
     my $d = $geo->distance(mile => $clon, $clat, $slon, $slat);
-    if (not $distance or $d < $distance) {
+    if (not defined $distance or $d < $distance) {
         $server   = $id;
         $distance = $d;
     }
