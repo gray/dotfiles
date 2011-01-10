@@ -163,6 +163,7 @@ set showfulltag
 
 if has('syntax') && !&diff
     syntax on
+    set colorcolumn=80
 endif
 
 set background=dark
@@ -192,19 +193,6 @@ set tabpagemax=128     " Maximum number of tabs open
 
 
 " Functions ----------------------------------------------------------------{{{1
-
-function! s:HighlightLongLinesToggle(toggle)
-    if !exists('w:long_line_warning') && ('' == a:toggle || a:toggle)
-        let w:long_line_warning = matchadd('MatchParen', '\%<81v.\%>77v', -1)
-        let w:long_line_error = matchadd('ErrorMsg', '\%>80v.\+', -1)
-        echom 'Highlight long lines ON'
-    elseif exists('w:long_line_warning') && ('' == a:toggle || !a:toggle)
-        call matchdelete(w:long_line_warning)
-        call matchdelete(w:long_line_error)
-        unlet w:long_line_warning w:long_line_error
-        echom 'Highlight long lines OFF'
-    endif
-endfunction
 
 " Search with * or # for current visual selection.
 function! s:VisualSearch(direction) range
@@ -248,9 +236,6 @@ command! DiffBuff vertical new | let t:diff_bufnr = bufnr('$') |
 " Close DiffBuff's diff window and reset syntax
 command! DiffOff execute 'bwipeout ' . t:diff_bufnr | diffoff |
     \ if exists('b:orig_syntax') | let &l:syntax = b:orig_syntax | endif
-
-command! -nargs=? -bar HighlightLongLinesToggle
-    \ call s:HighlightLongLinesToggle('<args>')
 
 command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 
@@ -484,14 +469,6 @@ if has('autocmd')
 
     autocmd BufReadPre *.pdf set readonly
     autocmd BufReadPost *.pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
-
-    autocmd BufWinEnter *
-        \ if &filetype == 'perl' |
-        \     silent HighlightLongLinesToggle 1  |
-        \     setlocal wrap |
-        \ endif
-    autocmd BufWinLeave *
-        \ if &filetype == 'perl' | silent HighlightLongLinesToggle 0 | endif
 
     " Use syntax highlighting keywords for keyword completion
     "if exists('+omnifunc')
