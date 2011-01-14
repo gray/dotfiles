@@ -28,6 +28,7 @@ presets:
       foreign: ~/Media/Movies/Foreign/.
 
   tv:
+    only_new: yes
     content_size:
       max: 1500
 
@@ -59,9 +60,6 @@ presets:
       max_quality: dvdrip
       path: ~/Media/TV/_NEW_/.
       propers: no
-    regexp:
-      reject:
-        - '[\W_]+(?:PDTV|AU(?:TV)?|Australia(?:n|''?s)?)(_|\b)'
     ## This plugin doesn't exist yet.
     # tvrage:
     #   reject_status:
@@ -97,7 +95,7 @@ presets:
   torrents:
     regexp:
       reject:
-        - '[\W_]+(?:[hx]264|nuked)(?:_|\b)'
+        - '[\W_]+(?:[hx][.-]?264|nuked)(?:_|\b)'
     content_filter:
       reject:
         - '*.m[4k]v'
@@ -230,6 +228,13 @@ feeds:
       - torrents
       - tv
       - tv-premieres
+    manipulate:
+      - title:
+          from: guid
+          extract: ([^/]+)/?$
+          replace:
+            regexp: '-'
+            format: ' '
     regexp:
       reject_excluding:
         # Only want documentaries from this feed.
@@ -291,6 +296,7 @@ feeds:
   apple_trailers:
     priority: 40
     interval: 4 hours
+    only_new: yes
     apple_trailers: 480p
     accept_all: yes
     # Using 'set' allows the path to be recreated if it doesn't exit.
