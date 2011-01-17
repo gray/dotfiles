@@ -11,6 +11,7 @@ presets:
       reject:
         - '[\W_]r5[\W_].*?(?:_|\b)(?:mic|russian|cam[\W_]+audio)(?:_|\b)'
         - '[\W_]3-?D(?:BD)?\b'
+        - '[\W_]ppvrip\b'
 
     content_size:
       min: 650
