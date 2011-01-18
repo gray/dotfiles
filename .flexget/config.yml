@@ -321,7 +321,7 @@ feeds:
       on_output:
         for_accepted: |
           dir=~/Media/TV/Documentaries/PBS\ NewsHour/.
-          mkdir -p "$dir" && cd "$dir" && get_flash_videos %(url)s &
+          mkdir -p "$dir" && cd "$dir" && ~/bin/get_flash_videos %(url)s &
 
   # No group rips this, so grab the low-quality FLV directly from pbs.org.
   pbs_need_to_know:
@@ -340,4 +340,4 @@ feeds:
       on_output:
         for_accepted: |
           dir=~/Media/TV/Documentaries/Need\ to\ Know/.
-          mkdir -p "$dir" && cd "$dir" && get_flash_videos %(url)s &
+          mkdir -p "$dir" && cd "$dir" && ~/bin/get_flash_videos %(url)s &
