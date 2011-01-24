@@ -110,7 +110,7 @@ presets:
         for_accepted: |
           growlnotify -t 'FlexGet: torrent downloaded' -m %(title)s \
             >/dev/null 2>&1
-        event: |
+        phase: |
           # This is also run from cron every few minutes.
           nice -n 19 transmission-watchdog 2>&1 |
             tee -a /tmp/transmission-watchdog.log |
