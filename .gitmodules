@@ -16,6 +16,9 @@
 [submodule ".vim/bundle/gentooish"]
 	path = .vim/bundle/gentooish
 	url = git://github.com/briancarper/gentooish.vim.git
+[submodule ".vim/bundle/gist"]
+	path = .vim/bundle/gist
+	url = git://github.com/mattn/gist-vim.git
 [submodule ".vim/bundle/inkpot"]
 	path = .vim/bundle/inkpot
 	url = git://github.com/ciaranm/inkpot.git
