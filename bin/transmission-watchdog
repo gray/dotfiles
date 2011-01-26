@@ -77,7 +77,6 @@ fi
 
 remote () {
     # TODO: add retry and kill logic
-    # timeout 30 transmission-remote -N $NETRC "$@"
     exec 3>&1 4>&2
     if ! error=$(
         { timeout 30 transmission-remote -N $NETRC "$@" 2>&4 1>&3; } 4>&1
@@ -160,7 +159,8 @@ do
             '  Tracker '[0-9]*': '*'tracker.prq.to'*          | \
             '  Tracker '[0-9]*': '*'h33t.com'*                | \
             '  Tracker '[0-9]*': '*'mvgroup.org'*             | \
-            '  Tracker '[0-9]*': inferno.demonoid.(com|me)'*)
+            '  Tracker '[0-9]*': inferno.demonoid.com'*       | \
+            '  Tracker '[0-9]*': inferno.demonoid.me'*)
                 force_public=1 ;;
             '  Tracker '[0-9]*': '*'thepiratebay.org'*        | \
             '  Tracker '[0-9]*': '*'hexagon.cc'*              | \
