@@ -40,9 +40,6 @@
 [submodule ".vim/bundle/nerdcommenter"]
 	path = .vim/bundle/nerdcommenter
 	url = git://github.com/scrooloose/nerdcommenter.git
-[submodule ".vim/bundle/pastie"]
-	path = .vim/bundle/pastie
-	url = git://github.com/tpope/vim-pastie.git
 [submodule ".vim/bundle/perl"]
 	path = .vim/bundle/perl
 	url = git://github.com/petdance/vim-perl.git
