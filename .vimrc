@@ -171,9 +171,13 @@ else
     highlight! link NonText SpecialKey
 endif
 
-if has('syntax') && !&diff
-    syntax on
-    set colorcolumn=80
+if !&diff
+    if has('syntax')
+        syntax on
+    endif
+    if exists('+colorcolumn')
+        set colorcolumn=80
+    endif
 endif
 
 
