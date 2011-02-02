@@ -162,11 +162,6 @@ set showfulltag
 
 " Highlighting, Colors -----------------------------------------------------{{{1
 
-if has('syntax') && !&diff
-    syntax on
-    set colorcolumn=80
-endif
-
 set background=dark
 
 if has('gui_running')
@@ -174,6 +169,11 @@ if has('gui_running')
 else
     colorscheme ir_black
     highlight! link NonText SpecialKey
+endif
+
+if has('syntax') && !&diff
+    syntax on
+    set colorcolumn=80
 endif
 
 
@@ -399,8 +399,12 @@ if has('autocmd')
 
     " All dark backgrounds should be black.
     autocmd GUIEnter,ColorScheme *
-        \ if has('gui_running') && &background == 'dark' |
-        \     highlight Normal guibg=black |
+        \ if &background == 'dark' |
+        \     if has('gui_running') |
+        \         highlight Normal guibg=black |
+        \     else |
+        \         highlight Normal ctermbg=black |
+        \     endif |
         \ endif
 
     " Restore cursor position.
