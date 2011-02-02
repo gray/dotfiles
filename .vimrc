@@ -401,14 +401,14 @@ if has('autocmd')
     " GUI startup resets the visual bell; turn it back off
     autocmd GUIEnter * set visualbell t_vb=
 
+    " Workaround for a bug that resets background based upon the value of
+    " ctermfg or ctermbg when ':highlight Normal' is run.
+    autocmd GUIEnter,VimEnter * let g:background = &background
+
     " All dark backgrounds should be black.
     autocmd GUIEnter,ColorScheme *
-        \ if &background == 'dark' |
-        \     if has('gui_running') |
-        \         highlight Normal guibg=black |
-        \     else |
-        \         highlight Normal ctermbg=black |
-        \     endif |
+        \ if g:background == 'dark' |
+        \     highlight Normal ctermbg=black guibg=black |
         \ endif
 
     " Restore cursor position.
