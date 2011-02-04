@@ -160,15 +160,6 @@ feeds:
     regexp:
       reject:
         - \bAutofill Fail(?:ed)?\b
-  revolutiontt_tv:
-    priority: 3
-    interval: 5 minutes
-    include:
-      - private/revolutiontt_tv-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-series
   torrentvault_tv:
     priority: 4
     interval: 5 minutes
@@ -201,22 +192,7 @@ feeds:
       - tv-series
     regexp:
       reject_excluding:
-        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Drama|Horizon|Mystery)
-  theempire:
-    priority: 7
-    interval: 15 minutes
-    rss:
-      url: http://theempire.bz/rssdd.xml
-      silent: yes
-    include:
-      - private/theempire-headers.yml
-    preset:
-      - torrents
-      - tv
-      - tv-series
-    regexp:
-      reject_excluding:
-        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Documentary|Drama|Mystery)
+        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Drama|Mystery)
 
   # TV series premieres.
   eztv_premieres:
@@ -244,15 +220,6 @@ feeds:
       - hexagon\.cc
       - '\.onion:'
       - tor2web\.com
-  revolutiontt_tv_premieres:
-    priority: 21
-    interval: 5 minutes
-    include:
-      - private/revolutiontt_tv-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-premieres
   torrentvault_tv_premieres:
     priority: 22
     interval: 5 minutes
@@ -273,13 +240,6 @@ feeds:
       - tv-premieres
 
   # Movies
-  revolutiontt_movies:
-    priority: 30
-    include:
-      - private/revolutiontt_movies-rss.yml
-    preset:
-      - torrents
-      - movies
   xtremespeeds_movies:
     priority: 31
     include:
@@ -288,7 +248,7 @@ feeds:
       - torrents
       - movies
   rlslog:
-    priority: 32
+    priority: 33
     rlslog: http://www.rlslog.net/category/movies/
     preset:
       - torrents
