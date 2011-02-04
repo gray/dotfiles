@@ -185,6 +185,8 @@ endif
 
 set hidden             " Allow edit buffers to be hidden
 
+set clipboard+=unnamed " Use system clipboard
+
 set mouse=a            " Enable the mouse for all modes
 set mousehide          " Hide mouse while typing
 set mousemodel=popup   " Use popup menu for right mouse button
