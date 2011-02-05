@@ -82,8 +82,6 @@ css_color:
     http://www.vim.org/scripts/script.php?script_id=2150
 gentooish:
     http://www.vim.org/scripts/script.php?script_id=2474
-inkpot:
-    http://www.vim.org/scripts/script.php?script_id=1143
 ir_black:
     http://github.com/twerth/dotfiles/raw/master/etc/vim/colors/ir_black.vim
 jammy:
