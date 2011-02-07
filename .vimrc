@@ -250,9 +250,6 @@ command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 " For sh syntax; most shells are POSIX-compliant nowadays
 let g:is_posix = 1
 
-let g:miniBufExplMapWindowNavArrows = 1
-let g:miniBufExplModSelTarget = 1
-
 let delimitMate_expand_cr = 1
 
 let g:SuperTabCrMapping = 0
