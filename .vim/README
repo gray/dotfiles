@@ -8,6 +8,8 @@ camelcasemotion:
     http://www.vim.org/scripts/script.php?script_id=1905
 delimitMate:
     http://www.vim.org/scripts/script.php?script_id=2754
+endwise:
+    http://www.vim.org/scripts/script.php?script_id=2386
 fuzzy finder:
     http://www.vim.org/scripts/script.php?script_id=1984
 gist:
@@ -88,5 +90,7 @@ jammy:
     http://www.vim.org/scripts/script.php?script_id=2169
 jellybeans:
     http://www.vim.org/scripts/script.php?script_id=2555
+lettuce:
+    http://www.vim.org/scripts/script.php?script_id=1975
 vividchalk:
     http://www.vim.org/scripts/script.php?script_id=1891

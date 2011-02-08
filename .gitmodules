@@ -85,3 +85,6 @@
 [submodule ".vim/bundle/zoomwin"]
 	path = .vim/bundle/zoomwin
 	url = git://github.com/vim-scripts/ZoomWin.git
+[submodule ".vim/bundle/endwise"]
+	path = .vim/bundle/endwise
+	url = git://github.com/tpope/vim-endwise.git
