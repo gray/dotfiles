@@ -114,6 +114,7 @@ do
     for line in $response; do
         case $line in '{"arguments":{'*'"result":'*) result=$line; esac
     done
+    [ "${result-}" ] || continue
 
     case $result in
         '{"arguments":{"torrent-added":{"hashString":'*)
@@ -194,15 +195,14 @@ for line in $(remote --torrent all --info); do
                               do=1
     esac
 
-    [ 1 != "${do-0}" ] && continue || do=0
+    [ 1 != "${do-0}" ]       && continue
+    [ '100%' != "$percent" ] && continue
 
     case $state in
         Verifying*) continue
     esac
 
-    [ '100%' != "$percent" ] && continue
-
-    last_dir=; unrarred_lock=
+    do=0; last_dir=; unrarred_lock=
 
     while [ 1 = "$HAS_UNRAR" ]; do
         # Verify directory is valid and in expected location.
