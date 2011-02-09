@@ -60,7 +60,7 @@ asciidoc:
 csv:
     http://vim.wikia.com/wiki/Working_with_CSV_files
 go:
-    http://go.googlecode.com/hg/misc/vim/go.vim
+    http://go.googlecode.com/hg/misc/vim/syntax/go.vim
 json:
     http://www.vim.org/scripts/script.php?script_id=1945
 markdown:
