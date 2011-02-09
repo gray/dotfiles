@@ -53,6 +53,8 @@ after/syntax/c.vim:
     http://www.vim.org/scripts/script.php?script_id=3064
 applescript:
     http://www.vim.org/scripts/script.php?script_id=1736
+arduino:
+    http://www.vim.org/scripts/script.php?script_id=2654
 asciidoc:
     http://asciidoc.googlecode.com/hg/vim/syntax/asciidoc.vim
 csv:
