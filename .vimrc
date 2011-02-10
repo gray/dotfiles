@@ -280,6 +280,8 @@ let g:netrw_dirhistmax = 0
 let maplocalleader = ','
 let mapleader = ','
 
+inoremap jj <esc>
+
 " Use ,, to work around , as leader
 noremap ,, ,
 
