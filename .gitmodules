@@ -91,3 +91,6 @@
 [submodule ".vim/bundle/arduino"]
 	path = .vim/bundle/arduino
 	url = git://github.com/vim-scripts/Arduino-syntax-file.git
+[submodule ".vim/bundle/afterimage"]
+	path = .vim/bundle/afterimage
+	url = git://github.com/tpope/vim-afterimage.git

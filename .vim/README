@@ -4,6 +4,8 @@ abolish:
     http://www.vim.org/scripts/script.php?script_id=1545
 ack:
     http://www.vim.org/scripts/script.php?script_id=2572
+afterimage:
+    http://www.vim.org/scripts/script.php?script_id=1617
 camelcasemotion:
     http://www.vim.org/scripts/script.php?script_id=1905
 delimitMate:
