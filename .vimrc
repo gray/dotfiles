@@ -25,7 +25,7 @@ endif
 set autoread        " Reload file if externally, but not internally modified
 set autowrite       " Write file if modified
 set writebackup     " Make a temporary backup file before overwriting
-set directory=~/.vim/tmp
+set directory=~/.vim/tmp//
 set backupdir=~/.vim/tmp
 
 
