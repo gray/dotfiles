@@ -182,7 +182,8 @@ endif
 
 " Buffers, Windows, Tabs ---------------------------------------------------{{{1
 
-set hidden             " Allow edit buffers to be hidden
+set hidden                    " Allow edit buffers to be hidden
+set switchbuf=useopen,usetab  " Jump to first open window or tab with buffer
 
 set clipboard+=unnamed " Use system clipboard
 
