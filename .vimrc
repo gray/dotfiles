@@ -357,13 +357,6 @@ nnoremap Y y$
 vnoremap < <gv
 vnoremap > >gv
 
-inoremap <s-down> <esc>v<down>
-inoremap <s-up> <esc>v<up>
-nnoremap <s-down> v<down>
-nnoremap <s-up> v<up>
-vnoremap <s-down> <down>
-vnoremap <s-up> <up>
-
 " Select last pasted text
 nnoremap <localleader>v `[v`]
 
