@@ -94,3 +94,6 @@
 [submodule ".vim/bundle/afterimage"]
 	path = .vim/bundle/afterimage
 	url = git://github.com/tpope/vim-afterimage.git
+[submodule ".vim/bundle/pathogen"]
+	path = .vim/bundle/pathogen
+	url = git://github.com/tpope/vim-pathogen.git

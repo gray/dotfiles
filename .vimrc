@@ -1,9 +1,14 @@
-" Files, Backup ------------------------------------------------------------{{{1
+" Pathogen -----------------------------------------------------------------{{{1
+
+filetype off
+runtime bundle/pathogen/autoload/pathogen.vim
 
 " Adds .vim/bundle/* to runtimepath
-filetype off
 silent! call pathogen#runtime_append_all_bundles()
 silent! call pathogen#helptags()
+
+
+" Files, Backup ------------------------------------------------------------{{{1
 
 set history=1000    " Size of command/search history
 set viminfo='1000   " Save marks for N files
