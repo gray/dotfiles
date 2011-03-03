@@ -98,3 +98,24 @@ lettuce:
     http://www.vim.org/scripts/script.php?script_id=1975
 vividchalk:
     http://www.vim.org/scripts/script.php?script_id=1891
+
+plugin management
+=================
+
+add new plugin:
+
+    cd $REPO
+    # example
+    git submodule add git://github.com/mileszs/ack.vim.git .vim/bundle/ack
+    git commit -m "..." .gitmodules .vim/bundle/ack
+
+update plugins:
+
+    # add to crontab
+    @weekly cd $REPO && git submodule -q foreach git pull -q origin master
+
+remove plugin:
+
+    cd $REPO
+    # rm reference from .git/config and .gitmodules
+    git rm --cached .vim/bundle/$PLUGIN_DIR
