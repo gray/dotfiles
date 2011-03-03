@@ -107,6 +107,7 @@ add new plugin:
     cd $REPO
     # example
     git submodule add git://github.com/mileszs/ack.vim.git .vim/bundle/ack
+    git submodule init
     git commit -m "..." .gitmodules .vim/bundle/ack
 
 update plugins:
