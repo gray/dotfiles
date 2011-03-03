@@ -253,8 +253,7 @@ command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 
 " Plugin Settings ----------------------------------------------------------{{{1
 
-" For sh syntax; most shells are POSIX-compliant nowadays
-let g:is_posix = 1
+let g:yankring_history_dir = '~/.vim/tmp'
 
 let delimitMate_expand_cr = 1
 
@@ -279,6 +278,9 @@ let Tlist_Auto_Update = 1
 let Tlist_Highlight_Tag_On_BufEnter = 1
 
 let g:netrw_dirhistmax = 0
+
+" For sh syntax; most shells are POSIX-compliant nowadays
+let g:is_posix = 1
 
 
 " Mappings -----------------------------------------------------------------{{{1
