@@ -1,12 +1,16 @@
 #!/usr/bin/env perl
-use strict;
+use 5.012;
 use warnings;
+
+use Acme::CPANAuthors::Utils qw(cpan_packages);
 use CPAN::DistnameInfo;
 use Cwd qw(realpath);
 use DB_File;
+use File::Find;
 use File::Spec::Functions qw(catfile catpath splitpath);
 use WebService::Google::Reader;
 
+use constant DEBUG   => 1;
 use constant VERBOSE => not $ENV{CRON};
 
 my $dir = catpath((splitpath(realpath __FILE__))[0, 1]);
@@ -18,13 +22,48 @@ my $reader = WebService::Google::Reader->new(
     password => $ENV{GOOGLE_PASSWORD},
 );
 
+# Return a sub that checks if the given Perl dist is installed.
+my $is_perl_dist_installed = do {
+    # Find the list of installed modules.
+    my (%modules, %prune);
+    for my $top (reverse sort @INC) {
+        next if '.' eq $top;
+        my $len = length $top;
+        find {
+            wanted => sub {
+                if ($File::Find::dir ~~ %prune) {
+                    $File::Find::prune = 1;
+                    return;
+                }
+                return unless '.pm' eq substr $_, -3, 3, '';
+                return unless -f _;
+                substr $_, 0, 1 + $len, '';
+                s{[\\/]}{::}g;
+                $modules{$_} = undef;
+            },
+            no_chdir => 1
+        }, $top;
+        $prune{$top} = undef;
+    }
+
+    # Determine the installed distributions, given the installed modules.
+    my %dists;
+    for my $dist (cpan_packages->latest_distributions) {
+        for my $package (@{$dist->packages}) {
+            $dists{$dist->dist} = undef if $package->package ~~ %modules;
+        }
+    }
+
+    sub { $_[0] ~~ %dists; }
+};
+
 my %conf = (
     perl => {
-        url  => 'http://search.cpan.org/uploads.rdf',
+        url  => 'http://feeds.feedburner.com/YetAnotherCpanRecentChanges',
         name => sub {
             CPAN::DistnameInfo->new($_[0]->title . '.tgz')->dist
         },
-        whitelist => [ qr/^(?:AnyEvent|Digest)\b/, ]
+        whitelist => [ $is_perl_dist_installed ],
     },
     python => {
         url       => 'http://pypi.python.org/pypi?:action=rss',
@@ -57,7 +96,7 @@ my %conf = (
             $_[0]->title($title);
             return $name;
         },
-    }
+    },
 );
 
 # Get list of feed subscription times.
@@ -82,12 +121,12 @@ while (my ($lang, $conf) = each %conf) {
     my @unwanted_entries;
     {
         for my $entry ($feed->entries) {
-            my $name    = $conf->{name}($entry);
+            my $name    = $conf->{name}->($entry);
             my $title   = $entry->title;
             my $summary = $entry->summary || '';
             my $desc    = $entry->content || '';
             $desc &&= $desc->body;
-            # print "$lang | $name | $title | $summary | $desc\n" and next;
+            # say "$lang | $name | $title | $summary | $desc\n" and next;
 
             unless ($name) {
                 warn "Couldn't extract name from $title\n";
@@ -96,27 +135,22 @@ while (my ($lang, $conf) = each %conf) {
 
             my $whitelisted;
             for my $w (@whitelist) {
-                if ('Regexp' eq ref $w ? $name =~ $w : $name eq $w) {
-                    $whitelisted = 1;
-                    last;
-                }
+                next if not $name ~~ $w;
+                DEBUG && say "$lang - $name: whitelisted";
+                $whitelisted = 1;
+                last;
             }
             next if $whitelisted;
 
             my $blacklisted;
             for my $b (@blacklist) {
-                if ('Regexp' eq ref $b) {
-                    next if $name !~ $b and $summary !~ $b and $desc !~ $b;
-                }
-                else {
-                    next if $name ne $b;
-                }
-
+                next if not $name ~~ $b;
+                DEBUG && say "$lang - $name: blacklisted";
                 $blacklisted = 1;
                 last;
             }
 
-            if ($blacklisted or exists $db{"$lang|$name"}
+            if ($blacklisted or "$lang|$name" ~~ %db
                 and $title ne $db{"$lang|$name"}
             ) {
                 push @unwanted_entries, $entry;
@@ -131,5 +165,5 @@ while (my ($lang, $conf) = each %conf) {
     }
 
     $reader->mark_read_entry(\@unwanted_entries);
-    VERBOSE && print $_->title, "\n" for @unwanted_entries;
+    VERBOSE && say $_->title for @unwanted_entries;
 }
