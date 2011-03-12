@@ -10,7 +10,6 @@ use File::Find;
 use File::Spec::Functions qw(catfile catpath splitpath);
 use WebService::Google::Reader;
 
-use constant DEBUG   => 1;
 use constant VERBOSE => not $ENV{CRON};
 
 my $dir = catpath((splitpath(realpath __FILE__))[0, 1]);
@@ -136,7 +135,7 @@ while (my ($lang, $conf) = each %conf) {
             my $whitelisted;
             for my $w (@whitelist) {
                 next if not $name ~~ $w;
-                DEBUG && say "$lang - $name: whitelisted";
+                VERBOSE && say "$lang - $name - whitelisted";
                 $whitelisted = 1;
                 last;
             }
@@ -145,7 +144,7 @@ while (my ($lang, $conf) = each %conf) {
             my $blacklisted;
             for my $b (@blacklist) {
                 next if not $name ~~ $b;
-                DEBUG && say "$lang - $name: blacklisted";
+                VERBOSE && say "$lang - $name - blacklisted";
                 $blacklisted = 1;
                 last;
             }
@@ -154,6 +153,7 @@ while (my ($lang, $conf) = each %conf) {
                 and $title ne $db{"$lang|$name"}
             ) {
                 push @unwanted_entries, $entry;
+                VERBOSE && say "$lang - $name - unwanted because seen";
             }
             else {
                 $db{"$lang|$name"} = $title;
@@ -165,5 +165,4 @@ while (my ($lang, $conf) = each %conf) {
     }
 
     $reader->mark_read_entry(\@unwanted_entries);
-    VERBOSE && say $_->title for @unwanted_entries;
 }
