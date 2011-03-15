@@ -66,7 +66,7 @@ my %conf = (
     },
     python => {
         url       => 'http://pypi.python.org/pypi?:action=rss',
-        blacklist => [ qr/\b(?:django|plone)\b/i ],
+        blacklist => [ qr/ (?:\b|_) (?:django | plone) (?:\b|_) /ix ],
         name      => sub {
             my ($name) = $_[0]->link->href =~ m[
                 ^http://pypi\.python\.org/pypi/([^/]+)
@@ -76,7 +76,7 @@ my %conf = (
     },
     ruby => {
         url       => 'http://feeds.feedburner.com/gemcutter-latest',
-        blacklist => [ qr/\brails\b/i ],
+        blacklist => [ qr/ (?:\b|_) rails (?:\b|_) /i ],
         name      => sub {
             my ($name) = $_[0]->link->href =~ m[
                 ^http://rubygems\.org/gems/([^?/]+)
@@ -135,8 +135,8 @@ while (my ($lang, $conf) = each %conf) {
             my $whitelisted;
             for my $w (@whitelist) {
                 next if not $name ~~ $w;
-                VERBOSE && say "$lang - $name - whitelisted";
                 $whitelisted = 1;
+                VERBOSE && say "$lang - $name - whitelisted";
                 last;
             }
             next if $whitelisted;
@@ -144,14 +144,14 @@ while (my ($lang, $conf) = each %conf) {
             my $blacklisted;
             for my $b (@blacklist) {
                 next if not $name ~~ $b;
-                VERBOSE && say "$lang - $name - blacklisted";
                 $blacklisted = 1;
+                push @unwanted_entries, $entry;
+                VERBOSE && say "$lang - $name - blacklisted";
                 last;
             }
+            next if $blacklisted;
 
-            if ($blacklisted or "$lang|$name" ~~ %db
-                and $title ne $db{"$lang|$name"}
-            ) {
+            if ("$lang|$name" ~~ %db and $title ne $db{"$lang|$name"}) {
                 push @unwanted_entries, $entry;
                 VERBOSE && say "$lang - $name - unwanted because seen";
             }
