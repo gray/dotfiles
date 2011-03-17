@@ -76,7 +76,7 @@ my %conf = (
     },
     ruby => {
         url       => 'http://feeds.feedburner.com/gemcutter-latest',
-        blacklist => [ qr/ (?:\b|_) rails (?:\b|_) /i ],
+        blacklist => [ qr/ (?:\b|_) rails (?:\b|_) /ix ],
         name      => sub {
             my ($name) = $_[0]->link->href =~ m[
                 ^http://rubygems\.org/gems/([^?/]+)
@@ -143,7 +143,7 @@ while (my ($lang, $conf) = each %conf) {
 
             my $blacklisted;
             for my $b (@blacklist) {
-                next if not $name ~~ $b;
+                next if not [$name, $title, $summary, $desc] ~~ $b;
                 $blacklisted = 1;
                 push @unwanted_entries, $entry;
                 VERBOSE && say "$lang - $name - blacklisted";
