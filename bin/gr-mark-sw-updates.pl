@@ -65,24 +65,24 @@ my %conf = (
         whitelist => [ $is_perl_dist_installed ],
     },
     python => {
-        url       => 'http://pypi.python.org/pypi?:action=rss',
-        blacklist => [ qr/ (?:\b|_) (?:django | plone) (?:\b|_) /ix ],
-        name      => sub {
+        url  => 'http://pypi.python.org/pypi?:action=rss',
+        name => sub {
             my ($name) = $_[0]->link->href =~ m[
                 ^http://pypi\.python\.org/pypi/([^/]+)
             ]x;
             return $name;
         },
+        blacklist => [ qr/ (?:\b|_) (?:django | plone) (?:\b|_) /ix ],
     },
     ruby => {
-        url       => 'http://feeds.feedburner.com/gemcutter-latest',
-        blacklist => [ qr/ (?:\b|_) rails (?:\b|_) /ix ],
-        name      => sub {
+        url  => 'http://feeds.feedburner.com/gemcutter-latest',
+        name => sub {
             my ($name) = $_[0]->link->href =~ m[
                 ^http://rubygems\.org/gems/([^?/]+)
             ]x;
             return $name;
         },
+        blacklist => [ qr/ (?:\b|_) rails (?:\b|_) /ix ],
     },
     haskell => {
         url  => 'http://hackage.haskell.org/packages/archive/recent.rss',
@@ -132,24 +132,23 @@ while (my ($lang, $conf) = each %conf) {
                 next;
             }
 
-            my $whitelisted;
+            my $listed;
             for my $w (@whitelist) {
                 next if not $name ~~ $w;
-                $whitelisted = 1;
+                $listed = 1;
                 VERBOSE && say "$lang - $name - whitelisted";
                 last;
             }
-            next if $whitelisted;
+            next if $listed;
 
-            my $blacklisted;
             for my $b (@blacklist) {
                 next if not [$name, $title, $summary, $desc] ~~ $b;
-                $blacklisted = 1;
+                $listed = 1;
                 push @unwanted_entries, $entry;
                 VERBOSE && say "$lang - $name - blacklisted";
                 last;
             }
-            next if $blacklisted;
+            next if $listed;
 
             if ("$lang|$name" ~~ %db and $title ne $db{"$lang|$name"}) {
                 push @unwanted_entries, $entry;
