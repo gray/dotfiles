@@ -123,7 +123,6 @@ set shiftround        " Round indent to multiple of shiftwidth
 set formatoptions-=t  " Don't auto-wrap text
 set formatoptions+=c  " Auto-wrap comments
 set formatoptions+=n  " Recognize numbered lists
-set formatoptions+=o  " Insert comment leader after o/O
 set formatoptions+=r  " Insert comment leader after <cr> in insert mode.
 set formatoptions+=q  " Allow formatting of comments with 'gq'
 set formatoptions+=1  " Break a line before, not after, a one-letter word
@@ -491,7 +490,7 @@ endif
 " GUI ----------------------------------------------------------------------{{{1
 
 if has('gui_running')
-    set lines=40
+    set lines=50
     set columns=85
 
     set guioptions-=T  " Hide toolbar
