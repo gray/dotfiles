@@ -58,7 +58,7 @@ my $is_perl_dist_installed = do {
 
 my %conf = (
     perl => {
-        url  => 'http://feeds.feedburner.com/YetAnotherCpanRecentChanges',
+        url  => 'http://search.cpan.org/uploads.rdf',
         name => sub {
             CPAN::DistnameInfo->new($_[0]->title . '.tgz')->dist
         },
