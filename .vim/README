@@ -79,6 +79,8 @@ python:
     http://www.vim.org/scripts/script.php?script_id=790
 scala:
     http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
+srt:
+    http://www.linuxpages.org/srt.vim_en.php
 swig:
     http://www.vim.org/scripts/script.php?script_id=1615
 yaml:
