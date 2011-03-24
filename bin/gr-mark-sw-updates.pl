@@ -72,7 +72,7 @@ my %conf = (
             ]x;
             return $name;
         },
-        blacklist => [ qr/ (?:\b|_) (?:django | plone) (?:\b|_) /ix ],
+        blacklist => [ qr/ (?:\b|_) (?:django | plone | zope) (?:\b|_) /ix ],
     },
     ruby => {
         url  => 'http://feeds.feedburner.com/gemcutter-latest',
