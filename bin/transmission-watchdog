@@ -269,12 +269,6 @@ for line in $(remote --torrent all --info); do
             [ 1 = "$VERBOSE" ] && log "Removed RAR archive: $name\n"
         fi
 
-        # Mark files a different color in Finder to indicate they are
-        # finished seeding and can safely be deleted.
-        if [ 1 = "$HAS_SETLABEL" ]; then
-            ! find "$dir/$name" -exec setlabel -s Red {} + 2>/dev/null
-        fi
-
         if [ -d "$dir/$name" ]; then
             ! find "$dir/$name" -type f \(                                    \
                 -name '*.[Nn][Ff][Oo]' -o -name '.message' -o                 \
@@ -288,6 +282,12 @@ for line in $(remote --torrent all --info); do
                 -exec rm -rf {} + 2>/dev/null
             ! find "$dir/$name" -type d -depth \
                 -exec rmdir {} + 2>/dev/null
+        fi
+
+        # Mark files a different color in Finder to indicate they are
+        # finished seeding and can safely be deleted.
+        if [ 1 = "$HAS_SETLABEL" ]; then
+            ! find "$dir/$name" -exec setlabel -s Red {} + 2>/dev/null
         fi
 
         remote --torrent "$hash" --remove >/dev/null
