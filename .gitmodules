@@ -100,3 +100,6 @@
 [submodule ".vim/bundle/yankring"]
 	path = .vim/bundle/yankring
 	url = git://github.com/vim-scripts/YankRing.vim.git
+[submodule ".vim/bundle/molokai"]
+	path = .vim/bundle/molokai
+	url = git://github.com/tomasr/molokai.git
