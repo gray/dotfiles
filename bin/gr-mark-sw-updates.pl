@@ -2,12 +2,12 @@
 use 5.012;
 use warnings;
 
-use Acme::CPANAuthors::Utils qw(cpan_packages);
 use CPAN::DistnameInfo;
 use Cwd qw(realpath);
 use DB_File;
 use File::Find;
-use File::Spec::Functions qw(catfile catpath splitpath);
+use File::Spec::Functions qw(catfile catpath splitpath tmpdir);
+use LWP::Simple;
 use WebService::Google::Reader;
 
 use constant VERBOSE => not $ENV{CRON};
@@ -45,13 +45,27 @@ my $is_perl_dist_installed = do {
         $prune{$top} = undef;
     }
 
+    # Fetch the file that maps packages to distributions.
+    my $file = '02packages.details.txt.gz';
+    my $url = "http://search.cpan.org/CPAN/modules/$file";
+    $file = catfile(tmpdir, $file);
+    if (not -r $file or 1 > -M _) {
+        my $res = $reader->ua->mirror($url, $file);
+        die "Failed to mirror $file; " if $res->is_error;
+    }
+    open my $fh, '<:gzip', $file or die "$file: $!";
+
+    # Skip header.
+    while (<$fh>) { last when "\n" }
+
     # Determine the installed distributions, given the installed modules.
     my %dists;
-    for my $dist (cpan_packages->latest_distributions) {
-        for my $package (@{$dist->packages}) {
-            $dists{$dist->dist} = undef if $package->package ~~ %modules;
-        }
+    while (my $line = <$fh>) {
+        my ($package, $version, $dist) = split /\s+/, $line;
+        next unless $package ~~ %modules;
+        $dists{ CPAN::DistnameInfo->new($dist)->dist } = undef;
     }
+    close $fh;
 
     sub { $_[0] ~~ %dists; }
 };
@@ -82,7 +96,9 @@ my %conf = (
             ]x;
             return $name;
         },
-        blacklist => [ qr/ (?:\b|_) rails (?:\b|_) /ix ],
+        blacklist => [
+            qr/ (?:\b|_) (?:rails | active\W?record) (?:\b|_) /ix,
+        ],
     },
     haskell => {
         url  => 'http://hackage.haskell.org/packages/archive/recent.rss',
