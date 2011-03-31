@@ -1,4 +1,4 @@
-local: ~/dev/mirrors/cpan/
+local: ~/local/minicpan/
 remote: http://search.cpan.org/CPAN/
 exact_mirror: 1
 skip_perl: 1
