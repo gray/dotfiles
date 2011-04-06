@@ -356,8 +356,10 @@ nmap gP :cprev<cr>
 nnoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr><c-l>
 inoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr><c-l>a
 
-" Yank to end of line
-nnoremap Y y$
+function! YRRunAfterMaps()
+    " Yank to end of line
+    nnoremap <silent> Y :<C-U>YRYankCount 'y$'<cr>
+endfunction
 
 " Return to visual mode after indenting
 vnoremap < <gv
