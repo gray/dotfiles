@@ -215,7 +215,7 @@ function! s:VisualSearch(direction) range
     let @" = l:saved_reg
 endfunction
 
-function! s:CurrentSyntaxGroup()
+function! CurrentSyntaxGroup()
     return synIDattr(synID(line('.'),col('.'),1),'name')
 endfunction
 
