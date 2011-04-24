@@ -4,6 +4,7 @@ endif
 
 augroup filetypedetect
 
+autocmd BufNewFile,BufRead *.as setfiletype actionscript
 autocmd BufNewFile,BufRead *.applescript setfiletype applescript
 autocmd BufNewFile,BufRead *.pde setfiletype arduino
 autocmd BufNewFile,BufRead *.csv setfiletype csv
