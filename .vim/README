@@ -55,6 +55,8 @@ installed syntaxes:
 
 after/syntax/c.vim:
     http://www.vim.org/scripts/script.php?script_id=3064
+actionscript:
+    http://www.vim.org/scripts/script.php?script_id=1061
 applescript:
     http://www.vim.org/scripts/script.php?script_id=1736
 arduino:
