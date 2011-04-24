@@ -9,7 +9,7 @@ presets:
       min: r5
     regexp:
       reject:
-        - '[\W_]r5[\W_].*?(?:_|\b)(?:mic|russian|cam[\W_]+audio)(?:_|\b)'
+        - '[\W_]r5[\W_].*?(?:_|\b)(?:mic|russian|cam[\W_]*audio)(?:_|\b)'
         - '[\W_]3-?D(?:BD)?\b'
         - '[\W_]ppv(?:-?rip)?\b'
 
@@ -57,7 +57,7 @@ presets:
   # Grab the first episode of any new series.
   tv-premieres:
     series_premiere:
-      min_quality: dsr
+      min_quality: hdtv
       max_quality: dvdrip
       path: ~/Media/TV/_NEW_/.
       propers: no
@@ -157,6 +157,8 @@ feeds:
       - torrents
       - tv
       - tv-series
+    if:
+      - "'[ ' + str(now.year) + ' ]' not in title": reject
     regexp:
       reject:
         - \bAutofill Fail(?:ed)?\b
@@ -190,9 +192,11 @@ feeds:
       - torrents
       - tv
       - tv-series
+    if:
+      - "str(now.year) + ')' not in title": reject
     regexp:
       reject_excluding:
-        - 201\d\).*?\((?:XviD|DivX)\).*?\((?:Drama|Mystery)
+        - \((?:XviD|DivX)\).*?\((?:Drama|Mystery)
 
   # TV series premieres.
   eztv_premieres:
