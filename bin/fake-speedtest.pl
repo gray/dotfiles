@@ -29,7 +29,7 @@ my $time = time . sprintf "%03d", int rand(999);
 
 my $dom = parse_config("http://speedtest.net/speedtest-config.php?x=$time");
 my ($node) = $dom->findnodes('/settings/client');
-my ($ip, $clat, $clon) = map { $node->findvalue("\@$_") } qw(ip lat lon);
+my ($clat, $clon) = map { $node->findvalue("\@$_") } qw(lat lon);
 
 # Choose the closest server.
 # TODO: use AnyEvent::FastPing since flash client now chooses server by
