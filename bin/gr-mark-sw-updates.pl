@@ -7,6 +7,7 @@ use Cwd qw(realpath);
 use DB_File;
 use File::Find;
 use File::Spec::Functions qw(catfile catpath splitpath tmpdir);
+use PerlIO::gzip;
 use WebService::Google::Reader;
 
 use constant VERBOSE => not $ENV{CRON};
