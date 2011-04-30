@@ -44,25 +44,15 @@ set output-meta on
 set blink-matching-paren on
 
 set editing-mode vi
-
 $if mode=vi
     set keymap vi-command
-
-    # Incremental searching with Up and Down
-    "\e[A": history-search-backward
-    "\e[B": history-search-forward
-
     set keymap vi-insert
 
     "\C-l": clear-screen
-
-    # Incremental searching with Up and Down
-    "\e[A": history-search-backward
-    "\e[B": history-search-forward
 $else
     # Bash mode
-
-    # Incremental searching with Up and Down
-    "\e[A": history-search-backward
-    "\e[B": history-search-forward
 $endif
+
+# Incremental searching with Up and Down
+"\e[A": history-search-backward
+"\e[B": history-search-forward
