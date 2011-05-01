@@ -29,12 +29,13 @@ umask 0022
 [ -t 0 ] && stty ixany
 
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=' *:&:?:??:pwd:-:.. *:jobs:history:clear:exit'
 HISTIGNORE=$HISTIGNORE':ll[a.c]:llc[a.]:*password=*:*PASSWORD=*'
 HISTSIZE=20000
 HISTFILESIZE=$HISTSIZE
-HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
+HISTTIMEFORMAT='[%F %T] '
 
 FIGNORE=~:.a:.class:.la:.mo:.o:.obj:.pyc:.pyo:.so:.swo:.swp
 
