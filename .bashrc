@@ -7,7 +7,7 @@ PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n[\!]\$ '
 # Only add to $PATH the first time this file is sourced.
 if [ -z "$ETC_PATH" ] && [ ${ETC_PATH-_} ]; then
     export ETC_PATH=$PATH
-    PATH=~/bin:~/local/bin
+    PATH=$HOME/bin:$HOME/local/bin
     PATH=$PATH:/opt/local/bin:/opt/local/sbin
     PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
     PATH=$PATH:$ETC_PATH
