@@ -22,8 +22,7 @@ alias bc='bc -lq'
 
 alias wget='wget --continue --no-check-certificate'
 
-alias xip="curl -o - -s http://checkip.dyndns.org/ \
-    | grep -E -m 1 -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'"
+alias xip='curl -o - -s icanhazip.com || curl -o - -s ifconfig.me/ip'
 
 case $OSTYPE in
     darwin*)
