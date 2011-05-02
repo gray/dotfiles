@@ -54,12 +54,8 @@ md () { mkdir -p "$1" && cd "$1"; }
 
 # Print active network interfaces.
 upifs () {
-    for iface in $(ifconfig -lu) ; do
-        case $iface in
-            lo*) continue ;;
-        esac
-        ifconfig $iface | grep -q 'status: active' && echo $iface
-    done
+    perl -MSys::HostIP=interfaces -e \
+        'print "$_\n" for grep !/^lo0?/, keys %{interfaces()}'
 }
 
 logurls () {
