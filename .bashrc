@@ -57,7 +57,7 @@ export LESS_TERMCAP_se=$'\E[0m'
 export LESS_TERMCAP_ue=$'\E[0m'
 export LESS_TERMCAP_us=$'\E[01;32m'
 
-export GREP_OPTIONS='--color=auto'
+export GREP_OPTIONS='--color=auto --devices=skip'
 export GREP_COLOR='1;35'  # purple
 
 ls --version >/dev/null 2>&1
