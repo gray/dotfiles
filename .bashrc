@@ -46,7 +46,7 @@ export EDITOR=vim
 export VISUAL=$EDITOR
 
 export PAGER=less
-export LESS='-~eiMQRWX'
+export LESS='-~iFMQRWX'
 export LESSHISTFILE=/dev/null
 # Less colors for man pages.
 export LESS_TERMCAP_mb=$'\E[01;31m'
