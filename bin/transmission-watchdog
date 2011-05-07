@@ -21,8 +21,8 @@
 
 VERBOSE=1
 LOCK=/tmp/transmission-watchdog.lock
-NETRC=~/.netrc
-WATCH_DIR=~/Media/.
+NETRC=$HOME/.netrc
+WATCH_DIR=$HOME/Media/.
 PUBLIC_UP_RATE=2
 PUBLIC_RATIO=0
 
@@ -146,7 +146,7 @@ do
         # Skip header lines
         [ $count -lt 2 ] && count=$((count+1)) && continue
         case $line in
-            *[/.][Ss][Aa][Mm][Pp][Ll][Ee].avi | \
+            *[/.\ ][Ss][Aa][Mm][Pp][Ll][Ee].avi | \
             */[Ss][Aa][Mm][Pp][Ll][Ee]/*)
                 SAVED_IFS=$IFS; IFS=': '; set -- $line; IFS=$SAVED_IFS
                 [ "$ids" ] && ids=$ids,$1 || ids=$1
