@@ -15,6 +15,7 @@ autocmd BufNewFile,BufRead *.json setfiletype json
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
 autocmd BufNewFile,BufRead *.psgi,*.t setfiletype perl
 autocmd BufNewFile,BufRead *.scala setfiletype scala
+autocmd BufNewFile,BufRead .bash_* setfiletype sh
 autocmd BufNewFile,BufRead *.srt setfiletype srt
 autocmd BufNewFile,BufRead *.i,*.swg,*.swig setfiletype swig
 autocmd BufNewFile,BufRead *.tt setfiletype tt2html
