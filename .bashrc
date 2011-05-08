@@ -6,7 +6,7 @@ PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n[\!]\$ '
 
 # Only add to $PATH the first time this file is sourced.
 if [ -z "$ETC_PATH" ] && [ ${ETC_PATH-_} ]; then
-    export ETC_PATH=$PATH
+    ETC_PATH=$PATH
     PATH=$HOME/bin:$HOME/local/bin
     PATH=$PATH:/opt/local/bin:/opt/local/sbin
     PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
@@ -48,17 +48,40 @@ export VISUAL=$EDITOR
 export PAGER=less
 export LESS='-~iFMQRWX'
 export LESSHISTFILE=/dev/null
+
+ANSI_RESET=$(tput sgr0)
+ANSI_BOLD=$(tput bold)
+ANSI_BLINK=$(tput blink)
+ANSI_REVERSE=$(tput rev)
+ANSI_UNDERLINE=$(tput smul)
+ANSI_BLACK=$(tput setaf 0)
+ANSI_RED=$(tput setaf 1)
+ANSI_GREEN=$(tput setaf 2)
+ANSI_YELLOW=$(tput setaf 3)
+ANSI_BLUE=$(tput setaf 4)
+ANSI_MAGENTA=$(tput setaf 5)
+ANSI_CYAN=$(tput setaf 6)
+ANSI_WHITE=$(tput setaf 7)
+ANSI_BG_BLACK=$(tput setaf 0)
+ANSI_BG_RED=$(tput setab 1)
+ANSI_BG_GREEN=$(tput setab 2)
+ANSI_BG_YELLOW=$(tput setab 3)
+ANSI_BG_BLUE=$(tput setab 4)
+ANSI_BG_MAGENTA=$(tput setab 5)
+ANSI_BG_CYAN=$(tput setab 6)
+ANSI_BG_WHITE=$(tput setab 7)
+
 # Less colors for man pages.
-export LESS_TERMCAP_mb=$'\E[01;31m'
-export LESS_TERMCAP_md=$'\E[01;31m'
-export LESS_TERMCAP_me=$'\E[0m'
-export LESS_TERMCAP_so=$'\E[01;44;33m'
-export LESS_TERMCAP_se=$'\E[0m'
-export LESS_TERMCAP_ue=$'\E[0m'
-export LESS_TERMCAP_us=$'\E[01;32m'
+export LESS_TERMCAP_mb=${ANSI_BOLD}${ANSI_RED}
+export LESS_TERMCAP_md=${ANSI_BOLD}${ANSI_RED}
+export LESS_TERMCAP_me=$ANSI_RESET
+export LESS_TERMCAP_so=${ANSI_YELLOW}${ANSI_BG_BLUE}
+export LESS_TERMCAP_se=$ANSI_RESET
+export LESS_TERMCAP_ue=$ANSI_RESET
+export LESS_TERMCAP_us=${ANSI_BOLD}${ANSI_GREEN}
 
 export GREP_OPTIONS='--color=auto --devices=skip'
-export GREP_COLOR='1;35'  # purple
+export GREP_COLOR='33;44'
 
 ls --version >/dev/null 2>&1
 if [ $? ]; then
