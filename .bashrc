@@ -46,7 +46,7 @@ export EDITOR=vim
 export VISUAL=$EDITOR
 
 export PAGER=less
-export LESS='-~iFMQRWX'
+export LESS='-~iFMQRX'
 export LESSHISTFILE=/dev/null
 
 ANSI_RESET=$(tput sgr0)
