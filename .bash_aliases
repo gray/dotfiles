@@ -63,7 +63,7 @@ logurls () {
     [ "$ifs" ] || return
     set -- $ifs
     sudo urlsnarf -i $1 -v '\.(gif|jpe?g|png|css|js|ico)( |\?|%22)' \
-        | tee -a /tmp/urls
+        | tee -a /tmp/urls.log
 }
 
 ansi_colors () {
