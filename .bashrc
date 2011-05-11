@@ -4,15 +4,13 @@
 # TODO: add time, add exit status and running time of last command
 PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n[\!]\$ '
 
-# Only add to $PATH the first time this file is sourced.
-if [ -z "$ETC_PATH" ] && [ ${ETC_PATH-_} ]; then
-    ETC_PATH=$PATH
-    PATH=$HOME/bin:$HOME/local/bin
-    PATH=$PATH:/opt/local/bin:/opt/local/sbin
-    PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
-    PATH=$PATH:$ETC_PATH
-    export PATH
-fi
+# Prevent $PATH from growing every time this file is sourced.
+SYSTEM_PATH=${SYSTEM_PATH:-$PATH}
+PATH=$HOME/bin:$HOME/local/bin
+PATH=$PATH:/opt/local/bin:/opt/local/sbin
+PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
+PATH=$PATH:$SYSTEM_PATH
+export PATH
 
 shopt -s no_empty_cmd_completion
 shopt -s checkwinsize  # Update windows size after each command.
@@ -28,7 +26,7 @@ umask 0022
 # Prevent C-s from accidentally freezing the terminal.
 [ -t 0 ] && stty ixany
 
-PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+PROMPT_COMMAND='history -a; history -c; history -r'
 
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=' *:&:?:??:pwd:-:.. *:jobs:history:clear:exit'
