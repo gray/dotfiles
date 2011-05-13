@@ -30,6 +30,8 @@ ragtag:
     http://www.vim.org/scripts/script.php?script_id=1896
 repeat:
     http://www.vim.org/scripts/script.php?script_id=2136
+replace with register:
+    http://www.vim.org/scripts/script.php?script_id=2703
 sherlock:
     http://www.vim.org/scripts/script.php?script_id=2731
 snipmate:

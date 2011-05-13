@@ -109,3 +109,6 @@
 [submodule ".vim/bundle/tagbar"]
 	path = .vim/bundle/tagbar
 	url = git://github.com/majutsushi/tagbar
+[submodule ".vim/bundle/replacewithregister"]
+	path = .vim/bundle/replacewithregister
+	url = git://github.com/vim-scripts/ReplaceWithRegister.git
