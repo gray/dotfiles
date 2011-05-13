@@ -1,5 +1,5 @@
 # Do nothing if the shell is non-interactive.
-[ -z "$PS1" ] && return
+[[ -z $PS1 ]] && return
 
 # TODO: add time, add exit status and running time of last command
 PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n[\!]\$ '
@@ -24,7 +24,7 @@ set -o ignoreeof       # Prevent accidental exiting of shell via C-d.
 umask 0022
 
 # Prevent C-s from accidentally freezing the terminal.
-[ -t 0 ] && stty ixany
+[[ -t 0 ]] && stty ixany
 
 PROMPT_COMMAND='history -a; history -c; history -r'
 
@@ -71,7 +71,7 @@ export GREP_OPTIONS='--color=auto --devices=skip'
 export GREP_COLOR='33;44'
 
 ls --version >/dev/null 2>&1
-if [ $? ]; then
+if [[ $? ]]; then
     # BSD
     LS_OPTIONS='-GT'
     export LSCOLORS=gxfxcxdxbxegedabagacad
@@ -95,6 +95,6 @@ esac
 
 export PERL_CPANM_OPT='-q'
 
-[ -f ~/.bash_aliases ] && source ~/.bash_aliases
+[[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
 
-[ -f ~/local/perlbrew/etc/bashrc ] && source ~/local/perlbrew/etc/bashrc
+[[ -f ~/local/perlbrew/etc/bashrc ]] && source ~/local/perlbrew/etc/bashrc
