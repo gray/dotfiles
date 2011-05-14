@@ -171,15 +171,6 @@ feeds:
       - torrents
       - tv
       - tv-series
-  torrentday_tv:
-    priority: 5
-    interval: 5 minutes
-    include:
-      - private/torrentday_tv-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-series
   thebox:
     priority: 6
     interval: 15 minutes
@@ -247,15 +238,6 @@ feeds:
     regexp:
       reject:
         - \bAutofill Fail(?:ed)?\b
-  torrentday_tv_premieres:
-    priority: 24
-    interval: 5 minutes
-    include:
-      - private/torrentday_tv-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-premieres
 
   # Movies
   xtremespeeds_movies:
