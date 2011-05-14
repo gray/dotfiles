@@ -14,7 +14,7 @@
 #   - removes RAR archives after torrent has been removed
 #
 # TODO:
-#   - handle multiple rar files in the same directory
+#   - handle multiple rar archives in the same directory
 #   - use getopts to accept command-line options
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
@@ -145,12 +145,17 @@ do
     for line in $(remote --torrent "$hash" --files); do
         # Skip header lines
         [ $count -lt 2 ] && count=$((count+1)) && continue
+        deselect=
         case $line in
-            *[/.\ ][Ss][Aa][Mm][Pp][Ll][Ee].avi | \
-            */[Ss][Aa][Mm][Pp][Ll][Ee]/*)
-                SAVED_IFS=$IFS; IFS=': '; set -- $line; IFS=$SAVED_IFS
-                [ "$ids" ] && ids=$ids,$1 || ids=$1
+            *[/.\ ][Ss][Aa][Mm][Pp][Ll][Ee].avi) deselect=1 ;;
+            */[Ss][Aa][Mm][Pp][Ll][Ee]/*)        deselect=1 ;;
+            */[Ss][Uu][Bb][Ss]/*)
+                case $dir/ in "$WATCH_DIR"/TV/*) deselect=1; esac
         esac
+        if [ "$deselect" ]; then
+            SAVED_IFS=$IFS; IFS=': '; set -- $line; IFS=$SAVED_IFS
+            [ "$ids" ] && ids=$ids,$1 || ids=$1
+        fi
     done
     [ "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
 
