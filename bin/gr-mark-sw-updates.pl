@@ -86,7 +86,10 @@ my %conf = (
             ]x;
             return $name;
         },
-        blacklist => [ qr/ (?:\b|_) (?:django | plone | zope) (?:\b|_) /ix ],
+        blacklist => [
+            qr/ (?:\b|_) (?:django | plone | zope) (?:\b|_) /ix,
+            qr/simple printer of nested lists/,
+        ],
     },
     ruby => {
         url  => 'http://feeds.feedburner.com/gemcutter-latest',
