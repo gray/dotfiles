@@ -160,20 +160,23 @@ do
     [ "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
 
     for line in $(remote --torrent "$hash" --info-trackers); do
-        case $line in
-            '  Tracker '[0-9]*': tracker.openbittorrent.com'* | \
-            '  Tracker '[0-9]*': tracker.publicbt.'*          | \
-            '  Tracker '[0-9]*': '*'tracker.prq.to'*          | \
-            '  Tracker '[0-9]*': '*'h33t.com'*                | \
-            '  Tracker '[0-9]*': '*'mvgroup.org'*             | \
-            '  Tracker '[0-9]*': inferno.demonoid.com'*       | \
-            '  Tracker '[0-9]*': inferno.demonoid.me'*)
+        SAVED_IFS=$IFS; IFS=' :/'; set -- $line; IFS=$SAVED_IFS
+        [ 6 -le $# ] && [ Tracker = $1 ] || continue
+        id=$2 tracker=$6
+        case $id in '' | *[^0-9]*) continue; esac
+        case $tracker in
+            tracker.openbittorrent.com | \
+            tracker.publicbt.*         | \
+            inferno.demonoid.*         | \
+            *.prq.to                   | \
+            *.h33t.com                 | \
+            *.1337x.org                | \
+            www.mvgroup.org)
                 force_public=1 ;;
-            '  Tracker '[0-9]*': '*'thepiratebay.org'*        | \
-            '  Tracker '[0-9]*': '*'hexagon.cc'*              | \
-            '  Tracker '[0-9]*': '*'.onion'*                  | \
-            '  Tracker '[0-9]*': '*'.tor2web.com'*)
-                id=${line#  Tracker }; id=${id%%:*}
+            *.hexagon.cc               | \
+            *.thepiratebay.org         | \
+            *.onion                    | \
+            *.tor2web.com)
                 remote --torrent "$hash" --tracker-remove "$id" >/dev/null
         esac
     done
