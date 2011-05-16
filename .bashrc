@@ -1,9 +1,6 @@
 # Do nothing if the shell is non-interactive.
 [[ -z $PS1 ]] && return
 
-# TODO: add time, add exit status and running time of last command
-PS1='\[\e]0;\w\a\]\n\[\e[32m\]\u@\h:\[\e[33m\]\w\[\e[0m\]\n[\!]\$ '
-
 # Prevent $PATH from growing every time this file is sourced.
 SYSTEM_PATH=${SYSTEM_PATH:-$PATH}
 PATH=$HOME/bin:$HOME/local/bin
@@ -26,7 +23,7 @@ umask 0022
 # Prevent C-s from accidentally freezing the terminal.
 [[ -t 0 ]] && stty ixany
 
-PROMPT_COMMAND='history -a; history -c; history -r'
+PROMPT_COMMAND='history -a; history -c; history -r;'
 
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE=' *:&:?:??:pwd:-:.. *:jobs:history:clear:exit'
@@ -102,6 +99,10 @@ esac
 
 export PERL_CPANM_OPT='-q'
 
-[[ -f ~/.bash_aliases ]] && source ~/.bash_aliases
-
-[[ -f ~/local/perlbrew/etc/bashrc ]] && source ~/local/perlbrew/etc/bashrc
+for f in            \
+    ~/.bash_prompt  \
+    ~/.bash_aliases \
+    ~/local/perlbrew/etc/bashrc
+do
+    [[ -f $f ]] && source $f
+done

@@ -1,0 +1,22 @@
+# http://stackoverflow.com/questions/1862510/how-can-the-last-commands-wall-time-be-put-in-the-bash-prompt
+
+timer_start () { timer=${timer:-$SECONDS}; }
+timer_stop  () { RUNTIME=$(($SECONDS - $timer)); unset timer; }
+
+trap 'timer_start' DEBUG
+PROMPT_COMMAND='get_exit_status; '$PROMPT_COMMAND' timer_stop;'
+
+get_exit_status () {
+    EXIT_STATUS=$?
+    if [[ 0 -eq $EXIT_STATUS ]]; then
+        EXIT_STATUS_COLOR=${ANSI_BOLD}${ANSI_GREEN}
+    else
+        EXIT_STATUS_COLOR=${ANSI_BOLD}${ANSI_RED}
+    fi
+}
+
+PS1='\[${ANSI_RESET}\]\n'
+PS1=$PS1'[\t | ${RUNTIME}s | (${SHLVL}) | %\j | !\!]\n'
+PS1=$PS1'\u@\h:\[${ANSI_CYAN}\]\w\[${ANSI_RESET}\]\n'
+PS1=$PS1'\[${EXIT_STATUS_COLOR}\]\$\[${ANSI_RESET}\] '
+export PS1
