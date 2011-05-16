@@ -47,16 +47,23 @@ export PAGER=less
 export LESS='-~iFMQRX'
 export LESSHISTFILE=/dev/null
 
-ANSI_RESET=$(tput sgr0)
-ANSI_BOLD=$(tput bold)
-ANSI_BLINK=$(tput blink)
-ANSI_REVERSE=$(tput rev)
-ANSI_UNDERLINE=$(tput smul)
-for c in 'BLACK 0' 'RED 1' 'GREEN 2' 'BLUE 4' 'MAGENTA 5' 'CYAN 6' 'WHITE 7';
-do
-    set -- $c
-    eval ANSI_$1=$(tput setaf $2) ANSI_BG_$1=$(tput setab $2)
-done
+init_ansi_colors () {
+    ANSI_RESET=$(tput sgr0)
+    ANSI_BOLD=$(tput bold)
+    ANSI_BLINK=$(tput blink)
+    ANSI_REVERSE=$(tput rev)
+    ANSI_UNDERLINE=$(tput smul)
+
+    local color counter=0
+    for color in BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE;
+    do
+        eval ANSI_$color=$(tput setaf $counter)
+        eval ANSI_BG_$color=$(tput setab $counter)
+        counter=$((counter+1))
+    done
+}
+init_ansi_colors
+unset init_ansi_colors
 
 # Less colors for man pages.
 export LESS_TERMCAP_mb=${ANSI_BOLD}${ANSI_RED}
