@@ -163,7 +163,7 @@ do
         SAVED_IFS=$IFS; IFS=' :/'; set -- $line; IFS=$SAVED_IFS
         [ 6 -le $# ] && [ Tracker = $1 ] || continue
         id=$2 tracker=$6
-        case $id in '' | *[^0-9]*) continue; esac
+        case $id in '' | *[!0-9]*) continue; esac
         case $tracker in
             tracker.openbittorrent.com | \
             tracker.publicbt.*         | \
