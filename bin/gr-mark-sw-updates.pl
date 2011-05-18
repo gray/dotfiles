@@ -21,62 +21,13 @@ my $reader = WebService::Google::Reader->new(
     password => $ENV{GOOGLE_PASSWORD},
 );
 
-# Return a sub that checks if the given Perl dist is installed.
-my $is_perl_dist_installed = do {
-    # Find the list of installed modules.
-    my (%modules, %prune);
-    for my $top (reverse sort @INC) {
-        next if '.' eq $top;
-        my $len = length $top;
-        find {
-            wanted => sub {
-                if ($File::Find::dir ~~ %prune) {
-                    $File::Find::prune = 1;
-                    return;
-                }
-                return unless '.pm' eq substr $_, -3, 3, '';
-                return unless -f _;
-                substr $_, 0, 1 + $len, '';
-                s{[\\/]}{::}g;
-                $modules{$_} = undef;
-            },
-            no_chdir => 1
-        }, $top;
-        $prune{$top} = undef;
-    }
-
-    # Fetch the file that maps packages to distributions.
-    my $file = '02packages.details.txt.gz';
-    my $url = "http://search.cpan.org/CPAN/modules/$file";
-    $file = catfile(tmpdir, $file);
-    if (not -r $file or 1 < -M _) {
-        my $res = $reader->ua->mirror($url, $file);
-        die "Failed to mirror $file; " if $res->is_error;
-    }
-    open my $fh, '<:gzip', $file or die "$file: $!";
-
-    # Skip header.
-    while (<$fh>) { last when "\n" }
-
-    # Determine the installed distributions, given the installed modules.
-    my %dists;
-    while (my $line = <$fh>) {
-        my ($package, $version, $dist) = split /\s+/, $line;
-        next unless $package ~~ %modules;
-        $dists{ CPAN::DistnameInfo->new($dist)->dist } = undef;
-    }
-    close $fh;
-
-    sub { $_[0] ~~ %dists; }
-};
-
 my %conf = (
     perl => {
         url  => 'http://search.cpan.org/uploads.rdf',
         name => sub {
             CPAN::DistnameInfo->new($_[0]->title . '.tgz')->dist
         },
-        whitelist => [ $is_perl_dist_installed ],
+        whitelist => [ is_perl_dist_installed() ],
     },
     python => {
         url  => 'http://pypi.python.org/pypi?:action=rss',
@@ -184,3 +135,55 @@ while (my ($lang, $conf) = each %conf) {
 
     $reader->mark_read_entry(\@unwanted_entries);
 }
+
+exit;
+
+
+# Return a sub that checks if the given Perl dist is installed.
+sub is_perl_dist_installed {
+    # Find the list of installed modules.
+    my (%modules, %prune);
+    for my $top (reverse sort @INC) {
+        next if '.' eq $top;
+        my $len = length $top;
+        find {
+            wanted => sub {
+                if ($File::Find::dir ~~ %prune) {
+                    $File::Find::prune = 1;
+                    return;
+                }
+                return unless '.pm' eq substr $_, -3, 3, '';
+                return unless -f _;
+                substr $_, 0, 1 + $len, '';
+                s{[\\/]}{::}g;
+                $modules{$_} = undef;
+            },
+            no_chdir => 1
+        }, $top;
+        $prune{$top} = undef;
+    }
+
+    # Fetch the file that maps packages to distributions.
+    my $file = '02packages.details.txt.gz';
+    my $url = "http://search.cpan.org/CPAN/modules/$file";
+    $file = catfile(tmpdir, $file);
+    if (not -r $file or 1 < -M _) {
+        my $res = $reader->ua->mirror($url, $file);
+        die "Failed to mirror $file; " if $res->is_error;
+    }
+    open my $fh, '<:gzip', $file or die "$file: $!";
+
+    # Skip header.
+    while (<$fh>) { last when "\n" }
+
+    # Determine the installed distributions, given the installed modules.
+    my %dists;
+    while (my $line = <$fh>) {
+        my ($package, $version, $dist) = split /\s+/, $line;
+        next unless $package ~~ %modules;
+        $dists{ CPAN::DistnameInfo->new($dist)->dist } = undef;
+    }
+    close $fh;
+
+    sub { $_[0] ~~ %dists; }
+};
