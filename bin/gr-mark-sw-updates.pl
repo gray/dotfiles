@@ -168,7 +168,9 @@ sub is_perl_dist_installed {
     my $url = "http://search.cpan.org/CPAN/modules/$file";
     $file = catfile(tmpdir, $file);
     if (not -r $file or 1 < -M _) {
-        my $res = $reader->ua->mirror($url, $file);
+        my $ua = $reader->ua->clone;
+        $ua->default_header(accept_encoding => undef);
+        my $res = $ua->mirror($url, $file);
         die "Failed to mirror $file; " if $res->is_error;
     }
     open my $fh, '<:gzip', $file or die "$file: $!";
@@ -181,7 +183,9 @@ sub is_perl_dist_installed {
     while (my $line = <$fh>) {
         my ($package, $version, $dist) = split /\s+/, $line;
         next unless $package ~~ %modules;
-        $dists{ CPAN::DistnameInfo->new($dist)->dist } = undef;
+        my $info = CPAN::DistnameInfo->new($dist)->dist;
+        next unless $info;
+        $dists{$info} = undef;
     }
     close $fh;
 
