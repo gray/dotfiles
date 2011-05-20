@@ -110,13 +110,14 @@ do
 
     # Parse the debug output.
     # Use the torrent hash because the ids are not persistent across sessions.
+    result=
     response=$(remote --debug --add "$file" --download-dir "$dir" 2>&1)
     for line in $response; do
         case $line in '{"arguments":{'*'"result":'*) result=$line; esac
     done
-    [ "${result-}" ] || continue
 
     case $result in
+        '') continue ;;
         '{"arguments":{"torrent-added":{"hashString":'*)
             SAVED_IFS=$IFS; IFS='"'; set -- $result; IFS=$SAVED_IFS
             hash=$8;
