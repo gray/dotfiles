@@ -1,4 +1,4 @@
-" Pathogen -----------------------------------------------------------------{{{1
+" Pathogen ----------------------------------------------------------------{{{1
 
 filetype off
 runtime bundle/pathogen/autoload/pathogen.vim
@@ -8,7 +8,7 @@ silent! call pathogen#runtime_append_all_bundles()
 silent! call pathogen#helptags()
 
 
-" Files, Backup ------------------------------------------------------------{{{1
+" Files, Backup -----------------------------------------------------------{{{1
 
 set history=1000    " Size of command/search history
 set viminfo='1000   " Save marks for N files
@@ -34,7 +34,7 @@ set directory=~/.vim/tmp//
 set backupdir=~/.vim/tmp
 
 
-" Display, Messages, Terminal ----------------------------------------------{{{1
+" Display, Messages, Terminal ---------------------------------------------{{{1
 
 set numberwidth=1     " Make line number column as narrow as possible
 set ttyfast           " Indicates a fast terminal connection
@@ -85,7 +85,7 @@ let &listchars = 'tab:'      . nr2char(187) . nr2char(183) . ',' .
 set ttimeoutlen=50    " Reduce delay for key codes
 
 
-" Statusline, Messages -----------------------------------------------------{{{1
+" Statusline, Messages ----------------------------------------------------{{{1
 
 set showcmd       " Display the command in the last line
 set showmode      " Display the current mode in the last line
@@ -94,7 +94,7 @@ set laststatus=2  " Always show status line
 set statusline=Editing:\ %r%t%m\ %=Location:\ Line\ %l/%L\ \ Col:\ %c\ (%p%%)
 
 
-" Cursor movement ----------------------------------------------------------{{{1
+" Cursor movement ---------------------------------------------------------{{{1
 
 set backspace=indent,eol,start  " Allow backspacing over these
 set whichwrap+=h,l,<,>,[,]      " h l <Left> <Right> can also change lines
@@ -104,7 +104,7 @@ set sidescrolloff=2  " Lines visible left/right of cursor when scrolling
 set nostartofline    " Keep the cursor in the same column
 
 
-" Text-Formatting, Identing, Tabbing ---------------------------------------{{{1
+" Text-Formatting, Identing, Tabbing --------------------------------------{{{1
 
 if has('eval')
     filetype plugin on
@@ -131,7 +131,7 @@ set formatoptions+=1  " Break a line before, not after, a one-letter word
 set foldclose=all     " Close folds at startup
 
 
-" Matching, Searching, Substituting ----------------------------------------{{{1
+" Matching, Searching, Substituting ---------------------------------------{{{1
 
 set incsearch        " Show search matches as you type
 set ignorecase       " Ignore case when searching
@@ -144,7 +144,7 @@ set matchtime=2      " (for only .2 seconds)
 runtime macros/matchit.vim
 
 
-" Menus, Completion --------------------------------------------------------{{{1
+" Menus, Completion -------------------------------------------------------{{{1
 
 set complete-=i            " Don't scan included files
 set complete+=k            " Use dictionary files for completion
@@ -164,28 +164,7 @@ set tags=tags;/  " Search for a ctags file
 set showfulltag
 
 
-" Highlighting, Colors -----------------------------------------------------{{{1
-
-set background=dark
-
-if has('gui_running')
-    colorscheme gentooish
-else
-    colorscheme ir_black
-    highlight! link NonText SpecialKey
-endif
-
-if !&diff
-    if has('syntax')
-        syntax on
-    endif
-    if exists('+colorcolumn')
-        set colorcolumn=80
-    endif
-endif
-
-
-" Buffers, Windows, Tabs ---------------------------------------------------{{{1
+" Buffers, Windows, Tabs --------------------------------------------------{{{1
 
 set hidden                    " Allow edit buffers to be hidden
 set switchbuf=useopen,usetab  " Jump to first open window or tab with buffer
@@ -203,7 +182,7 @@ set splitbelow         " When splitting horizontally, split below
 set tabpagemax=128     " Maximum number of tabs open
 
 
-" Functions ----------------------------------------------------------------{{{1
+" Functions ---------------------------------------------------------------{{{1
 
 " Search with * or # for current visual selection.
 function! s:VisualSearch(direction) range
@@ -233,7 +212,7 @@ function! s:StripWhitespace(line1, line2)
 endfunction
 
 
-" Commands -----------------------------------------------------------------{{{1
+" Commands ----------------------------------------------------------------{{{1
 
 " Show unsaved changes to current buffer
 " TODO: if window size can be changed, double it and make new window vertical,
@@ -251,11 +230,12 @@ command! DiffOff execute 'bwipeout ' . t:diff_bufnr | diffoff |
 command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 
 
-" Plugin Settings ----------------------------------------------------------{{{1
+" Plugin Settings ---------------------------------------------------------{{{1
 
 let g:yankring_history_dir = '~/.vim/tmp'
 
 let delimitMate_expand_cr = 1
+" let delimitMate_smart_matchpairs = '^\%([^\s\!\#]\)'
 
 let g:SuperTabCrMapping = 0
 let g:SuperTabLeadingSpaceCompletion = 0
@@ -283,7 +263,7 @@ let g:netrw_dirhistmax = 0
 let g:is_posix = 1
 
 
-" Mappings -----------------------------------------------------------------{{{1
+" Mappings ----------------------------------------------------------------{{{1
 
 let maplocalleader = ','
 let mapleader = ','
@@ -395,7 +375,7 @@ vnoremap <silent> * :call s:VisualSearch('f')<cr>
 vnoremap <silent> # :call s:VisualSearch('b')<cr>
 
 
-" Autocommands -------------------------------------------------------------{{{1
+" Autocommands ------------------------------------------------------------{{{1
 
 if has('autocmd')
     augroup vimrc
@@ -409,6 +389,12 @@ if has('autocmd')
         \ if &background == 'dark' |
         \     highlight Normal ctermbg=black guibg=black |
         \ endif
+
+    autocmd GUIEnter,ColorScheme *
+        \ highlight Search cterm=NONE ctermfg=yellow ctermbg=blue |
+        \ highlight Search gui=NONE guifg=yellow guibg=blue |
+        \ highlight CursorLine term=reverse cterm=reverse gui=reverse |
+        \ highlight CursorColumn term=reverse cterm=reverse gui=reverse
 
     " Restore cursor position.
     autocmd BufReadPost *
@@ -490,7 +476,28 @@ if has('autocmd')
 endif
 
 
-" GUI ----------------------------------------------------------------------{{{1
+" Highlighting, Colors ----------------------------------------------------{{{1
+
+set background=dark
+
+if has('gui_running')
+    colorscheme gentooish
+else
+    colorscheme ir_black
+    highlight! link NonText SpecialKey
+endif
+
+if !&diff
+    if has('syntax')
+        syntax on
+    endif
+    if exists('+colorcolumn')
+        set colorcolumn=80
+    endif
+endif
+
+
+" GUI ---------------------------------------------------------------------{{{1
 
 if has('gui_running')
     set lines=50
