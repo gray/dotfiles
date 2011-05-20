@@ -140,7 +140,7 @@ do
 
     [ 1 = "$VERBOSE" ] && log "Added torrent: $name\n"
 
-    # Deselect sample files.
+    # Deselect sample files and subs for tv series.
     ids=; count=0
     for line in $(remote --torrent "$hash" --files); do
         # Skip header lines
@@ -182,7 +182,7 @@ do
     done
 
     # Throttle public torrents.
-    if [ Yes = "$public" ] || [ 1 = "${force_public-0}" ]; then
+    if [ Yes = "$public" ] || [ 1 = "${force_public:-0}" ]; then
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
         [ 1 = "$VERBOSE" ] && log "Throttled public torrent: $name\n"
