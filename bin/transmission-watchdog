@@ -37,17 +37,16 @@ log     () { printf "[$(date +%F\ %T)] $@"; }
 
 if has_cmd flock; then
     flock -nx "$LOCK" || exit
-elif has_cmd shlock; then
-    trap 'rm -f "$LOCK"; exit' HUP INT QUIT TERM
-    shlock -f "$LOCK" -p $$ || exit
-    trap 'rm -f "$LOCK"; exit' EXIT
-elif has_cmd lockfile; then
-    trap 'rm -f "$LOCK"; exit' HUP INT QUIT TERM
-    lockfile -r 0 -l 300 "$LOCK" >/dev/null 2>&1 || exit
-    trap 'rm -f "$LOCK"; exit' EXIT
 else
-    ln -s /dev/null "$LOCK" 2>/dev/null || exit
-    trap 'rm -f "$LOCK"; exit' EXIT HUP INT QUIT TERM
+    trap 'status=$?; rm -f "$LOCK"; exit $status' HUP INT QUIT TERM
+    if has_cmd shlock; then
+        shlock -f "$LOCK" -p $$ || exit
+    elif has_cmd lockfile; then
+        lockfile -r 0 -l 300 "$LOCK" >/dev/null 2>&1 || exit
+    else
+        ln -s /dev/null "$LOCK" 2>/dev/null || exit
+    fi
+    trap 'rm -f "$LOCK"; exit' EXIT
 fi
 
 if   has_cmd timeout; then :
