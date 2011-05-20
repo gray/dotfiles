@@ -4,7 +4,7 @@ filetype off
 runtime bundle/pathogen/autoload/pathogen.vim
 
 " Adds .vim/bundle/* to runtimepath
-silent! call pathogen#runtime_append_all_bundles()
+silent! call pathogen#infect()
 silent! call pathogen#helptags()
 
 
