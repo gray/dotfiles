@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# This script is called by transmission-daemon when a torrent finishes
+# downloading a torrent.
+#
+# The available environment variables are docuemnted here:
+#   https://trac.transmissionbt.com/wiki/Scripts#OnTorrentCompletion
+
+PATH=$HOME/bin:$HOME/local/bin:/opt/local/bin:/usr/local/bin:/usr/bin:/bin
+GROWL_ARGS=
+
+set -o errexit
+set -o nounset
+
+has_cmd () { command -v "$@" >/dev/null 2>&1; }
+
+if has_cmd growlnotify; then
+    growlnotify $GROWL_ARGS -t 'transmission-daemon' \
+        -m "Finished downloading $TR_TORRENT_NAME" >/dev/null 2>&1
+fi
+
+has_cmd transmission-watchdog && transmission-watchdog
