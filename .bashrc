@@ -26,8 +26,8 @@ umask 0022
 PROMPT_COMMAND='history -a; history -c; history -r;'
 
 HISTCONTROL=ignoreboth:erasedups
-HISTIGNORE=' *:&:?:??:pwd:-:.. *:jobs:history:clear:exit'
-HISTIGNORE=$HISTIGNORE':ll[a.c]:llc[a.]:*password=*:*PASSWORD=*'
+HISTIGNORE='?:??:pwd:.. *:jobs:history:clear:exit:ll[a.c]:llc[a.]'
+HISTIGNORE=$HISTIGNORE':*password=*:*PASSWORD=*'
 HISTSIZE=20000
 HISTFILESIZE=$HISTSIZE
 HISTTIMEFORMAT='[%F %T] '
