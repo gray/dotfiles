@@ -23,7 +23,7 @@ umask 0022
 # Prevent C-s from accidentally freezing the terminal.
 [[ -t 0 ]] && stty ixany
 
-PROMPT_COMMAND='history -a; history -n; history -r'
+PROMPT_COMMAND='history -a; history -c; history -r;'
 
 HISTCONTROL=ignoreboth:erasedups
 HISTIGNORE='?:??:pwd:.. *:jobs:history:clear:exit:ll[a.c]:llc[a.]'
