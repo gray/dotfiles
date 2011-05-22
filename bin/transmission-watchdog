@@ -213,13 +213,11 @@ for line in $(remote --torrent all --info); do
 
     do=0; last_dir=; unrarred_lock=
 
-    while [ 1 = "$HAS_UNRAR" ]; do
-        # Verify directory is valid and in expected location.
-        real_dir "$dir" && dir=$_real_dir || dir=
-        case $dir in
-            $WATCH_DIR) ;; $WATCH_DIR/*) ;; *) break
-        esac
+    # Verify directory is valid and in expected location.
+    real_dir "$dir" && dir=$_real_dir || dir=
+    case $dir/ in $WATCH_DIR/*) ;; *) continue; esac
 
+    while [ 1 = "$HAS_UNRAR" ]; do
         for file in $(find "$dir/$name" -type f -name '*.rar' 2>/dev/null)
         do
             rar_dir=${file%/*}
