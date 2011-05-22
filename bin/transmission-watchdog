@@ -280,7 +280,7 @@ for line in $(remote --torrent all --info); do
             ! find "$dir/$name" -type f \(                                    \
                 -name '*.[Nn][Ff][Oo]' -o -name '.message' -o                 \
                 -name '*.part' -o -name '.*.unrarred' -o                      \
-                -name 'ST.txt' -o                                             \
+                -name '*.nfo' -o -name 'ST.txt' -o                            \
                 -name '[Tt]orrent[ _.][Dd]ownloaded[ _.][Ff]rom[ _.]*.txt' -o \
                 -name '.DS_Store' -o -name '.localized'                       \
                 \) -exec rm -f {} + 2>/dev/null
