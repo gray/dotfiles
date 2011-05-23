@@ -14,9 +14,25 @@ set -o nounset
 
 has_cmd () { command -v "$@" >/dev/null 2>&1; }
 
-if has_cmd growlnotify; then
-    growlnotify $GROWL_ARGS -t 'transmission-daemon' \
+has_cmd growlnotify && GROWL="growlnotify $GROWL_ARGS" || GROWL=
+
+if [ "$GROWL" ]; then
+   $GROWL -t 'transmission-daemon' \
         -m "Finished downloading $TR_TORRENT_NAME" >/dev/null 2>&1
 fi
 
-has_cmd transmission-watchdog && transmission-watchdog
+# This is also run from cron every few minutes and after flexget downloads.
+if has_cmd transmission-watchdog; then
+    nice -n 20 transmission-watchdog 2>&1 |
+    tee -a /tmp/transmission-watchdog.log |
+    # Need to verify some input is present because growlnotify is happy
+    # displaying empty messages.
+    while read -r l; do
+        if [ "$GROWL" ]; then
+            # Strip off timestamp.
+            l=$(expr "$l" : '.\{22\}\(.*\)')
+            $GROWL -t 'transmission-watchdog via transmission-daemon' \
+                -m "$l" >/dev/null 2>&1
+        fi
+    done
+fi
