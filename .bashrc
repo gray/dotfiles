@@ -71,7 +71,7 @@ export LESS_TERMCAP_se=$ANSI_RESET
 export LESS_TERMCAP_ue=$ANSI_RESET
 export LESS_TERMCAP_us=${ANSI_BOLD}${ANSI_GREEN}
 
-export GREP_OPTIONS='--color=auto --devices=skip'
+export GREP_OPTIONS='--color=auto --devices=skip --binary-files=without-match'
 export GREP_COLOR='33;44'
 
 ls --version >/dev/null 2>&1
