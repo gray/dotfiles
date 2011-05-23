@@ -10,6 +10,7 @@ presets:
     regexp:
       reject:
         - '[\W_]r5[\W_].*?(?:_|\b)(?:line|mic|russian|cam[\W_]*audio)(?:_|\b)'
+        - '[\W_]r5[\W_].*?(?:_|\b)read[\W_]+nfo(?:_|\b)'
         - '[\W_]3-?D(?:BD)?\b'
         - '[\W_]ppv(?:-?rip)?\b'
 
