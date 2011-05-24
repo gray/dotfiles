@@ -49,8 +49,8 @@ esac
     done
 }
 
-# Make and change to a directory.
-md () { mkdir -p "$1" && cd "$1"; }
+mcd () { mkdir -p "$1" && cd "$1"; }
+mtd () { local d=$(mktemp -d ${TMPDIR:-/tmp}/tmp.XXXXXXXXXX) && cd $d; }
 
 # Print active network interfaces.
 upifs () {
