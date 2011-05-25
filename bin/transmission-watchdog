@@ -19,7 +19,6 @@
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
 
-VERBOSE=1
 LOCK=/tmp/transmission-watchdog.lock
 NETRC=$HOME/.netrc
 WATCH_DIR=$HOME/Media/.
@@ -32,8 +31,6 @@ set -o nounset
 IFS=$(printf "\n\t")
 
 has_cmd () { command -v "$@" >/dev/null 2>&1; }
-warn    () { printf "[$(date +%F\ %T)] $@" >&2; }
-log     () { printf "[$(date +%F\ %T)] $@"; }
 
 if has_cmd flock; then
     flock -nx "$LOCK" || exit
@@ -73,6 +70,9 @@ else
         return $status
     }
 fi
+
+log  () { printf "[$(date +%F\ %T)] $@"; }
+warn () { log "$@" >&2; }
 
 remote () {
     # TODO: add retry and kill logic
@@ -138,7 +138,7 @@ do
         esac
     done
 
-    [ 1 = "$VERBOSE" ] && log "Added torrent: $name\n"
+    log "Added torrent: $name\n"
 
     # Deselect sample files and subs for tv series.
     ids=; count=0
@@ -185,7 +185,7 @@ do
     if [ Yes = "$public" ] || [ 1 = "${force_public:-0}" ]; then
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
-        [ 1 = "$VERBOSE" ] && log "Throttled public torrent: $name\n"
+        log "Throttled public torrent: $name\n"
     fi
 done
 
@@ -231,9 +231,7 @@ for line in $(remote --torrent all --info); do
             if [ 1 = "$HAS_CKSFV" ] && [ -e "$rar_dir/$sfv_file" ]; then
                 if ! cksfv -qg "$rar_dir/$sfv_file"; then
                     touch "$unrarred_lock"
-                    if [ 1 = "$VERBOSE" ]; then
-                        warn "Invalid RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
-                    fi
+                    warn "Invalid RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
                     continue
                 fi
             fi
@@ -246,57 +244,57 @@ for line in $(remote --torrent all --info); do
                 continue
             fi
 
-            if [ 1 = "$VERBOSE" ]; then
-                log "Unrarred %s/%s\n" "${rar_dir##$WATCH_DIR/}" "$rar_file"
-            fi
+            log "Unrarred %s/%s\n" "${rar_dir##$WATCH_DIR/}" "$rar_file"
         done
         break
     done
 
-    if [ Finished = "$state" ]; then
-        # Remove each of the RAR files listed in the torrent.
-        if [ "$unrarred_lock" ]; then
-            count=0
-            remote --torrent "$hash" --files |
-            while IFS=' ' read -r _ _ _ _ _ _ file; do
-                # Skip header lines
-                [ $count -lt 2 ] && count=$((count+1)) && continue
-                case $file in
-                    *.rar | *.sfv | *.r[0-9] | *.r[0-9][0-9] | \
-                    *.r[0-9][0-9][0-9])
-                        file_dir=$dir/${file%/*}
-                        # Verify directory is valid and in expected location.
-                        real_dir "$file_dir" && file_dir=$_real_dir || file_dir=
-                        case $file_dir in
-                            $WATCH_DIR) ;; $WATCH_DIR/*) ;; *) continue
-                        esac
-                        rm -f "$dir/$file"
-                esac
-            done
-            [ 1 = "$VERBOSE" ] && log "Removed RAR archive: $name\n"
-        fi
+    [ Finished = "$state" ] || continue
 
-        if [ -d "$dir/$name" ]; then
-            ! find "$dir/$name" -type f \(                                    \
-                -name '*.[Nn][Ff][Oo]' -o -name '.message' -o                 \
-                -name '*.part' -o -name '.*.unrarred' -o                      \
-                -name '*.nfo' -o -name 'ST.txt' -o                            \
-                -name '[Tt]orrent[ _.][Dd]ownloaded[ _.][Ff]rom[ _.]*.txt' -o \
-                -name '.DS_Store' -o -name '.localized'                       \
-                \) -exec rm -f {} + 2>/dev/null
-            ! find "$dir/$name/" -type d -depth \
-                -name [Ss][Aa][Mm][Pp][Ll][Ee]  \
-                -exec rm -rf {} + 2>/dev/null
-            ! find $WATCH_DIR -type d -depth -exec rmdir {} + 2>/dev/null
-        fi
-
-        # Mark files a different color in Finder to indicate they are
-        # finished seeding and can safely be deleted.
-        if [ 1 = "$HAS_SETLABEL" ]; then
-            ! find "$dir/$name" -exec setlabel -s Red {} + 2>/dev/null
-        fi
-
-        remote --torrent "$hash" --remove >/dev/null
-        [ 1 = "$VERBOSE" ] && log "Removed torrent: $name\n"
+    # Remove each of the RAR files listed in the torrent.
+    if [ "$unrarred_lock" ]; then
+        count=0
+        remote --torrent "$hash" --files |
+        while IFS=' ' read -r _ _ _ _ _ _ file; do
+            # Skip header lines
+            [ $count -lt 2 ] && count=$((count+1)) && continue
+            case $file in
+                *.rar | *.sfv | *.r[0-9] | *.r[0-9][0-9] | \
+                *.r[0-9][0-9][0-9])
+                    file_dir=$dir/${file%/*}
+                    # Verify directory is valid and in expected location.
+                    real_dir "$file_dir" && file_dir=$_real_dir || file_dir=
+                    case $file_dir in
+                        $WATCH_DIR) ;; $WATCH_DIR/*) ;; *) continue
+                    esac
+                    rm -f "$dir/$file"
+            esac
+        done
+        log "Removed RAR archive: $name\n"
     fi
+
+    if [ -d "$dir/$name" ]; then
+        ! find "$dir/$name" -type f \(                                    \
+            -name '*.[Nn][Ff][Oo]' -o -name '.message' -o                 \
+            -name '*.part' -o -name '.*.unrarred' -o                      \
+            -name '*.nfo' -o -name 'ST.txt' -o                            \
+            -name '[Tt]orrent[ _.][Dd]ownloaded[ _.][Ff]rom[ _.]*.txt' -o \
+            -name '.DS_Store' -o -name '.localized'                       \
+            \) -exec rm -f {} + 2>/dev/null
+        ! find "$dir/$name/" -type d -depth \
+            -name [Ss][Aa][Mm][Pp][Ll][Ee]  \
+            -exec rm -rf {} + 2>/dev/null
+    fi
+
+    # Remove empty directories.
+    ! find "$WATCH_DIR" -type d -depth -exec rmdir {} + 2>/dev/null
+
+    # Mark files a different color in Finder to indicate they are
+    # finished seeding and can safely be deleted.
+    if [ 1 = "$HAS_SETLABEL" ]; then
+        ! find "$dir/$name" -exec setlabel -s Red {} + 2>/dev/null
+    fi
+
+    remote --torrent "$hash" --remove >/dev/null
+    log "Removed torrent: $name\n"
 done
