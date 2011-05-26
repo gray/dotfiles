@@ -19,7 +19,9 @@
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
 
-LOCK=/tmp/transmission-watchdog.lock
+PROG=${0##*/}
+LOCK="/tmp/$PROG.lock"
+LOG="/tmp/$PROG.log"
 NETRC=$HOME/.netrc
 WATCH_DIR=$HOME/Media/.
 PUBLIC_UP_RATE=2
@@ -27,8 +29,6 @@ PUBLIC_RATIO=0
 
 set -o errexit
 set -o nounset
-
-IFS=$(printf "\n\t")
 
 has_cmd () { command -v "$@" >/dev/null 2>&1; }
 
@@ -45,6 +45,30 @@ else
     fi
     trap 'rm -f "$LOCK"; exit' EXIT
 fi
+
+if has_cmd growlnotify; then
+    growl () {
+        growlnotify -t "$PROG" ${GROWL_ARGS:-} -m "$@" >/dev/null 2>&1
+    }
+else
+    growl () { :; }
+fi
+log  () {
+    printf "[%s] %s\n" "$(date +%F\ %T)" "$@" >>"$LOG" 2>&1
+    [ -t 0 ] && [ -t 1 ] && printf "%s\n" "$@"
+    growl "$@"
+}
+warn () { log "! $@" >&2; }
+
+real_dir () {
+    _real_dir=
+    cd -P -- "$1" 2>/dev/null && _real_dir=$(pwd -P)
+}
+
+real_dir "$WATCH_DIR" && WATCH_DIR=$_real_dir || {
+    warn "WATCH_DIR directory $WATCH_DIR does not exist" 
+    exit -1
+}
 
 if   has_cmd timeout; then :
 elif has_cmd gtimeout; then timeout () { gtimeout "$@"; }
@@ -71,9 +95,6 @@ else
     }
 fi
 
-log  () { printf "[$(date +%F\ %T)] $@"; }
-warn () { log "$@" >&2; }
-
 remote () {
     # TODO: add retry and kill logic
     exec 3>&1 4>&2
@@ -82,7 +103,7 @@ remote () {
     ); then
         case $error in
             *"Couldn't connect to server")
-                warn "$error\n"
+                warn "$error"
                 exit 1
         esac
     fi
@@ -90,15 +111,7 @@ remote () {
     printf "$error" >&2
 }
 
-real_dir () {
-    _real_dir=
-    cd -P -- "$1" 2>/dev/null && _real_dir=$(pwd -P)
-}
-
-real_dir "$WATCH_DIR" && WATCH_DIR=$_real_dir || {
-    warn 'WATCH_DIR directory "%s" does not exist\n' "$WATCH_DIR"
-    exit -1
-}
+IFS=$(printf "\n\t")
 
 # Add any new torrent files to transmission.
 for file in $(
@@ -122,11 +135,11 @@ do
             hash=$8;
             rm -f "$file" ;;
         '{"arguments":{},"result":"duplicate torrent"'*)
-            warn "Skipping already added torrent: $file\n"
+            warn "Skipping already added torrent: $file"
             rm -f "$file"
             continue ;;
         *)
-            warn "Failed to add torrent: $file\n"
+            warn "Failed to add torrent: $file"
             mv -f "$file" "$file.failed"
             continue
     esac
@@ -138,7 +151,7 @@ do
         esac
     done
 
-    log "Added torrent: $name\n"
+    log "Added torrent: $name"
 
     # Deselect sample files and subs for tv series.
     ids=; count=0
@@ -185,7 +198,7 @@ do
     if [ Yes = "$public" ] || [ 1 = "${force_public:-0}" ]; then
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
-        log "Throttled public torrent: $name\n"
+        log "Throttled public torrent: $name"
     fi
 done
 
@@ -234,10 +247,11 @@ for line in $(remote --torrent all --info); do
             [ -e "$unrarred_lock" ] && continue
 
             sfv_file=$rar_file_base.sfv
+            display_path=${rar_dir##$WATCH_DIR/}/$rar_file
             if [ 1 = $HAS_CKSFV ] && [ -e "$rar_dir/$sfv_file" ]; then
                 if ! cksfv -qg "$rar_dir/$sfv_file"; then
                     touch "$unrarred_lock"
-                    warn "Invalid RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
+                    warn "Invalid RAR: $display_path"
                     continue
                 fi
             fi
@@ -246,11 +260,11 @@ for line in $(remote --torrent all --info); do
 
             if ! unrar x -inul -y -p- -o+ -r "$rar_dir/$rar_file" "$rar_dir"
             then
-                warn "Unable to extract RAR: ${rar_dir##$WATCH_DIR/}/$rar_file\n"
+                warn "Unable to extract RAR: $display_path"
                 continue
             fi
 
-            log "Unrarred %s/%s\n" "${rar_dir##$WATCH_DIR/}" "$rar_file"
+            log "Unrarred $display_path"
         done
     fi
 
@@ -290,7 +304,7 @@ for line in $(remote --torrent all --info); do
             last_file_base=$rar_file_base
             rm -f "$rar_dir/.$rar_file_base.unrarred"
         done
-        log "Removed RAR: $name\n"
+        log "Removed RAR: $name"
     fi
 
     if [ -d "$dir/$name" ]; then
@@ -310,7 +324,7 @@ for line in $(remote --torrent all --info); do
     fi
 
     remote --torrent "$hash" --remove >/dev/null
-    log "Removed torrent: $name\n"
+    log "Removed torrent: $name"
 done
 
 # Remove empty directories.

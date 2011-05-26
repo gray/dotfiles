@@ -112,16 +112,7 @@ presets:
             >/dev/null 2>&1
         phase: |
           # This is also run from cron every few minutes.
-          nice -n 19 transmission-watchdog 2>&1 |
-            tee -a /tmp/transmission-watchdog.log |
-            # Need to verify some input is present because growlnotify is happy
-            # displaying empty messages.
-            while read -r l; do
-              # Strip off timestamp.
-              l=$(expr "$l" : '.\{22\}\(.*\)')
-              growlnotify -t 'transmission-watchdog via flexget' -m "$l" \
-                >/dev/null 2>&1
-            done
+          nice -n 19 transmission-watchdog
 
 feeds:
   # TV series.
