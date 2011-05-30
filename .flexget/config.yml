@@ -13,7 +13,6 @@ presets:
         - '[\W_]r5[\W_].*?(?:_|\b)read[\W_]+nfo(?:_|\b)'
         - '[\W_]3-?D(?:BD)?\b'
         - '[\W_]ppv(?:-?rip)?\b'
-
     content_size:
       min: 650
       max: 1750
@@ -103,7 +102,7 @@ presets:
         - '*.m[4k]v'
         - '*.mp4'
         - '*.wmv'
-
+    torrent_scrub: on
     exec:
       auto_escape: yes
       on_output:
@@ -112,7 +111,7 @@ presets:
             >/dev/null 2>&1
         phase: |
           # This is also run from cron every few minutes.
-          nice -n 19 transmission-watchdog
+          nice -n 20 transmission-watchdog
 
 feeds:
   # TV series.
