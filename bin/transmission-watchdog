@@ -236,6 +236,9 @@ for line in $(remote --torrent all --info); do
             rar_dir=${file%/*}
             rar_file=${file##*/}
             rar_file_base=${rar_file%.*}
+            case "${rar_file_base##*.}" in
+                part[0-9]*) rar_file_base=${rar_file_base%.*}
+            esac
 
             if [ "$rar_dir" = "$last_dir" ]; then
                 # Skip parts of last processed RAR archive.
@@ -296,6 +299,9 @@ for line in $(remote --torrent all --info); do
 
             # Remove RAR lock file.
             rar_file_base=${rar_file%.*}
+            case "${rar_file_base##*.}" in
+                part[0-9]*) rar_file_base=${rar_file_base%.*}
+            esac
             if [ "$rar_dir" = "$last_dir" ]; then
                 # Skip parts of last processed RAR archive.
                 [ "$rar_file_base" = "$last_file_base" ] && continue
