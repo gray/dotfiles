@@ -143,8 +143,17 @@ feeds:
     regexp:
       reject:
         - \bAutofill Fail(?:ed)?\b
-  torrentvault_tv:
+  bitmetv:
     priority: 3
+    interval: 5 minutes
+    include:
+      - private/bitmetv-rss.yml
+    preset:
+      - torrents
+      - tv
+      - tv-series
+  torrentvault_tv:
+    priority: 5
     interval: 5 minutes
     include:
       - private/torrentvault_tv-rss.yml
