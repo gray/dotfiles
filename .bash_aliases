@@ -26,7 +26,7 @@ alias xip='curl -o - -s icanhazip.com || curl -o - -s ifconfig.me/ip'
 
 case $OSTYPE in
     darwin*)
-        alias gvim='open -a MacVim $*'
+        alias gvim=mvim
 
         # groff bug converts some characters to utf-8.
         alias man='LANG=C man'
