@@ -138,11 +138,10 @@ feeds:
       - torrents
       - tv
       - tv-series
-    if:
-      - "'[ ' + str(now.year) + ' ]' not in title": reject
-    regexp:
-      reject:
-        - \bAutofill Fail(?:ed)?\b
+    # Use the scene release name.
+    manipulate:
+      - title:
+          extract: '\[ ([^]]+) \]$'
   bitmetv:
     priority: 3
     interval: 5 minutes
