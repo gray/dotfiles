@@ -115,7 +115,7 @@ IFS=$(printf "\n\t")
 
 # Add any new torrent files to transmission.
 for file in $(
-    find "$WATCH_DIR" -type f -name *.torrent \! -size 0 2>/dev/null
+    find "$WATCH_DIR" -type f -name "*.torrent" \! -size 0 2>/dev/null
 )
 do
     dir=${file%/*}
@@ -153,25 +153,6 @@ do
 
     log "Added torrent: $name"
 
-    # Deselect sample files and subs for tv series.
-    ids=; count=0
-    for line in $(remote --torrent "$hash" --files); do
-        # Skip header lines
-        [ $count -lt 2 ] && count=$((count+1)) && continue
-        deselect=
-        case $line in
-            *[/.\ ][Ss][Aa][Mm][Pp][Ll][Ee].avi) deselect=1 ;;
-            */[Ss][Aa][Mm][Pp][Ll][Ee]/*)        deselect=1 ;;
-            */[Ss][Uu][Bb][Ss]/*)
-                case $dir/ in "$WATCH_DIR"/TV/*) deselect=1; esac
-        esac
-        if [ "$deselect" ]; then
-            SAVED_IFS=$IFS; IFS=': '; set -- $line; IFS=$SAVED_IFS
-            [ "$ids" ] && ids=$ids,$1 || ids=$1
-        fi
-    done
-    [ "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
-
     for line in $(remote --torrent "$hash" --info-trackers); do
         SAVED_IFS=$IFS; IFS=' :/'; set -- $line; IFS=$SAVED_IFS
         [ 6 -le $# ] && [ Tracker = $1 ] || continue
@@ -194,11 +175,29 @@ do
         esac
     done
 
-    # Throttle public torrents.
     if [ Yes = "$public" ] || [ 1 = "${force_public:-0}" ]; then
+        # Throttle torrent.
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
-        log "Throttled public torrent: $name"
+
+        # Deselect sample files and subs for tv series.
+        ids=; count=0
+        for line in $(remote --torrent "$hash" --files); do
+            # Skip header lines
+            [ $count -lt 2 ] && count=$((count+1)) && continue
+            deselect=
+            case $line in
+                *[/.\ ][Ss][Aa][Mm][Pp][Ll][Ee].avi) deselect=1 ;;
+                */[Ss][Aa][Mm][Pp][Ll][Ee]/*)        deselect=1 ;;
+                */[Ss][Uu][Bb][Ss]/*)
+                    case $dir/ in "$WATCH_DIR"/TV/*) deselect=1; esac
+            esac
+            if [ "$deselect" ]; then
+                SAVED_IFS=$IFS; IFS=': '; set -- $line; IFS=$SAVED_IFS
+                [ "$ids" ] && ids=$ids,$1 || ids=$1
+            fi
+        done
+        [ "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
     fi
 done
 
@@ -317,10 +316,20 @@ for line in $(remote --torrent all --info); do
         ! find "$dir/$name" -type f \(                           \
             -name *.message -o -name *.localized -o              \
             -name *.part -o -name *.txt -o -name *.[Nn][Ff][Oo]  \
+            -name [Ss][Aa][Mm][Pp][Ll][Ee].avi                   \
+            -name *[/.\ ][Ss][Aa][Mm][Pp][Ll][Ee].avi            \
             \) -exec rm -f {} + 2>/dev/null
         ! find "$dir/$name/" -type d -depth \
             -name [Ss][Aa][Mm][Pp][Ll][Ee]  \
             -exec rm -rf {} + 2>/dev/null
+        case $dir/ in "$WATCH_DIR"/TV/*)
+            ! find "$dir/$name/" -type d -depth -name [Ss][Uu][Bb][Ss] \
+                -exec rm -rf {} + 2>/dev/null
+            ! find "$dir/$name/" -type f                               \
+                -name \( -name *.srt -o -name *.idx -o -name *.sub \)  \
+                -exec rm -f {} + 2>/dev/null
+        esac
+
     fi
 
     # Mark files a different color in Finder to indicate they are
