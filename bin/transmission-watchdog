@@ -313,11 +313,11 @@ for line in $(remote --torrent all --info); do
     fi
 
     if [ -d "$dir/$name" ]; then
-        ! find "$dir/$name" -type f \(                           \
-            -name *.message -o -name *.localized -o              \
-            -name *.part -o -name *.txt -o -name *.[Nn][Ff][Oo]  \
-            -name [Ss][Aa][Mm][Pp][Ll][Ee].avi                   \
-            -name *[/.\ ][Ss][Aa][Mm][Pp][Ll][Ee].avi            \
+        ! find "$dir/$name" -type f \(                             \
+            -name *.message -o -name *.localized -o                \
+            -name *.part -o -name *.txt -o -name *.[Nn][Ff][Oo] -o \
+            -name [Ss][Aa][Mm][Pp][Ll][Ee].avi -o                  \
+            -name *[/.\ ][Ss][Aa][Mm][Pp][Ll][Ee].avi              \
             \) -exec rm -f {} + 2>/dev/null
         ! find "$dir/$name/" -type d -depth \
             -name [Ss][Aa][Mm][Pp][Ll][Ee]  \
