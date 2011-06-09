@@ -4,7 +4,7 @@ timer_stop  () {
     RUNTIME=$(($SECONDS - $timer))
     unset timer
 
-    # Format runtime so 1000s becomes 16m40s.
+    # Convert seconds to hms.
     RUNTIME_FORMATTED=
     [[ $RUNTIME -gt 3600 ]] && RUNTIME_FORMATTED+=$(($RUNTIME / 3600))h
     [[ $RUNTIME -gt 60 ]]   && RUNTIME_FORMATTED+=$(($RUNTIME % 3600 / 60))m
@@ -29,7 +29,7 @@ PS1='\[${ANSI_RESET}\]'
 # Set the terminal title.
 PS1=$PS1'\[\e]0;\w\a\]'
 
-PS1=$PS1'\n[\t | ${RUNTIME_FORMATTED} | (${SHLVL}) | %\j | !\!]'
+PS1=$PS1'\n\t | ${RUNTIME_FORMATTED} | (${SHLVL}) | %\j | !\!'
 PS1=$PS1'\n\u@\h:\[${ANSI_CYAN}\]\w\[${ANSI_RESET}\]'
 PS1=$PS1'\n\[${EXIT_STATUS_COLOR}\]\$\[${ANSI_RESET}\] '
 export PS1
