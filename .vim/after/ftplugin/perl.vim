@@ -4,8 +4,11 @@ compiler perl
 " Show line numbers
 setlocal number
 
-" TODO: find a better solution: perldoc, then perldoc -f
-setlocal keywordprg=sh\ -c\ 'perldoc\ -f\ \$1\ \|\|\ perldoc\ \$1'\ --
+setlocal keywordprg=sh\ -c\ 'cpandoc\ \$1\ \|\|\ cpandoc\ -f\ \$1\'\ --
+if has('mac')
+    " groff bug converts some characters to utf-8.
+    let &keywordprg = 'LANG=C ' . &keywordprg
+endif
 
 setlocal equalprg=perltidy\ -q
 
