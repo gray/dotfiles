@@ -12,16 +12,26 @@ alias llc="ls $LS_OPTIONS -Flhtrc"
 alias llca="ls $LS_OPTIONS -FlhtrcA"
 alias llc.="ls $LS_OPTIONS -FlhtrcdA $* .*"
 
+# Don't try to connect to the X server- shortens startup time.
 alias vim='vim -X'
 alias vi=vim
+
+# Use human-readable unit sizes, in base 2.
 alias df='df -h'
 alias du='du -h'
+
+# Normalize diff output for patches.
 alias diff='LC_ALL=C TZ=UTC0 diff -Naur'
 
+# Fetches remote doc if not installed locally.
+alias perldoc=cpandoc
+
+# Don't print welcome message; load math library so scale is set to 20.
 alias bc='bc -lq'
 
 alias wget='wget --continue --no-check-certificate'
 
+# Get external IP address.
 alias xip='curl -o - -s icanhazip.com || curl -o - -s ifconfig.me/ip'
 
 case $OSTYPE in
