@@ -23,9 +23,6 @@ alias du='du -h'
 # Normalize diff output for patches.
 alias diff='LC_ALL=C TZ=UTC0 diff -Naur'
 
-# Fetches remote doc if not installed locally.
-alias perldoc=cpandoc
-
 # Don't print welcome message; load math library so scale is set to 20.
 alias bc='bc -lq'
 
@@ -40,9 +37,12 @@ case $OSTYPE in
 
         # groff bug converts some characters to utf-8.
         alias man='LANG=C man'
-        alias perldoc='LANG=C perldoc'
+        alias perldoc='LANG=C cpandoc'
         ;;
     *)
+        # Fetches remote doc if not installed locally.
+        alias perldoc=cpandoc
+
         alias pbcopy='xclip -selection clipboard'
         alias pbpaste='xclip -selection clipboard -o'
 esac
