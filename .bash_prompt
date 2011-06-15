@@ -1,3 +1,9 @@
+# Example prompt:
+#
+# 23:11:27 | 3s | (1) | %0 | !5232
+# user@host:/tmp
+# $
+
 timer_start () { : ${timer=$SECONDS}; }
 
 timer_stop  () {
