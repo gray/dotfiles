@@ -153,6 +153,8 @@ do
 
     log "Added torrent: $name"
 
+    force_public=0
+
     for line in $(remote --torrent "$hash" --info-trackers); do
         SAVED_IFS=$IFS; IFS=' :/'; set -- $line; IFS=$SAVED_IFS
         [ 6 -le $# ] && [ Tracker = $1 ] || continue
