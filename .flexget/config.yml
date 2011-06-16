@@ -164,7 +164,7 @@ feeds:
     priority: 6
     interval: 15 minutes
     rss:
-      url: http://thebox.bz/rssdd.xml
+      url: https://thebox.bz/rssdd.xml
       silent: yes
     include:
       - private/thebox-headers.yml
@@ -236,6 +236,16 @@ feeds:
     preset:
       - torrents
       - movies
+  ptp:
+    priority: 32
+    include:
+      - private/ptp-rss.yml
+    preset:
+      - torrents
+      - movies
+    regexp:
+      reject_excluding:
+        - '- (?:XviD|DivX) / DVD / AVI /'
   rlslog:
     priority: 33
     rlslog: http://www.rlslog.net/category/movies/
