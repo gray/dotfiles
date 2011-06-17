@@ -19,11 +19,14 @@
 #   - kill transmission if it's hanging so it can be restarted by some
 #     external process (launchd, inetd, etc.)
 
+WATCH_DIR=$HOME/Media/.
+NETRC=$HOME/.netrc
+GROWL_ARGS=
+
 PROG=${0##*/}
 LOCK="/tmp/$PROG.lock"
 LOG="/tmp/$PROG.log"
-NETRC=$HOME/.netrc
-WATCH_DIR=$HOME/Media/.
+
 PUBLIC_UP_RATE=2
 PUBLIC_RATIO=0
 
@@ -48,17 +51,23 @@ fi
 
 if has_cmd growlnotify; then
     growl () {
-        growlnotify -t "$PROG" ${GROWL_ARGS:-} -m "$@" >/dev/null 2>&1
+        growlnotify -t "$PROG" $GROWL_ARGS -m "$@" >/dev/null 2>&1
     }
 else
     growl () { :; }
 fi
-log  () {
-    printf "[%s] %s\n" "$(date +%F\ %T)" "$@" >>"$LOG" 2>&1
-    [ -t 0 ] && [ -t 1 ] && printf "%s\n" "$@"
+log () {
+    printf "[%s] %s\n" "$(date +%F\ %T)" "$@" >>"$LOG"
+    [ -t 0 ] && printf "%s\n" "$@"
     growl "$@"
 }
-warn () { log "! $@" >&2; }
+err () {
+    printf "[%s] %s\n" "$(date +%F\ %T)" "$@" >>"$LOG" 2>&1
+    [ -t 1 ] && printf "%s\n" "$@" >&2
+    SAVED_GROWL_ARGS=$GROWL_ARGS; GROWL_ARGS="$GROWL_ARGS -s"
+    growl "$@"
+    GROWL_ARGS=$SAVED_GROWL_ARGS
+}
 
 real_dir () {
     _real_dir=
@@ -66,7 +75,7 @@ real_dir () {
 }
 
 real_dir "$WATCH_DIR" && WATCH_DIR=$_real_dir || {
-    warn "WATCH_DIR directory $WATCH_DIR does not exist" 
+    err "WATCH_DIR directory $WATCH_DIR does not exist" 
     exit -1
 }
 
@@ -103,7 +112,7 @@ remote () {
     ); then
         case $error in
             *"Couldn't connect to server")
-                warn "$error"
+                err "$error"
                 exit 1
         esac
     fi
@@ -135,11 +144,11 @@ do
             hash=$8;
             rm -f "$file" ;;
         '{"arguments":{},"result":"duplicate torrent"'*)
-            warn "Skipping already added torrent: $file"
+            err "Skipping already added torrent: $file"
             rm -f "$file"
             continue ;;
         *)
-            warn "Failed to add torrent: $file"
+            err "Failed to add torrent: $file"
             mv -f "$file" "$file.failed"
             continue
     esac
@@ -154,7 +163,6 @@ do
     log "Added torrent: $name"
 
     force_public=0
-
     for line in $(remote --torrent "$hash" --info-trackers); do
         SAVED_IFS=$IFS; IFS=' :/'; set -- $line; IFS=$SAVED_IFS
         [ 6 -le $# ] && [ Tracker = $1 ] || continue
@@ -255,7 +263,7 @@ for line in $(remote --torrent all --info); do
             if [ 1 = $HAS_CKSFV ] && [ -e "$rar_dir/$sfv_file" ]; then
                 if ! cksfv -qg "$rar_dir/$sfv_file"; then
                     touch "$unrarred_lock"
-                    warn "Invalid RAR: $display_path"
+                    err "Invalid RAR: $display_path"
                     continue
                 fi
             fi
@@ -264,7 +272,7 @@ for line in $(remote --torrent all --info); do
 
             if ! unrar x -inul -y -p- -o+ -r "$rar_dir/$rar_file" "$rar_dir"
             then
-                warn "Unable to extract RAR: $display_path"
+                err "Unable to extract RAR: $display_path"
                 continue
             fi
 
@@ -277,7 +285,7 @@ for line in $(remote --torrent all --info); do
     # Remove each of the RAR files listed in the torrent.
     # NOTE: this assumes files are returned alphabetically sorted.
     if [ 1 = $has_rar ]; then
-        count=0 last_dir= last_file_base=
+        count=0; last_dir=; last_file_base=
         remote --torrent "$hash" --files |
         while IFS=' ' read -r _ _ _ _ _ _ file; do
             # Skip header lines
