@@ -1,6 +1,3 @@
-# Do nothing if the shell is non-interactive.
-[[ -z $PS1 ]] && return
-
 # Prevent $PATH from growing every time this file is sourced.
 SYSTEM_PATH=${SYSTEM_PATH:-$PATH}
 PATH=$HOME/bin:$HOME/local/bin
@@ -8,6 +5,14 @@ PATH=$PATH:/opt/local/bin:/opt/local/sbin
 PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
 PATH=$PATH:$SYSTEM_PATH
 export PATH
+
+# Non-interactive (e.g. login) shell
+if [[ -z $PS1 ]]; then
+    # Interactive shells set the perlbrew path later, dynamically.
+    PATH=$HOME/local/perlbrew/perls/latest/bin:$PATH
+
+    return
+fi
 
 shopt -s no_empty_cmd_completion
 shopt -s checkwinsize  # Update windows size after each command.
@@ -52,8 +57,7 @@ init_ansi_colors () {
     ANSI_UNDERLINE=$(tput smul)
 
     local color counter=0
-    for color in BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE;
-    do
+    for color in BLACK RED GREEN YELLOW BLUE MAGENTA CYAN WHITE; do
         eval ANSI_$color=$(tput setaf $counter)
         eval ANSI_BG_$color=$(tput setab $counter)
         counter=$((counter+1))
