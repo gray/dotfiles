@@ -29,7 +29,8 @@ presets:
       foreign: ~/Media/Movies/Foreign/.
 
   tv:
-    only_new: yes
+    # This plugin is currently causing excessive memory usage.
+    # only_new: yes
     content_size:
       max: 1500
 
