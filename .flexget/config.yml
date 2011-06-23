@@ -33,6 +33,12 @@ presets:
     # only_new: yes
     content_size:
       max: 1500
+    # Replace the non-standard quality name for a certain canadian ripper.
+    manipulate:
+      - title:
+          replace:
+            regexp: ws\.xvid-err0001
+            format: hdtv
 
   tv-series:
     series:
