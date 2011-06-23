@@ -143,11 +143,11 @@ feeds:
     manipulate:
       - title:
           extract: '\[ ([^]]+) \]$'
-  bitmetv:
+  tvt:
     priority: 3
     interval: 5 minutes
     include:
-      - private/bitmetv-rss.yml
+      - private/tvt-rss.yml
     preset:
       - torrents
       - tv
@@ -162,6 +162,7 @@ feeds:
       - tv
       - tv-series
   thebox:
+    # Ratio-based tracker; easy to maintain. UK content.
     priority: 6
     interval: 15 minutes
     rss:
@@ -178,6 +179,17 @@ feeds:
     regexp:
       reject_excluding:
         - \((?:XviD|DivX)\).*?\((?:Drama|Mystery)
+  bitmetv:
+    # Ratio-based tracker; hard to maintain.
+    priority: 7
+    interval: 5 minutes
+    delay: 30 minutes
+    include:
+      - private/bitmetv-rss.yml
+    preset:
+      - torrents
+      - tv
+      - tv-series
 
   # TV series premieres.
   eztv_premieres:
