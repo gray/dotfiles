@@ -33,8 +33,13 @@ presets:
     # only_new: yes
     content_size:
       max: 1500
-    # Replace the non-standard quality name for a certain canadian ripper.
     manipulate:
+      # Recognize webrip quality.
+      - title:
+          replace:
+            regexp: webrip
+            format: dsr
+      # Replace the non-standard quality name for a particular ripper.
       - title:
           replace:
             regexp: ws\.xvid-err0001
