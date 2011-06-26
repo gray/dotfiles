@@ -153,7 +153,7 @@ feeds:
     # Use the scene release name.
     manipulate:
       - title:
-          extract: '\[ ([^]]+) \]$'
+          extract: '\[ ([^]]+) \] *$'
   tvt:
     priority: 3
     interval: 5 minutes
@@ -246,11 +246,14 @@ feeds:
       - torrents
       - tv
       - tv-premieres
+    # Use the scene release name.
+    manipulate:
+      - title:
+          replace:
+            regexp: '^[^[]+\[ (\d+) \].*?\[ ([^]]+) \] *$'
+            format: '\2 \1'
     if:
-      - "'[ ' + str(now.year) + ' ]' not in title": reject
-    regexp:
-      reject:
-        - \bAutofill Fail(?:ed)?\b
+      - "not title.endswith(str(now.year))": reject
 
   # Movies
   xtremespeeds_movies:
