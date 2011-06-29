@@ -31,18 +31,17 @@ alias wget='wget --continue --no-check-certificate'
 # Get external IP address.
 alias xip='curl -o - -s icanhazip.com || curl -o - -s ifconfig.me/ip'
 
+# Fetches remote doc if not installed locally.
+alias perldoc=cpandoc
+
+# groff bug converts some characters to utf-8.
+alias man='LANG=C man'
+
 case $OSTYPE in
     darwin*)
         alias gvim=mvim
-
-        # groff bug converts some characters to utf-8.
-        alias man='LANG=C man'
-        alias perldoc='LANG=C cpandoc'
         ;;
     *)
-        # Fetches remote doc if not installed locally.
-        alias perldoc=cpandoc
-
         alias pbcopy='xclip -selection clipboard'
         alias pbpaste='xclip -selection clipboard -o'
 esac

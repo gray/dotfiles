@@ -101,6 +101,9 @@ case $OSTYPE in
         export COPYFILE_DISABLE=1
 esac
 
+# groff bug converts some characters to utf-8.
+export PERLDOC='-n "nroff -Tascii"'
+
 export PERL_CPANM_OPT='-q'
 
 for f in            \
