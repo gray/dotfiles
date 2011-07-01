@@ -29,20 +29,19 @@ presets:
       foreign: ~/Media/Movies/Foreign/.
 
   tv:
-    # This plugin is currently causing excessive memory usage.
-    # only_new: yes
+    only_new: yes
     content_size:
       max: 1500
     manipulate:
       # Recognize webrip quality.
       - title:
           replace:
-            regexp: webrip
+            regexp: (?i)webrip
             format: dsr
       # Replace the non-standard quality name for a particular ripper.
       - title:
           replace:
-            regexp: ws\.xvid-err0001
+            regexp: (?i)ws\.xvid-err0001
             format: hdtv
 
   tv-series:
