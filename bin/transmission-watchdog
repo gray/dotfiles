@@ -230,16 +230,16 @@ for line in $(remote --torrent all --info); do
     [ '100%' != "$percent" ] && continue
     case $state in Verifying*) continue; esac
 
+    do=0; dir_ok=0; last_dir=; last_file_base=; has_rar=0
+
     # Verify directory is valid and in expected location.
     real_dir "$dir" && dir=$_real_dir || dir=
-    case $dir/ in "$WATCH_DIR"/*) ;; *) continue; esac
-
-    do=0; last_dir=; last_file_base=; has_rar=0
+    case $dir/ in "$WATCH_DIR"/*) dir_ok=1; esac
 
     # Multiple torrents could write to the same location, so a single lock
     # file per torrent location will not suffice; each RAR archive requires
     # its own lock file.
-    if [ 1 = $HAS_UNRAR ]; then
+    if [ 1 = $HAS_UNRAR ] && [ 1 = $dir_ok ]; then
         for file in $(find "$dir/$name" -type f -name *.rar 2>/dev/null); do
             has_rar=1
             rar_dir=${file%/*}
