@@ -136,10 +136,6 @@ feeds:
       - torrents
       - tv
       - tv-series
-    remove_trackers:
-      - hexagon\.cc
-      - '\.onion:'
-      - tor2web\.com
   btn:
     priority: 2
     interval: 5 minutes
@@ -223,10 +219,6 @@ feeds:
       reject_excluding:
         # Only want documentaries from this feed.
         - mvgroup
-    remove_trackers:
-      - hexagon\.cc
-      - '\.onion:'
-      - tor2web\.com
   torrentvault_tv_premieres:
     priority: 22
     interval: 5 minutes
