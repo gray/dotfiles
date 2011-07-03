@@ -198,27 +198,6 @@ feeds:
       - tv-series
 
   # TV series premieres.
-  eztv_premieres:
-    priority: 20
-    interval: 10 minutes
-    rss:
-      url: http://ezrss.it/feed/
-      silent: yes
-    preset:
-      - torrents
-      - tv
-      - tv-premieres
-    manipulate:
-      - title:
-          from: guid
-          extract: ([^/]+)/?$
-          replace:
-            regexp: '-'
-            format: ' '
-    regexp:
-      reject_excluding:
-        # Only want documentaries from this feed.
-        - mvgroup
   torrentvault_tv_premieres:
     priority: 22
     interval: 5 minutes
