@@ -102,7 +102,7 @@ case $OSTYPE in
 esac
 
 # groff bug converts some characters to utf-8.
-export PERLDOC='-n "nroff -Tascii"'
+export PERLDOC='-n"nroff -Tascii"'
 
 export PERL_CPANM_OPT='-q'
 
