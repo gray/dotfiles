@@ -1,6 +1,5 @@
 " Pathogen ----------------------------------------------------------------{{{1
 
-filetype off
 runtime bundle/pathogen/autoload/pathogen.vim
 
 " Adds .vim/bundle/* to runtimepath
@@ -516,4 +515,8 @@ if has('gui_running')
     elseif has('gui_gtk')
         set guifont=Monaco\ 9
     endif
+
+    " Terminal is not fully functional.
+    let $PAGER = 'sh -c "col -b -x | more"'
+    let $PERLDOC_PAGER = 'sh -c "col -b -x | more" <'
 endif
