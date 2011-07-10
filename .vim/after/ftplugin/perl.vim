@@ -7,7 +7,7 @@ setlocal number
 setlocal keywordprg=sh\ -c\ 'cpandoc\ \$1\ \|\|\ cpandoc\ -f\ \$1\'\ --
 if has('mac')
     " groff bug converts some characters to utf-8.
-    let &keywordprg = 'LANG=C ' . &keywordprg
+    let b:keywordprg = "PERLDOC='-n\"nroff -Tascii\"' " . &keywordprg
 endif
 
 setlocal equalprg=perltidy\ -q
