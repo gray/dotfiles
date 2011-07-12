@@ -503,7 +503,6 @@ if has('gui_running')
     set columns=85
 
     set guioptions-=T  " Hide toolbar
-    set guioptions+=a  " Use system clipboard for visual selections
     set guioptions+=c  " Use console dialogues instead of popups
     set guioptions+=e  " Show the tabline
     set guioptions-=m  " Hide menubar
