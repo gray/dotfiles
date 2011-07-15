@@ -354,4 +354,4 @@ done
 
 # Remove empty directories.
 ! find "$WATCH_DIR" -type f -name '.DS_Store' -exec rm -f {} + 2>/dev/null
-! find "$WATCH_DIR" -type d -depth -exec rmdir {} + 2>/dev/null
+! find "$WATCH_DIR" -type d -mindepth -depth -exec rmdir {} + 2>/dev/null
