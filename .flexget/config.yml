@@ -113,7 +113,8 @@ presets:
         - '*.m[4k]v'
         - '*.mp4'
         - '*.wmv'
-    torrent_scrub: on
+    # Plugin is apparently broken: http://flexget.com/ticket/1152
+    # torrent_scrub: on
     exec:
       auto_escape: yes
       on_output:
