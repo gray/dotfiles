@@ -11,8 +11,8 @@ presets:
       reject:
         - '[\W_]r5[\W_].*?(?:_|\b)(?:line|mic|russian|cam[\W_]*audio)(?:_|\b)'
         - '[\W_]r5[\W_].*?(?:_|\b)read[\W_]+nfo(?:_|\b)'
-        - '[\W_]3-?D(?:BD)?\b'
-        - '[\W_]ppv(?:-?rip)?\b'
+        - '[\W_]3-?D(?:BD)?(?:_|\b)'
+        - '[\W_]ppv(?:-?rip)?(?:_|\b)'
     content_size:
       min: 650
       max: 1750
@@ -72,37 +72,8 @@ presets:
       max_quality: dvdrip
       path: ~/Media/TV/_NEW_/.
       propers: no
-    ## This plugin doesn't exist yet.
-    # tvrage:
-    #   reject_status:
-    #     - canceled/ended
-    #   reject_genres:
-    #     - children
-    #     - dance
-    #     - fashion/make-up
-    #     - music
-    #     - religion
-    #     - romance/dating
-    #     - soaps
-    #     - sports
-    #   reject_classifications:
-    #     - award show
-    #     - game show
-    #     - reality
-    #     - sports
-    #   reject_origin_country:
-    #     - au
-    ## This plugin is broken and the site's data isn't really good for new
-    ## series.
-    # thetvdb:
-    #   reject_status:
-    #     - Ended
-    #   reject_genres:
-    #     - Children
-    #     - Game Show
-    #     - Reality
-    #     - Soap
-    #     - Sport
+    include:
+      - private/series_premiere.yml
 
   torrents:
     regexp:
@@ -190,7 +161,7 @@ feeds:
     # Ratio-based tracker; hard to maintain.
     priority: 7
     interval: 5 minutes
-    delay: 30 minutes
+    delay: 10 minutes
     include:
       - private/bitmetv-rss.yml
     preset:
@@ -244,6 +215,8 @@ feeds:
     regexp:
       reject_excluding:
         - '- (?:XviD|DivX) / DVD / AVI /'
+    # Idea for new plugin:
+    # ptp_lookup_leechtype: [ free, neutral, half ]
   rlslog:
     priority: 33
     rlslog: http://www.rlslog.net/category/movies/
