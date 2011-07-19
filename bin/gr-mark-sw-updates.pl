@@ -39,7 +39,7 @@ my %conf = (
         },
         blacklist => [
             qr/ (?:\b|_) (?:django | plone | zope) (?:\b|_) /ix,
-            qr/simple printer of nested lists/,
+            qr/ \b nested .*? \blist /ix,
         ],
     },
     ruby => {
