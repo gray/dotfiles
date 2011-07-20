@@ -112,3 +112,6 @@
 [submodule ".vim/bundle/replacewithregister"]
 	path = .vim/bundle/replacewithregister
 	url = git://github.com/vim-scripts/ReplaceWithRegister.git
+[submodule ".vim/bundle/liquid-carbon"]
+	path = .vim/bundle/liquid-carbon
+	url = git://github.com/vim-scripts/Liquid-Carbon.git

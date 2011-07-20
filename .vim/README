@@ -106,6 +106,8 @@ jellybeans:
     http://www.vim.org/scripts/script.php?script_id=2555
 lettuce:
     http://www.vim.org/scripts/script.php?script_id=1975
+liquid-carbon:
+    https://github.com/vim-scripts/Liquid-Carbon
 molokai:
     http://www.vim.org/scripts/script.php?script_id=2340
 solarized:
