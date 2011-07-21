@@ -59,13 +59,17 @@ my %conf = (
         name => sub { ($_[0]->title =~ m[^\s*(\S+)])[0] },
     },
     vimscripts => {
-        url => 'http://feed43.com/vim-scripts.xml',
+        url  => 'http://feed43.com/vim-scripts.xml',
         name => sub {
             my ($title, $name) = $_[0]->title =~ m[^\s*((.*?)\s+\S+) --];
             $_[0]->title($title);
             return $name;
         },
     },
+    node => {
+        url  => 'http://registry.npmjs.org/-/rss?descending=true&limit=50',
+        name => sub { $_[0]->title =~ m[ (.*) \@ ]x; $1 },
+    }
 );
 
 # Get list of feed subscription times.
