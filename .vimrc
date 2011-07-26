@@ -1,6 +1,6 @@
 " Pathogen ----------------------------------------------------------------{{{1
 
-runtime bundle/pathogen/autoload/pathogen.vim
+source ~/.vim/bundle/pathogen/autoload/pathogen.vim
 
 " Adds .vim/bundle/* to runtimepath
 silent! call pathogen#infect()
