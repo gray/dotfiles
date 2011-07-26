@@ -270,7 +270,7 @@ for line in $(remote --torrent all --info); do
 
             touch "$unrarred_lock"
 
-            if ! unrar x -inul -y -p- -o+ -r "$rar_dir/$rar_file" "$rar_dir"
+            if ! unrar x -inul -y -p- -o+ -r -ai -ts- -- "$rar_dir/$rar_file" "$rar_dir"
             then
                 err "Unable to extract RAR: $display_path"
                 continue
