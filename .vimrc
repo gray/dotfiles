@@ -54,15 +54,11 @@ set shortmess+=o      " Do not prompt to overwrite file
 set shortmess+=O      " Message for reading file overwrites previous
 
 if $TERM_PROGRAM == 'Apple_Terminal'
-    set t_Co=16
+    if &term == 'xterm-color'
+        set t_Co=16
+    endif
     " Fixes backspace interaction with delimitMate.
     execute "set t_kb=\<c-h>"
-elseif $TERM_PROGRAM == 'iTerm.app'
-    " Fixes arrow keys
-    set term=builtin_ansi
-    set t_Co=256
-elseif &term =~ 'xterm'
-    set t_Co=16
 endif
 
 set encoding=utf-8
