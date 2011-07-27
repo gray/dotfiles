@@ -382,11 +382,11 @@ if has('autocmd')
     " Vim resets the background to light if a colorscheme sets the Normal
     " group's ctermbg to a value greater than 8.
     autocmd GUIEnter,ColorScheme *
-        \ let my_fix_colos = ['gentooish', 'molokai', 'wombat256'] |
-        \ if &t_Co == 256 && index(my_fix_colors, g:colors_name) >= 0 |
+        \ let s:my_fix_colors = ['gentooish', 'molokai', 'wombat256'] |
+        \ if &t_Co == 256 && index(s:my_fix_colors, g:colors_name) >= 0 |
         \     set background=dark |
         \ endif |
-        \ unlet my_fix_colos
+        \ unlet s:my_fix_colors
 
     " All dark backgrounds should be black.
     autocmd GUIEnter,ColorScheme *
