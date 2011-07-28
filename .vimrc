@@ -190,10 +190,6 @@ function! s:VisualSearch(direction) range
     let @" = l:saved_reg
 endfunction
 
-function! CurrentSyntaxGroup()
-    return synIDattr(synID(line('.'),col('.'),1),'name')
-endfunction
-
 " Must pass the line numbers as arguments instead of using a range because
 " calling this function from a ranged-command triggers a bug that resets
 " the cursor position to 1,1 before the function is called; so the cursor
@@ -201,9 +197,48 @@ endfunction
 function! s:StripWhitespace(line1, line2)
     let l:orig_pos = getpos('.')
     let l:orig_search = @/
-    execute 'silent! keepjumps ' . a:line1.','.a:line2 . 's/\s\+$//e'
+    execute 'silent! keepjumps ' . a:line1 . ',' . a:line2 . 's/\s\+$//e'
     call setpos('.', l:orig_pos)
     let @/ = l:orig_search
+endfunction
+
+function! CurrentSyntaxGroup()
+    return synIDattr(synID(line('.'), col('.'), 1), 'name')
+endfunction
+
+function! s:FixColorscheme()
+    highlight Search cterm=NONE ctermfg=yellow ctermbg=blue
+    highlight Search gui=NONE guifg=yellow guibg=blue
+    highlight CursorLine term=reverse cterm=reverse gui=reverse
+    highlight CursorColumn term=reverse cterm=reverse gui=reverse
+
+    let l:bg = synIDattr(hlID('Normal'), 'bg#')
+    if l:bg == '' || l:bg == -1
+        return
+    endif
+
+    if has('gui_running')
+        let l:r = str2nr(l:bg[1:2], 16)
+        let l:g = str2nr(l:bg[3:4], 16)
+        let l:b = str2nr(l:bg[5:6], 16)
+        let l:light = sqrt(0.241 * l:r*l:r + 0.691 * l:g*l:g + 0.068 * l:b*l:b)
+        let l:bg_is_dark = l:light < 130
+    else
+        let l:dark_range = range(7) + [8] + range(16, 32) + range(52, 67)
+            \ + range(88, 99) + range(124, 134) + range(160, 165)
+            \ + [196, 197] + range(232, 244)
+        let l:bg_is_dark = index(l:dark_range, str2nr(l:bg)) >= 0
+
+        " Vim resets the background to light if a colorscheme sets the
+        " Normal group's ctermbg to a value greater than 8.
+        if &t_Co == 256 && l:bg_is_dark
+            set background=dark
+        endif
+    endif
+    if l:bg_is_dark
+        " All dark backgrounds should be black.
+        highlight Normal ctermbg=black guibg=black
+    endif
 endfunction
 
 
@@ -379,26 +414,7 @@ if has('autocmd')
     " GUI startup resets the visual bell; turn it back off
     autocmd GUIEnter * set visualbell t_vb=
 
-    " Vim resets the background to light if a colorscheme sets the Normal
-    " group's ctermbg to a value greater than 8.
-    autocmd GUIEnter,ColorScheme *
-        \ let s:my_fix_colors = ['gentooish', 'molokai', 'wombat256'] |
-        \ if &t_Co == 256 && index(s:my_fix_colors, g:colors_name) >= 0 |
-        \     set background=dark |
-        \ endif |
-        \ unlet s:my_fix_colors
-
-    " All dark backgrounds should be black.
-    autocmd GUIEnter,ColorScheme *
-        \ if &background == 'dark' |
-        \     highlight Normal ctermbg=black guibg=black |
-        \ endif
-
-    autocmd GUIEnter,ColorScheme *
-        \ highlight Search cterm=NONE ctermfg=yellow ctermbg=blue |
-        \ highlight Search gui=NONE guifg=yellow guibg=blue |
-        \ highlight CursorLine term=reverse cterm=reverse gui=reverse |
-        \ highlight CursorColumn term=reverse cterm=reverse gui=reverse
+    autocmd GUIEnter,ColorScheme * call s:FixColorscheme()
 
     " Restore cursor position.
     autocmd BufReadPost *
