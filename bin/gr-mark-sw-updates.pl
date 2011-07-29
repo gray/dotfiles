@@ -88,6 +88,7 @@ while (my ($lang, $conf) = each %conf) {
     );
     die $reader->error unless $feed;
 
+    my %unread;
     my @blacklist = @{ $conf->{blacklist} || [] };
     my @whitelist = @{ $conf->{whitelist} || [] };
 
@@ -104,6 +105,16 @@ while (my ($lang, $conf) = each %conf) {
             unless ($name) {
                 warn "Couldn't extract name from $title\n";
                 next;
+            }
+
+            if ($name ~~ %unread) {
+                push @unwanted_entries, $entry;
+                say "$lang - $name - discarding in favor of newer unread entry"
+                    if VERBOSE;
+                next;
+            }
+            else {
+                $unread{$name} = undef;
             }
 
             my $listed;
