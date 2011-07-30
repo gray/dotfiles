@@ -115,3 +115,6 @@
 [submodule ".vim/bundle/liquid-carbon"]
 	path = .vim/bundle/liquid-carbon
 	url = git://github.com/vim-scripts/Liquid-Carbon.git
+[submodule ".vim/bundle/nginx"]
+	path = .vim/bundle/nginx
+	url = git://github.com/vim-scripts/nginx.vim.git
