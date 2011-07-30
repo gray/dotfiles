@@ -96,6 +96,8 @@ installed colors:
 
 css_color:
     http://www.vim.org/scripts/script.php?script_id=2150
+darkspectrum:
+    http://www.vim.org/scripts/script.php?script_id=2215
 gentooish:
     http://www.vim.org/scripts/script.php?script_id=2474
 ir_black:
@@ -104,14 +106,26 @@ jellybeans:
     http://www.vim.org/scripts/script.php?script_id=2555
 lettuce:
     http://www.vim.org/scripts/script.php?script_id=1975
-liquid-carbon:
-    https://github.com/vim-scripts/Liquid-Carbon
+liquidcarbon:
+    http://www.vim.org/scripts/script.php?script_id=3274
+metacosm:
+    http://www.vim.org/scripts/script.php?script_id=985
 molokai:
     http://www.vim.org/scripts/script.php?script_id=2340
+neverness:
+    http://www.vim.org/scripts/script.php?script_id=1560
+peaksea:
+    http://www.vim.org/scripts/script.php?script_id=760
 solarized:
     http://www.vim.org/scripts/script.php?script_id=3520
+synic:
+    http://www.vim.org/scripts/script.php?script_id=1897
 vividchalk:
     http://www.vim.org/scripts/script.php?script_id=1891
+wombat256:
+    http://www.vim.org/scripts/script.php?script_id=2465
+xoria256:
+    http://www.vim.org/scripts/script.php?script_id=2140
 
 plugin management
 =================

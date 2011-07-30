@@ -112,9 +112,30 @@
 [submodule ".vim/bundle/replacewithregister"]
 	path = .vim/bundle/replacewithregister
 	url = git://github.com/vim-scripts/ReplaceWithRegister.git
-[submodule ".vim/bundle/liquid-carbon"]
-	path = .vim/bundle/liquid-carbon
+[submodule ".vim/bundle/liquidcarbon"]
+	path = .vim/bundle/liquidcarbon
 	url = git://github.com/vim-scripts/Liquid-Carbon.git
 [submodule ".vim/bundle/nginx"]
 	path = .vim/bundle/nginx
 	url = git://github.com/vim-scripts/nginx.vim.git
+[submodule ".vim/bundle/darkspectrum"]
+	path = .vim/bundle/darkspectrum
+	url = git://github.com/vim-scripts/darkspectrum.git
+[submodule ".vim/bundle/metacosm"]
+	path = .vim/bundle/metacosm
+	url = git://github.com/vim-scripts/metacosm.vim.git
+[submodule ".vim/bundle/neverness"]
+	path = .vim/bundle/neverness
+	url = git://github.com/vim-scripts/Neverness-colour-scheme.git
+[submodule ".vim/bundle/peaksea"]
+	path = .vim/bundle/peaksea
+	url = git://github.com/vim-scripts/peaksea.git
+[submodule ".vim/bundle/synic"]
+	path = .vim/bundle/synic
+	url = git://github.com/vim-scripts/synic.vim.git
+[submodule ".vim/bundle/wombat256"]
+	path = .vim/bundle/wombat256
+	url = git://github.com/vim-scripts/wombat256.vim.git
+[submodule ".vim/bundle/xoria256"]
+	path = .vim/bundle/xoria256
+	url = git://github.com/vim-scripts/xoria256.vim.git
