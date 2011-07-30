@@ -95,7 +95,7 @@ yaml:
 installed colors:
 
 css_color:
-    http://www.vim.org/scripts/script.php?script_id=2150
+    http://github.com/ap/vim-css-color
 darkspectrum:
     http://www.vim.org/scripts/script.php?script_id=2215
 gentooish:

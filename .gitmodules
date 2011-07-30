@@ -139,3 +139,6 @@
 [submodule ".vim/bundle/xoria256"]
 	path = .vim/bundle/xoria256
 	url = git://github.com/vim-scripts/xoria256.vim.git
+[submodule ".vim/bundle/css_color"]
+	path = .vim/bundle/css_color
+	url = git://github.com/ap/vim-css-color.git
