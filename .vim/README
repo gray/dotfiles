@@ -80,7 +80,7 @@ nginx:
 perl:
     http://github.com/petdance/vim-perl
 puppet:
-    http://github.com/reductivelabs/puppet/blob/master/ext/vim/syntax/puppet.vim
+    https://github.com/puppetlabs/puppet/blob/master/ext/vim/syntax/puppet.vim
 python:
     http://www.vim.org/scripts/script.php?script_id=790
 scala:

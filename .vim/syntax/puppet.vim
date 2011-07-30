@@ -84,3 +84,54 @@ if version >= 508 || !exists("did_puppet_syn_inits")
 endif
 
 let b:current_syntax = "puppet"
++'+ skip=+\\\\\|\\'+ end=+'+
+syn region  puppetString        start=+"+ skip=+\\\\\|\\"+ end=+"+ contains=puppetVariable,puppetNotVariable
+syn match   puppetString        "/[^/]*/"
+syn match   puppetNotVariable   "\\$\w\+" contained
+syn match   puppetNotVariable   "\\${\w\+}" contained
+
+syn keyword puppetKeyword       import inherits include
+syn keyword puppetControl       case default if else elsif
+syn keyword puppetSpecial       true false undef
+
+" comments last overriding everything else
+syn match   puppetComment       "\s*#.*$" contains=puppetTodo
+syn region  puppetComment       start="/\*" end="\*/" contains=puppetTodo extend
+syn keyword puppetTodo          TODO NOTE FIXME XXX BUG HACK contained
+
+" Define the default highlighting.
+" For version 5.7 and earlier: only when not done already
+" For version 5.8 and later: only when an item doesn't have highlighting yet
+if version >= 508 || !exists("did_puppet_syn_inits")
+  if version < 508
+    let did_puppet_syn_inits = 1
+    command -nargs=+ HiLink hi link <args>
+  else
+    command -nargs=+ HiLink hi def link <args>
+  endif
+
+  HiLink puppetVariable             Identifier
+  HiLink puppetType                 Identifier
+  HiLink puppetKeyword              Define
+  HiLink puppetComment              Comment
+  HiLink puppetString               String
+  HiLink puppetParamKeyword         String
+  HiLink puppetParamDigits          String
+  HiLink puppetNotVariable          String
+  HiLink puppetParamSpecial         Special
+  HiLink puppetSpecial              Special
+  HiLink puppetTodo                 Todo
+  HiLink puppetControl              Statement
+  HiLink puppetDefType              Define
+  HiLink puppetDefName              Type
+  HiLink puppetNodeRe               Type
+  HiLink puppetTypeName             Statement
+  HiLink puppetTypeDefault          Type
+  HiLink puppetParamName            Identifier
+  HiLink puppetArgument             Identifier
+  HiLink puppetFunction             Function
+
+  delcommand HiLink
+endif
+
+let b:current_syntax = "puppet"
