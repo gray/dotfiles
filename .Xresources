@@ -1,0 +1,25 @@
+! Changes take effect after running: xrdb -merge ~/.Xresources
+
+XTerm*loginShell: true
+
+XTerm*font: fixed
+XTerm*boldFont: fixed
+XTerm*utf8: 1
+
+XTerm*background: black
+XTerm*foreground: green
+XTerm*cursorColor: orange
+XTerm*pointerColor: orange
+XTerm*pointerColorBackground: black
+
+XTerm*scrollBar: true
+XTerm*scrollKey: true
+XTerm*saveLines: 10000
+
+*VT100.rightScrollBar: true
+*VT100.colorBDMode: true
+! Use left mouse button to scroll.
+*VT100.scrollbar.translations:#override \n\
+    <Btn1Down>:StartScroll(Continuous) MoveThumb() NotifyThumb() \n\
+    <Btn1Motion>:MoveThumb() NotifyThumb() \n\
+    <BtnUp>: NotifyScroll(Proportional) EndScroll()
