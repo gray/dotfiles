@@ -1,4 +1,4 @@
-if exists("did_load_filetypes")
+if exists('did_load_filetypes')
     finish
 endif
 
@@ -7,13 +7,14 @@ augroup filetypedetect
 autocmd BufNewFile,BufRead *.as setfiletype actionscript
 autocmd BufNewFile,BufRead *.applescript setfiletype applescript
 autocmd BufNewFile,BufRead *.pde setfiletype arduino
+autocmd BufNewFile,BufRead Changes setfiletype changelog
 autocmd BufNewFile,BufRead *.csv setfiletype csv
 autocmd BufNewFile,BufRead *.tsv setfiletype csv | setlocal nolist |
     \ let b:csv_delimiter = "\t"
-autocmd BufNewFile,BufRead *.go set filetype=go
+autocmd BufNewFile,BufRead *.go setfiletype go
 autocmd BufNewFile,BufRead *.json setfiletype json
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
-autocmd BufNewFile,BufRead *.psgi,*.t setfiletype perl
+autocmd BufNewFile,BufRead *.psgi setfiletype perl
 autocmd BufNewFile,BufRead *.scala setfiletype scala
 autocmd BufNewFile,BufRead .bash_* setfiletype sh
 autocmd BufNewFile,BufRead *.srt setfiletype srt
