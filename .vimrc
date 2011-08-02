@@ -202,8 +202,8 @@ function! s:StripWhitespace(line1, line2)
     let @/ = l:orig_search
 endfunction
 
-function! CurrentSyntaxGroup()
-    return synIDattr(synID(line('.'), col('.'), 1), 'name')
+function! GetCurrentSyntax()
+    return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
 
 function! s:FixColorscheme()
