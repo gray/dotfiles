@@ -369,7 +369,7 @@ inoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr>
 
 function! YRRunAfterMaps()
     " Yank to end of line
-    nnoremap <silent> Y :<C-U>YRYankCount 'y$'<cr>
+    nnoremap <silent> Y :<c-u>YRYankCount 'y$'<cr>
 endfunction
 
 " Return to visual mode after indenting
