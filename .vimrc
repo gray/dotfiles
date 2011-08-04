@@ -481,8 +481,12 @@ if has('autocmd')
         \     matchpairs+=<:>
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
-    autocmd BufReadPre *.pdf set readonly
+    autocmd BufReadPre *.pdf setlocal readonly
     autocmd BufReadPost *.pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
+
+    autocmd BufReadPre *.epub setlocal readonly binary
+    autocmd BufReadPost *.epub silent %!einfo -q -p '%'
+        \ | html2text -nobs -style pretty
 
     " Use syntax highlighting keywords for keyword completion
     "if exists('+omnifunc')
