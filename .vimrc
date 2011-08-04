@@ -484,9 +484,9 @@ if has('autocmd')
     autocmd BufReadPre *.pdf setlocal readonly
     autocmd BufReadPost *.pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
 
-    autocmd BufReadPre *.epub setlocal readonly binary
+    autocmd BufReadPre *.epub setlocal readonly
     autocmd BufReadPost *.epub silent %!einfo -q -p '%'
-        \ | html2text -nobs -style pretty
+        \ | lynx -stdin -dump -force_html -display_charset=utf-8 -nolist
 
     " Use syntax highlighting keywords for keyword completion
     "if exists('+omnifunc')
