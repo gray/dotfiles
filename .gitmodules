@@ -142,3 +142,6 @@
 [submodule ".vim/bundle/css_color"]
 	path = .vim/bundle/css_color
 	url = git://github.com/ap/vim-css-color.git
+[submodule ".vim/bundle/a"]
+	path = .vim/bundle/a
+	url = git://github.com/vim-scripts/a.vim.git
