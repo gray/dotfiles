@@ -14,6 +14,8 @@ delimitMate:
     http://www.vim.org/scripts/script.php?script_id=2754
 endwise:
     http://www.vim.org/scripts/script.php?script_id=2386
+fugitive:
+    http://www.vim.org/scripts/script.php?script_id=2975
 fuzzy finder:
     http://www.vim.org/scripts/script.php?script_id=1984
 gist:
