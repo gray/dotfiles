@@ -148,3 +148,6 @@
 [submodule ".vim/bundle/fugitive"]
 	path = .vim/bundle/fugitive
 	url = git://github.com/tpope/vim-fugitive.git
+[submodule ".vim/bundle/histwin"]
+	path = .vim/bundle/histwin
+	url = git://github.com/chrisbra/histwin.vim.git

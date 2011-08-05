@@ -20,6 +20,8 @@ fuzzy finder:
     http://www.vim.org/scripts/script.php?script_id=1984
 gist:
     http://www.vim.org/scripts/script.php?script_id=2423
+histwin:
+    http://www.vim.org/scripts/script.php?script_id=2932
 largefile:
     http://www.vim.org/scripts/script.php?script_id=1506
 nerd commenter:
