@@ -151,3 +151,6 @@
 [submodule ".vim/bundle/histwin"]
 	path = .vim/bundle/histwin
 	url = git://github.com/chrisbra/histwin.vim.git
+[submodule ".vim/bundle/bufkill"]
+	path = .vim/bundle/bufkill
+	url = git://github.com/vim-scripts/bufkill.vim.git
