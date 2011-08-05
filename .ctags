@@ -1,1 +1,6 @@
---langmap=perl:+.t
+--regex-make=/^([^:# \t]+)[ \t]*:($|[^=]+)/\1/t,target/
+
+--langmap=c:+.xs
+
+--langmap=perl:+.t.pod
+--regex-perl=/^__(DATA|END)__$/__\1__/l,label/

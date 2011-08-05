@@ -286,6 +286,25 @@ let Tlist_Show_One_File = 1
 let Tlist_Auto_Highlight_Tag = 1
 let Tlist_Auto_Update = 1
 let Tlist_Highlight_Tag_On_BufEnter = 1
+let tlist_make_settings = 'make;t:targets;m:macros'
+let tlist_perl_settings = 'perl;p:packages;c:constants;l:labels;s:subroutines'
+let tlist_xs_settings = 'c;d:macro;g:enum;s:struct;u:union;t:typedef;' .
+    \ 'v:variable;f:function'
+
+let g:tagbar_left = 1
+let g:tagbar_autofocus = 1
+let g:tagbar_type_make = { 'kinds' : [ 't:targets', 'm:macros' ] }
+let g:tagbar_type_xs = {
+    \ 'ctagstype' : 'c',
+    \ 'kinds'     : [
+    \     'd:macros:1', 'p:prototypes:1', 'g:enums', 'e:enumerators',
+    \     't:typedefs', 's:structs', 'u:unions', 'f:functions',
+    \     'm:members', 'v:variables'
+    \ ],
+    \ 'sro'        : '::',
+    \ 'kind2scope' : { 'g' : 'enum', 's' : 'struct', 'u' : 'union' },
+    \ 'scope2kind' : { 'enum' : 'g', 'struct' : 's', 'union' : 'u' },
+\ }
 
 let g:netrw_dirhistmax = 0
 
@@ -389,6 +408,7 @@ nnoremap q: <silent>
 " Toggle various plugins
 noremap <silent> <localleader>nt :NERDTreeToggle<cr>
 noremap <silent> <localleader>tl :TlistToggle<cr>
+noremap <silent> <localleader>tb :TagbarToggle<cr>
 noremap <localleader>fff :FufFile<cr>
 noremap <localleader>ffb :FufBookmark<cr>
 noremap <localleader>ffa :FufAddBookmark<cr>
