@@ -36,6 +36,7 @@ set backupdir=~/.vim/tmp
 " Display, Messages, Terminal ---------------------------------------------{{{1
 
 set numberwidth=1     " Make line number column as narrow as possible
+set lazyredraw        " Don't redraw while executing macros
 set ttyfast           " Indicates a fast terminal connection
 set title             " Set descriptive window/terminal title
 set report=1          " Always report the number of lines changed
