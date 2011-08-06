@@ -505,6 +505,9 @@ if has('autocmd')
     autocmd BufReadPre *.pdf setlocal readonly
     autocmd BufReadPost *.pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
 
+    autocmd BufReadPre *.ps setlocal readonly
+    autocmd BufReadPost *.ps silent %!ps2ascii '%' | fmt -sw78
+
     autocmd BufReadPre *.epub setlocal readonly
     autocmd BufReadPost *.epub silent %!einfo -q -p '%'
         \ | lynx -stdin -dump -force_html -display_charset=utf-8 -nolist
