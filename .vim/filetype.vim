@@ -12,7 +12,7 @@ autocmd BufNewFile,BufRead *.csv setfiletype csv
 autocmd BufNewFile,BufRead *.tsv setfiletype csv | setlocal nolist |
     \ let b:csv_delimiter = "\t"
 autocmd BufNewFile,BufRead *.go setfiletype go
-autocmd BufNewFile,BufRead *.json setfiletype json
+autocmd BufNewFile,BufRead *.json setfiletype javascript
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
 autocmd BufNewFile,BufRead *.psgi setfiletype perl
 autocmd BufNewFile,BufRead *.scala setfiletype scala

@@ -490,7 +490,6 @@ if has('autocmd')
     autocmd FileType html
         \ setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
-    autocmd FileType json setlocal equalprg=json_xs
     autocmd FileType make setlocal nosmarttab nolist
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
