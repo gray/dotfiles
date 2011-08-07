@@ -437,11 +437,16 @@ if has('autocmd')
 
     autocmd GUIEnter,ColorScheme * call s:FixColorscheme()
 
-    " Restore cursor position.
+    " Restore the cursor position.
     autocmd BufReadPost *
-        \ if !&diff && line("'\"") > 1 && line("'\"") <= line('$') |
+        \ if !&diff && line("'\"") > 0 && line("'\"") <= line('$') |
         \     execute 'normal! g`"' |
         \     let b:restored_pos = 1 |
+        \ endif
+    " Reset the cursor position for commit messages.
+    autocmd BufEnter *
+        \ if index(['gitcommit', 'svn', 'bzr'], &filetype) >= 0 |
+        \     call cursor(1, 1) |
         \ endif
     " Open any containing folds when restoring cursor position.
     autocmd BufWinEnter *
