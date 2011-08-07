@@ -438,7 +438,7 @@ if has('autocmd')
     autocmd GUIEnter,ColorScheme * call s:FixColorscheme()
 
     " Restore the cursor position.
-    autocmd BufReadPost *
+    autocmd BufRead *
         \ if !&diff && line("'\"") > 0 && line("'\"") <= line('$') |
         \     execute 'normal! g`"' |
         \     let b:restored_pos = 1 |
@@ -507,13 +507,13 @@ if has('autocmd')
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd BufReadPre *.pdf setlocal readonly
-    autocmd BufReadPost *.pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
+    autocmd BufRead *.pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
 
     autocmd BufReadPre *.ps setlocal readonly
-    autocmd BufReadPost *.ps silent %!ps2ascii '%' | fmt -sw78
+    autocmd BufRead *.ps silent %!ps2ascii '%' | fmt -sw78
 
     autocmd BufReadPre *.epub setlocal readonly
-    autocmd BufReadPost *.epub silent %!einfo -q -p '%'
+    autocmd BufRead *.epub silent %!einfo -q -p '%'
         \ | lynx -stdin -dump -force_html -display_charset=utf-8 -nolist
 
     " Use syntax highlighting keywords for keyword completion
