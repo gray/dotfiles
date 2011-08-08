@@ -383,7 +383,6 @@ nmap gN :cnext<cr>
 nmap gP :cprev<cr>
 
 " Redraw screen, remove search highlighting, sync syntax, show list.
-" TODO: call HighlightLongLinesToggle; turn this into a function.
 nnoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr><c-l>
 inoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr><c-l>a
 
@@ -487,10 +486,10 @@ if has('autocmd')
     autocmd BufRead .vimrc setlocal foldmethod=marker
     autocmd BufNewFile,BufRead *.t compiler perlprove
 
-    " Custom filetype mapping is defined in ~/.vim/filetype.vim
+    " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
     autocmd FileType crontab setlocal backupcopy=yes
-    autocmd FileType gitcommit setlocal nobackup spell wrap
+    autocmd FileType gitcommit,svn,bzr setlocal nobackup nolist spell wrap
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html
         \ setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
@@ -499,20 +498,15 @@ if has('autocmd')
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd BufRead quickfix setlocal nobuflisted wrap number
-    autocmd FileType svn setlocal nobackup spell wrap
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml
         \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
         \     matchpairs+=<:>
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
-    autocmd BufReadPre *.pdf setlocal readonly
+    autocmd BufRead *.{pdf,ps,epub} setlocal readonly filetype=text
     autocmd BufRead *.pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
-
-    autocmd BufReadPre *.ps setlocal readonly
     autocmd BufRead *.ps silent %!ps2ascii '%' | fmt -sw78
-
-    autocmd BufReadPre *.epub setlocal readonly
     autocmd BufRead *.epub silent %!einfo -q -p '%'
         \ | lynx -stdin -dump -force_html -display_charset=utf-8 -nolist
 
