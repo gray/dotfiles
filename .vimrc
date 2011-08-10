@@ -130,15 +130,18 @@ set foldclose=all     " Close folds at startup
 
 " Matching, Searching, Substituting ---------------------------------------{{{1
 
-set incsearch        " Show search matches as you type
-set ignorecase       " Ignore case when searching
-set smartcase        " Override 'ignorecase' when needed
-set hlsearch         " Highlight search results
 set showmatch        " Show matching bracket
 set matchtime=2      " (for only .2 seconds)
 
 " Extended matching with '%'
 runtime macros/matchit.vim
+
+set incsearch        " Show search matches as you type
+set ignorecase       " Ignore case when searching
+set smartcase        " Override 'ignorecase' when needed
+set hlsearch         " Highlight search results
+
+set gdefault         " Apply substitution to all matches
 
 
 " Menus, Completion -------------------------------------------------------{{{1
