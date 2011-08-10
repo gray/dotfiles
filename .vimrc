@@ -438,7 +438,7 @@ if has('autocmd')
 
     " Restore the cursor position.
     autocmd BufRead *
-        \ if !&diff && line("'\"") > 0 && line("'\"") <= line('$') |
+        \ if ! &diff && line("'\"") > 0 && line("'\"") <= line('$') |
         \     execute 'normal! g`"' |
         \     let b:restored_pos = 1 |
         \ endif
@@ -468,9 +468,21 @@ if has('autocmd')
     autocmd CursorHold * nohlsearch | redraw
 
     " Set 'updatetime' to 15 seconds when in insert mode.
-    autocmd InsertEnter * let b:orig_updatetime=&l:updatetime |
+    autocmd InsertEnter * let b:orig_updatetime = &l:updatetime |
         \ setlocal updatetime=15000
-    autocmd InsertLeave * let &l:updatetime=b:orig_updatetime
+    autocmd InsertLeave * let &l:updatetime = b:orig_updatetime
+
+    " Disable fold detection while in insert mode.
+    autocmd InsertEnter *
+        \ if ! exists('w:saved_foldmethod') |
+        \     let w:saved_foldmethod = &foldmethod |
+        \     setlocal foldmethod=manual |
+        \ endif
+    autocmd InsertLeave,WinLeave *
+        \ if exists('w:saved_foldmethod') |
+        \     let &l:foldmethod = w:saved_foldmethod |
+        \     unlet w:saved_foldmethod |
+        \ endif
 
     " Turn off insert mode when idle.
     autocmd CursorHoldI * stopinsert
@@ -536,7 +548,7 @@ else
     highlight! link NonText SpecialKey
 endif
 
-if !&diff
+if ! &diff
     if has('syntax')
         syntax on
     endif
