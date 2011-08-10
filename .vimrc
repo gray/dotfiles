@@ -33,26 +33,18 @@ set directory=~/.vim/tmp//
 set backupdir=~/.vim/tmp
 
 
-" Display, Messages, Terminal ---------------------------------------------{{{1
+" Display, Terminal -------------------------------------------------------{{{1
 
 set numberwidth=1     " Make line number column as narrow as possible
 set lazyredraw        " Don't redraw while executing macros
 set ttyfast           " Indicates a fast terminal connection
 set title             " Set descriptive window/terminal title
-set report=1          " Always report the number of lines changed
 set display=lastline  " Show as much of the last line as possible
 
 set noerrorbells      " Error bells are annoying
 set visualbell t_vb=  " No visual bell
 
 set printoptions=paper:letter
-
-set shortmess=a       " Use abbreviated messages
-set shortmess+=T      " Truncate messages in the middle if too long
-set shortmess+=I      " Disable intro message
-set shortmess+=t      " Truncate filename at start if too long
-set shortmess+=o      " Do not prompt to overwrite file
-set shortmess+=O      " Message for reading file overwrites previous
 
 if $TERM_PROGRAM == 'Apple_Terminal'
     if &term == 'xterm-color'
@@ -61,6 +53,7 @@ if $TERM_PROGRAM == 'Apple_Terminal'
     " Fixes backspace interaction with delimitMate.
     execute "set t_kb=\<c-h>"
 endif
+set t_Co=256
 
 set encoding=utf-8
 if &termencoding == ''
@@ -81,10 +74,18 @@ let &listchars = 'tab:'      . nr2char(187) . nr2char(183) . ',' .
 set ttimeoutlen=50    " Reduce delay for key codes
 
 
-" Statusline, Messages ----------------------------------------------------{{{1
+" Messages, Statusline ----------------------------------------------------{{{1
+
+set shortmess=a   " Use abbreviated messages
+set shortmess+=T  " Truncate messages in the middle if too long
+set shortmess+=I  " Disable intro message
+set shortmess+=t  " Truncate filename at start if too long
+set shortmess+=o  " Do not prompt to overwrite file
+set shortmess+=O  " Message for reading file overwrites previous
 
 set showcmd       " Display the command in the last line
 set showmode      " Display the current mode in the last line
+set report=1      " Always report the number of lines changed
 set ruler         " Display info on current position
 set laststatus=2  " Always show status line
 set statusline=Editing:\ %r%t%m\ %=Location:\ Line\ %l/%L\ \ Col:\ %c\ (%p%%)
@@ -102,7 +103,7 @@ set nostartofline    " Keep the cursor in the same column
 
 " Text-Formatting, Identing, Tabbing --------------------------------------{{{1
 
-if has('eval')
+if ! &diff && has('eval')
     filetype plugin on
     filetype indent on
 endif
@@ -178,10 +179,22 @@ set splitbelow         " When splitting horizontally, split below
 set tabpagemax=128     " Maximum number of tabs open
 
 
+" Syntax Highlighting -----------------------------------------------------{{{1
+
+" NOTE: enabling syntax clears any pre-existing Syntax autocommands.
+if ! &diff && has('syntax')
+    syntax enable
+
+    if exists('+colorcolumn')
+        set colorcolumn=80
+    endif
+endif
+
+
 " Functions ---------------------------------------------------------------{{{1
 
 " Search with * or # for current visual selection.
-function! s:VisualSearch(direction) range
+function! s:VisualSearch (direction) range
     let l:saved_reg = @"
     execute 'normal! vgvy'
     let l:pattern = escape(@", '\\/.*$^~[]')
@@ -195,7 +208,7 @@ endfunction
 " calling this function from a ranged-command triggers a bug that resets
 " the cursor position to 1,1 before the function is called; so the cursor
 " position could not be restored.
-function! s:StripWhitespace(line1, line2)
+function! s:StripWhitespace (line1, line2)
     let l:orig_pos = getpos('.')
     let l:orig_search = @/
     execute 'silent! keepjumps ' . a:line1 . ',' . a:line2 . 's/\s\+$//e'
@@ -203,11 +216,11 @@ function! s:StripWhitespace(line1, line2)
     let @/ = l:orig_search
 endfunction
 
-function! GetCurrentSyntax()
+function! GetCurrentSyntax ()
     return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
 endfunction
 
-function! s:FixColorscheme()
+function! s:AdjustColorScheme ()
     highlight Search cterm=NONE ctermfg=yellow ctermbg=blue
     highlight Search gui=NONE guifg=yellow guibg=blue
     highlight CursorLine term=reverse cterm=reverse gui=reverse
@@ -240,6 +253,12 @@ function! s:FixColorscheme()
         " All dark backgrounds should be black.
         highlight Normal ctermbg=black guibg=black
     endif
+endfunction
+
+function! s:ExtendSyntaxHighlighting ()
+    syntax keyword myTodo containedin=.*Comment,perlPOD contained
+        \ BUG FIXME HACK NOTE README TBD TODO WARNING XXX
+    highlight default link myTodo Todo
 endfunction
 
 
@@ -434,7 +453,8 @@ if has('autocmd')
     " GUI startup resets the visual bell; turn it back off
     autocmd GUIEnter * set visualbell t_vb=
 
-    autocmd GUIEnter,ColorScheme * call s:FixColorscheme()
+    autocmd GUIEnter,ColorScheme * call s:AdjustColorScheme()
+    autocmd Syntax * call s:ExtendSyntaxHighlighting()
 
     " Restore the cursor position.
     autocmd BufRead *
@@ -534,7 +554,7 @@ if has('autocmd')
 endif
 
 
-" Highlighting, Colors ----------------------------------------------------{{{1
+" Colors ------------------------------------------------------------------{{{1
 
 set background=dark
 
@@ -546,15 +566,6 @@ if has('gui_running') || &t_Co == 256
 else
     colorscheme ir_black
     highlight! link NonText SpecialKey
-endif
-
-if ! &diff
-    if has('syntax')
-        syntax on
-    endif
-    if exists('+colorcolumn')
-        set colorcolumn=80
-    endif
 endif
 
 
