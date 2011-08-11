@@ -228,6 +228,7 @@ function! s:AdjustColorScheme ()
     highlight Search gui=NONE guifg=yellow guibg=blue
     highlight CursorLine term=reverse cterm=reverse gui=reverse
     highlight CursorColumn term=reverse cterm=reverse gui=reverse
+    highlight SpellBad ctermbg=red ctermfg=white guibg=red guifg=white
 
     let l:bg = synIDattr(hlID('Normal'), 'bg#')
     if l:bg == '' || l:bg == -1
@@ -422,7 +423,7 @@ vnoremap < <gv
 vnoremap > >gv
 
 " Select last pasted text
-nnoremap <localleader>v `[v`]
+nnoremap gV `[v`]
 
 " Paragraph formatting
 nnoremap Q gqap
