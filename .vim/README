@@ -28,6 +28,8 @@ histwin:
     http://www.vim.org/scripts/script.php?script_id=2932
 largefile:
     http://www.vim.org/scripts/script.php?script_id=1506
+manpageview:
+    http://www.vim.org/scripts/script.php?script_id=489
 nerd commenter:
     http://www.vim.org/scripts/script.php?script_id=1218
 nerd tree:

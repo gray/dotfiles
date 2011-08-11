@@ -331,8 +331,12 @@ let g:tagbar_type_xs = {
 
 let g:netrw_dirhistmax = 0
 
-" For sh syntax; most shells are POSIX-compliant nowadays
+" For sh syntax; most shells are POSIX-compliant
 let g:is_posix = 1
+
+let g:manpageview_winopen = 'hsplit='
+let g:manpageview_pgm_pl = 'cpandoc'
+let g:manpageview_options_pl = ';-f;-q'
 
 
 " Mappings ----------------------------------------------------------------{{{1
