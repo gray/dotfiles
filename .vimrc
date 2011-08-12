@@ -1,8 +1,9 @@
-" Pathogen ----------------------------------------------------------------{{{1
+" Initialize --------------------------------------------------------------{{{1
 
-source ~/.vim/bundle/pathogen/autoload/pathogen.vim
+set nocompatible  " Explicitly set in case Vim was started with the -u flag
 
 " Adds .vim/bundle/* to runtimepath
+source ~/.vim/bundle/pathogen/autoload/pathogen.vim
 silent! call pathogen#infect()
 silent! call pathogen#helptags()
 
