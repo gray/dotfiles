@@ -194,6 +194,9 @@ if ! &diff && has('syntax')
     endif
 endif
 
+" For sh syntax; most shells are POSIX-compliant.
+let g:is_posix = 1
+
 
 " Functions ---------------------------------------------------------------{{{1
 
@@ -333,12 +336,11 @@ let g:tagbar_type_xs = {
 
 let g:netrw_dirhistmax = 0
 
-" For sh syntax; most shells are POSIX-compliant
-let g:is_posix = 1
-
 let g:manpageview_winopen = 'hsplit='
 let g:manpageview_pgm_pl = 'cpandoc'
 let g:manpageview_options_pl = ';-f;-q'
+
+let g:LargeFile = 50
 
 
 " Mappings ----------------------------------------------------------------{{{1
@@ -530,6 +532,9 @@ if has('autocmd')
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
     autocmd FileType crontab setlocal backupcopy=yes
+    autocmd FileType epub,pdf,ps setlocal readonly filetype=text
+    autocmd FileType epub silent %!einfo -q -p '%'
+        \ | lynx -stdin -dump -force_html -display_charset=utf-8 -nolist
     autocmd FileType gitcommit,svn,bzr setlocal nobackup nolist spell wrap
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html
@@ -537,19 +542,17 @@ if has('autocmd')
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
     autocmd FileType make setlocal nosmarttab nolist
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
+    autocmd FileType pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
+    autocmd FileType ps silent %!ps2ascii '%' | fmt -sw78
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
-    autocmd BufRead quickfix setlocal nobuflisted wrap number
+    autocmd FileType qf setlocal nobuflisted wrap number
+    autocmd FileType sqlite
+        \ setlocal readonly nolist syntax= | silent %!sqlite3 '%' .dump
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml
         \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
         \     matchpairs+=<:>
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
-
-    autocmd BufRead *.{pdf,ps,epub} setlocal readonly filetype=text
-    autocmd BufRead *.pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
-    autocmd BufRead *.ps silent %!ps2ascii '%' | fmt -sw78
-    autocmd BufRead *.epub silent %!einfo -q -p '%'
-        \ | lynx -stdin -dump -force_html -display_charset=utf-8 -nolist
 
     " Use syntax highlighting keywords for keyword completion
     "if exists('+omnifunc')
