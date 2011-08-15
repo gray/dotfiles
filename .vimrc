@@ -531,6 +531,10 @@ if has('autocmd')
 
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
+    autocmd FileType bdb1_hash
+        \ setlocal readonly nolist |
+        \ silent %!perl -MDB_File -e 'tie \%db, DB_File => shift, O_RDONLY;
+        \     while (($k, $v) = each \%db) { print "$k | $v\n" }' '%'
     autocmd FileType crontab setlocal backupcopy=yes
     autocmd FileType epub,pdf,ps setlocal readonly filetype=text
     autocmd FileType epub silent %!einfo -q -p '%'
@@ -547,7 +551,7 @@ if has('autocmd')
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType qf setlocal nobuflisted wrap number
     autocmd FileType sqlite
-        \ setlocal readonly nolist syntax= | silent %!sqlite3 '%' .dump
+        \ setlocal readonly nolist | silent %!sqlite3 '%' .dump
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml
         \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
