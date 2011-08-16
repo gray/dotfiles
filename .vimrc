@@ -472,14 +472,10 @@ if has('autocmd')
 
     " Restore the cursor position.
     autocmd BufRead *
-        \ if ! &diff && line("'\"") > 0 && line("'\"") <= line('$') |
+        \ if line("'\"") > 0 && line("'\"") <= line('$')
+        \         && ! &diff && ! exists('b:is_commit_msg') |
         \     execute 'normal! g`"' |
         \     let b:restored_pos = 1 |
-        \ endif
-    " Reset the cursor position for commit messages.
-    autocmd BufEnter *
-        \ if index(['gitcommit', 'svn', 'bzr'], &filetype) >= 0 |
-        \     call cursor(1, 1) |
         \ endif
     " Open any containing folds when restoring cursor position.
     autocmd BufWinEnter *
@@ -538,11 +534,12 @@ if has('autocmd')
         \ setlocal readonly nolist |
         \ silent %!perl -MDB_File -e 'tie \%db, DB_File => shift, O_RDONLY;
         \     while (($k, $v) = each \%db) { print "$k | $v\n" }' '%'
+    autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
+        \ setlocal nobackup nolist spell wrap | let b:is_commit_msg = 1
     autocmd FileType crontab setlocal backupcopy=yes
     autocmd FileType epub,pdf,ps setlocal readonly filetype=text
     autocmd FileType epub silent %!einfo -q -p '%'
         \ | lynx -stdin -dump -force_html -display_charset=utf-8 -nolist
-    autocmd FileType gitcommit,svn,bzr setlocal nobackup nolist spell wrap
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html
         \ setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
