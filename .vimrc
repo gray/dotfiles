@@ -53,8 +53,11 @@ if $TERM_PROGRAM == 'Apple_Terminal'
     endif
     " Fixes backspace interaction with delimitMate.
     execute "set t_kb=\<c-h>"
+elseif &term =~ '256-\?color'
+    set t_Co=256
+elseif &term =~ 'xterm'
+    set t_Co=8
 endif
-set t_Co=256
 
 set encoding=utf-8
 if &termencoding == ''
