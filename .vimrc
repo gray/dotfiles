@@ -23,8 +23,6 @@ set modelines=0     " Trust no one
 " Switch to the directory of the current file.
 if exists('+autochdir')
     set autochdir
-else
-    autocmd BufEnter * silent! lcd %:p:h:gs/ /\\ /
 endif
 
 set autoread        " Reload file if externally, but not internally modified
@@ -361,7 +359,10 @@ inoremap <f1> <c-o>:set invpaste paste?<cr>
 set pastetoggle=<f1>
 
 " Save current buffer with root permissions.
-cnoremap <silent> w!! write !sudo tee % >/dev/null<cr>:edit!<cr><cr><cr>
+" cnoremap <silent> w!! :execute 'write !sudo tee'  '>/dev/null'
+    " \<bar><cr>:edit!<cr><cr><cr>
+cnoremap <silent> w!! :execute 'write !sudo tee >/dev/null'
+    \ shellescape(expand('%'))<cr><bar><cr>:edit!<cr><cr><cr>
 
 " Insert a single character.
 noremap <localleader>i i<space><esc>r
@@ -416,8 +417,10 @@ nmap gN :cnext<cr>
 nmap gP :cprev<cr>
 
 " Redraw screen, remove search highlighting, sync syntax, show list.
-nnoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr><c-l>
-inoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!<cr><c-l>a
+nnoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!
+    \ <cr><c-l>
+inoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!
+    \ <cr><c-l>a
 
 function! YRRunAfterMaps()
     " Yank to end of line
@@ -470,6 +473,11 @@ if has('autocmd')
     autocmd GUIEnter,ColorScheme * call s:AdjustColorScheme()
     autocmd Syntax * call s:ExtendSyntaxHighlighting()
 
+    " Switch to the directory of the current file.
+    if ! exists('+autochdir')
+        autocmd BufEnter * execute 'silent! lcd' fnameescape(expand('%:p:h'))
+    endif
+
     " Restore the cursor position.
     autocmd BufRead *
         \ if line("'\"") > 0 && line("'\"") <= line('$')
@@ -490,12 +498,9 @@ if has('autocmd')
         \ if exists('b:isa_new') |
         \     unlet b:isa_new |
         \     if getline(1) =~ '^#!.*/bin/' |
-        \          silent! execute '!chmod +x <afile>' |
+        \         execute 'silent! !chmod +x' shellescape(expand('%')) |
         \     endif |
         \ endif
-
-    " Turn off highlighting when idle.
-    autocmd CursorHold * nohlsearch | redraw
 
     " Set 'updatetime' to 15 seconds when in insert mode.
     autocmd InsertEnter * let b:saved_updatetime = &l:updatetime |
@@ -530,33 +535,40 @@ if has('autocmd')
 
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
-    autocmd FileType bdb1_hash
-        \ setlocal readonly nolist |
-        \ silent %!perl -MDB_File -e 'tie \%db, DB_File => shift, O_RDONLY;
-        \     while (($k, $v) = each \%db) { print "$k | $v\n" }' '%'
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
         \ setlocal nobackup nolist spell wrap | let b:is_commit_msg = 1
     autocmd FileType crontab setlocal backupcopy=yes
-    autocmd FileType epub,pdf,ps setlocal readonly filetype=text
-    autocmd FileType epub silent %!einfo -q -p '%'
-        \ | lynx -stdin -dump -force_html -display_charset=utf-8 -nolist
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html
         \ setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
     autocmd FileType make setlocal nosmarttab nolist
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
-    autocmd FileType pdf silent %!pdftotext -q -nopgbrk '%' - | fmt -sw78
-    autocmd FileType ps silent %!ps2ascii '%' | fmt -sw78
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType qf setlocal nobuflisted wrap number
-    autocmd FileType sqlite
-        \ setlocal readonly nolist | silent %!sqlite3 '%' .dump
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml
         \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
         \     matchpairs+=<:>
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
+
+    autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite
+        \ setlocal readonly nolist filetype=text
+    autocmd FileType bdb1_hash
+        \ execute 'silent %!perl -MDB_File -e ''tie \%db, DB_File => shift,'
+        \    'O_RDONLY; while (($k, $v) = each \%db){ print "$k | $v\n" }'''
+        \    shellescape(expand('%'))
+    autocmd FileType epub
+        \ execute 'silent %!einfo -q -p' shellescape(expand('%')) '| lynx'
+        \     ' -stdin -dump -force_html -display_charset=utf-8 -nolist'
+    autocmd FileType pdf
+        \ execute 'silent %!pdftotext -q -nopgbrk' shellescape(expand('%'))
+        \     ' - | fmt -sw78'
+    autocmd FileType postscr
+        \ execute 'silent %!ps2ascii' shellescape(expand('%')) '| fmt -sw78'
+    autocmd FileType sqlite
+        \ execute 'silent %!sqlite3' shellescape(expand('%')) '.dump'
+    autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite setlocal nomodifiable
 
     " Use syntax highlighting keywords for keyword completion
     "if exists('+omnifunc')
