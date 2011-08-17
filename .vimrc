@@ -219,11 +219,11 @@ endfunction
 " the cursor position to 1,1 before the function is called; so the cursor
 " position could not be restored.
 function! s:StripWhitespace (line1, line2)
-    let l:orig_pos = getpos('.')
-    let l:orig_search = @/
+    let l:saved_pos = getpos('.')
+    let l:saved_search = @/
     execute 'silent! keepjumps ' . a:line1 . ',' . a:line2 . 's/\s\+$//e'
-    call setpos('.', l:orig_pos)
-    let @/ = l:orig_search
+    call setpos('.', l:saved_pos)
+    let @/ = l:saved_search
 endfunction
 
 function! GetCurrentSyntax ()
@@ -281,12 +281,12 @@ endfunction
 command! DiffBuff vertical new | let t:diff_bufnr = bufnr('$') |
     \ setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile filetype= |
     \ r # | 0d_ | diffthis | wincmd p | diffthis |
-    \ if exists('b:current_syntax') | let b:orig_syntax = b:current_syntax |
+    \ if exists('b:current_syntax') | let b:saved_syntax = b:current_syntax |
     \ endif | syntax clear
 
 " Close DiffBuff's diff window and reset syntax
 command! DiffOff execute 'bwipeout ' . t:diff_bufnr | diffoff |
-    \ if exists('b:orig_syntax') | let &l:syntax = b:orig_syntax | endif
+    \ if exists('b:saved_syntax') | let &l:syntax = b:saved_syntax | endif
 
 command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 
@@ -498,9 +498,9 @@ if has('autocmd')
     autocmd CursorHold * nohlsearch | redraw
 
     " Set 'updatetime' to 15 seconds when in insert mode.
-    autocmd InsertEnter * let b:orig_updatetime = &l:updatetime |
+    autocmd InsertEnter * let b:saved_updatetime = &l:updatetime |
         \ setlocal updatetime=15000
-    autocmd InsertLeave * let &l:updatetime = b:orig_updatetime
+    autocmd InsertLeave * let &l:updatetime = b:saved_updatetime
 
     " Disable fold detection while in insert mode.
     autocmd InsertEnter *
