@@ -359,8 +359,6 @@ inoremap <f1> <c-o>:set invpaste paste?<cr>
 set pastetoggle=<f1>
 
 " Save current buffer with root permissions.
-" cnoremap <silent> w!! :execute 'write !sudo tee'  '>/dev/null'
-    " \<bar><cr>:edit!<cr><cr><cr>
 cnoremap <silent> w!! :execute 'write !sudo tee >/dev/null'
     \ shellescape(expand('%'))<cr><bar><cr>:edit!<cr><cr><cr>
 
