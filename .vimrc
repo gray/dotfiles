@@ -493,10 +493,10 @@ if has('autocmd')
         \ endif
 
     " Make new scripts executable
-    autocmd BufNewFile * let b:isa_new = 1
+    autocmd BufNewFile * let b:is_new_file = 1
     autocmd BufWritePost,FileWritePost *
-        \ if exists('b:isa_new') |
-        \     unlet b:isa_new |
+        \ if exists('b:is_new_file') |
+        \     unlet b:is_new_file |
         \     if getline(1) =~ '^#!.*/bin/' |
         \         execute 'silent! !chmod +x' shellescape(expand('%')) |
         \     endif |
@@ -536,7 +536,8 @@ if has('autocmd')
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
-        \ setlocal nobackup nolist spell wrap | let b:is_commit_msg = 1
+        \ setlocal nobackup nolist spell wrap spellcapcheck= |
+        \ let b:is_commit_msg = 1
     autocmd FileType crontab setlocal backupcopy=yes
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html
