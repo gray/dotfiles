@@ -28,6 +28,9 @@ my %conf = (
             CPAN::DistnameInfo->new($_[0]->title . '.tgz')->dist
         },
         whitelist => [ is_perl_dist_installed() ],
+        blacklist => [
+            sub { $_[0]->link->href =~ m[ /~ (?: manwar | zoffix ) ]x },
+        ],
     },
     python => {
         url  => 'http://pypi.python.org/pypi?:action=rss',
@@ -127,7 +130,12 @@ while (my ($lang, $conf) = each %conf) {
             next if $listed;
 
             for my $b (@blacklist) {
-                next if not [$name, $title, $summary, $desc] ~~ $b;
+                if ('CODE' eq ref $b) {
+                    next unless $b->($entry);
+                }
+                else {
+                    next unless [$name, $title, $summary, $desc] ~~ $b;
+                }
                 $listed = 1;
                 push @unwanted_entries, $entry;
                 VERBOSE && say "$lang - $name - blacklisted";
