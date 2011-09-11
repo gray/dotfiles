@@ -228,13 +228,3 @@ feeds:
     preset:
       - torrents
       - movies
-
-  apple_trailers:
-    priority: 40
-    interval: 4 hours
-    only_new: yes
-    apple_trailers: 480p
-    accept_all: yes
-    # Using 'set' allows the path to be recreated if it doesn't exit.
-    set:
-      path: ~/Media/Movies/Trailers/.
