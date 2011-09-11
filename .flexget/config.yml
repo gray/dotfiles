@@ -43,7 +43,7 @@ presets:
           replace:
             regexp: (?i)webrip
             format: dsr
-      # Replace the non-standard quality name for a particular ripper.
+      # Recognize the quality of a particular ripper.
       - title:
           replace:
             regexp: (?i)ws\.xvid-err0001
@@ -102,7 +102,9 @@ presets:
           nice -n 20 transmission-watchdog
 
 feeds:
-  # TV series.
+  ###########
+  # TV series
+  ###########
   eztv:
     priority: 1
     interval: 5 minutes
@@ -127,6 +129,7 @@ feeds:
       - title:
           extract: '\[ ([^]]+) \] *$'
   tvt:
+    # Ratio-based tracker; not easy to maintain.
     priority: 3
     interval: 5 minutes
     include:
@@ -135,6 +138,9 @@ feeds:
       - torrents
       - tv
       - tv-series
+    manipulate:
+      - description:
+          from: title
   torrentvault_tv:
     priority: 5
     interval: 5 minutes
@@ -148,11 +154,8 @@ feeds:
     # Ratio-based tracker; easy to maintain. UK content.
     priority: 6
     interval: 15 minutes
-    rss:
-      url: https://thebox.bz/rssdd.xml
-      silent: yes
     include:
-      - private/thebox-headers.yml
+      - private/thebox-rss.yml
     preset:
       - torrents
       - tv
@@ -161,7 +164,7 @@ feeds:
       - "str(now.year) + ')' not in title": reject
     regexp:
       reject_excluding:
-        - \((?:XviD|DivX)\).*?\((?:Drama|Mystery)
+        - \((?:XviD|DivX)\)
   bitmetv:
     # Ratio-based tracker; hard to maintain.
     priority: 7
@@ -174,7 +177,9 @@ feeds:
       - tv
       - tv-series
 
-  # TV series premieres.
+  #####################
+  # TV series premieres
+  #####################
   torrentvault_tv_premieres:
     priority: 22
     interval: 5 minutes
@@ -202,16 +207,25 @@ feeds:
     if:
       - "not title.endswith(str(now.year))": reject
 
+  ########
   # Movies
-  xtremespeeds_movies:
+  ########
+  xspeeds_movies:
     priority: 31
     include:
-      - private/xtremespeeds_movies-rss.yml
+      - private/xspeeds_movies-rss.yml
+    preset:
+      - torrents
+      - movies
+  ilt_movies:
+    priority: 32
+    include:
+      - private/ilt_movies-rss.yml
     preset:
       - torrents
       - movies
   ptp:
-    priority: 32
+    priority: 33
     include:
       - private/ptp-rss.yml
     preset:
@@ -223,7 +237,7 @@ feeds:
     # Idea for new plugin:
     # ptp_lookup_leechtype: [ free, neutral, half ]
   rlslog:
-    priority: 33
+    priority: 34
     rlslog: http://www.rlslog.net/category/movies/
     preset:
       - torrents
