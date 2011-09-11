@@ -54,21 +54,24 @@ presets:
       settings:
         tv:
           min_quality: dsr
-          max_quality: dvdrip
+          max_quality: bdrip
           path: ~/Media/TV/%(series_name)s/.
           propers: 3 hours
         documentaries:
           min_quality: dsr
-          max_quality: dvdrip
+          max_quality: bdrip
           path: ~/Media/TV/Documentaries/%(series_name)s/.
           propers: 3 hours
         talk_shows:
           min_quality: dsr
-          max_quality: dvdrip
+          max_quality: bdrip
           path: ~/Media/TV/Talk Shows/%(series_name)s/.
           propers: 3 hours
     include:
       - private/series.yml
+    if:
+      # Reject season previews or recaps.
+      - series_episode == 0: reject
 
   # Grab the first episode of any new series.
   tv-premieres:
