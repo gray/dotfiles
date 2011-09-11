@@ -95,7 +95,7 @@ presets:
       auto_escape: yes
       on_output:
         for_accepted: |
-          growlnotify -t 'FlexGet: torrent downloaded' -m %(title)s \
+          growlnotify -t FlexGet:\ torrent\ from\ %(feed)s -m %(title)s \
             >/dev/null 2>&1
         phase: |
           # This is also run from cron every few minutes.
