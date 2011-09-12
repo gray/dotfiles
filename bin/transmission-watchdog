@@ -20,6 +20,7 @@
 #     external process (launchd, inetd, etc.)
 
 WATCH_DIR=$HOME/Media/.
+ZOMBIE_DIR=$HOME/Media/.zombies/.
 NETRC=$HOME/.netrc
 GROWL_ARGS=
 
@@ -78,6 +79,8 @@ real_dir "$WATCH_DIR" && WATCH_DIR=$_real_dir || {
     err "WATCH_DIR directory $WATCH_DIR does not exist" 
     exit -1
 }
+mkdir -p "$ZOMBIE_DIR"
+real_dir "$ZOMBIE_DIR" && ZOMBIE_DIR=$_real_dir
 
 if   has_cmd timeout; then :
 elif has_cmd gtimeout; then timeout () { gtimeout "$@"; }
@@ -222,7 +225,8 @@ for line in $(remote --torrent all --info); do
         '  Hash: '?*)         hash=$val    ;;
         '  State: '?*)        state=$val   ;;
         '  Location: '?*)     dir=$val     ;;
-        '  Percent Done: '?*) percent=$val
+        '  Percent Done: '?*) percent=$val ;;
+        '  Upload Limit: '?*) up_limit=$val
                               do=1
     esac
 
@@ -230,16 +234,32 @@ for line in $(remote --torrent all --info); do
     [ '100%' != "$percent" ] && continue
     case $state in Verifying*) continue; esac
 
-    do=0; dir_ok=0; last_dir=; last_file_base=; has_rar=0
+    do=0; last_dir=; last_file_base=; has_rar=0
 
     # Verify directory is valid and in expected location.
     real_dir "$dir" && dir=$_real_dir || dir=
-    case $dir/ in "$WATCH_DIR"/*) dir_ok=1; esac
+    case $dir/ in
+        "$ZOMBIE_DIR"/*) continue ;;
+        "$WATCH_DIR"/*) ;;
+        *) continue
+    esac
+
+    # Make this is a zombie torrent. Keep the torrent alive and pretend to
+    # be seeding it to earn tracker credit. Hide the torrent data after all
+    # the media files have been viewed and truncated.
+    if [ 0 = "${up_limit%% *}" ] &&
+        [ -z "$(find $dir/$name -type f -size +0 2>/dev/null)" ]
+    then
+        ! find "$dir/$name" -type f -name '*.unrarred' -exec rm -f {} + \
+            2>/dev/null
+        remote --torrent "$hash" --move "$ZOMBIE_DIR/${dir##$WATCH_DIR/}" \
+            >/dev/null
+    fi
 
     # Multiple torrents could write to the same location, so a single lock
     # file per torrent location will not suffice; each RAR archive requires
     # its own lock file.
-    if [ 1 = $HAS_UNRAR ] && [ 1 = $dir_ok ]; then
+    if [ 1 = $HAS_UNRAR ]; then
         for file in $(find "$dir/$name" -type f -name *.rar 2>/dev/null); do
             has_rar=1
             rar_dir=${file%/*}
