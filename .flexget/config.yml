@@ -22,10 +22,11 @@ presets:
       min_votes: 100
       reject_genres:
         - musical
-    set:
-      path: ~/Media/Movies/.
     if:
       - 'imdb_year < now.year - 6': reject
+      - 'True':
+          set:
+            path: ~/Media/Movies/.
       - has_field('imdb_genres') and 'documentary' in imdb_genres:
           set:
             path: ~/Media/Movies/Documentaries/.
