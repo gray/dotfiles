@@ -254,6 +254,7 @@ for line in $(remote --torrent all --info); do
             2>/dev/null
         remote --torrent "$hash" --move "$ZOMBIE_DIR/${dir##$WATCH_DIR/}" \
             >/dev/null
+        log "Moving data for zombified torrent: $name"
     fi
 
     # Multiple torrents could write to the same location, so a single lock
@@ -375,7 +376,7 @@ done
 # Remove empty directories.
 ! find "$WATCH_DIR" -type f -name '.DS_Store' -exec rm -f {} + 2>/dev/null
 for cat in Movies TV; do
-    # mindepth is not a POSIX option, but bsd and gnu both support it
+    # mindepth is not a POSIX option, but BSD and GNU both support it
     ! find "$WATCH_DIR"/"$cat" -type d -mindepth 1 -depth -exec rmdir {} + \
         2>/dev/null
 done
