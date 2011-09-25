@@ -231,10 +231,12 @@ for line in $(remote --torrent all --info); do
     esac
 
     [ 1 != "${do:-0}" ] && continue
+    do=0
+
     [ '100%' != "$percent" ] && continue
     case $state in Verifying*) continue; esac
 
-    do=0; last_dir=; last_file_base=; has_rar=0
+    last_dir=; last_file_base=; has_rar=0
 
     # Verify directory is valid and in expected location.
     real_dir "$dir" && dir=$_real_dir || dir=
