@@ -17,6 +17,7 @@ presets:
       min: 650
       max: 1750
     seen_movies: strict
+    imdb_required: yes
     imdb:
       min_score: 6.2
       min_votes: 100
