@@ -57,17 +57,17 @@ presets:
         tv:
           min_quality: dsr
           max_quality: bdrip
-          path: ~/Media/TV/%(series_name)s/.
+          path: ~/Media/TV/{{series_name}}/.
           propers: 3 hours
         documentaries:
           min_quality: dsr
           max_quality: bdrip
-          path: ~/Media/TV/Documentaries/%(series_name)s/.
+          path: ~/Media/TV/Documentaries/{{series_name}}/.
           propers: 3 hours
         talk_shows:
           min_quality: dsr
           max_quality: bdrip
-          path: ~/Media/TV/Talk Shows/%(series_name)s/.
+          path: ~/Media/TV/Talk Shows/{{series_name}}/.
           propers: 3 hours
     include:
       - private/series.yml
@@ -100,7 +100,7 @@ presets:
       auto_escape: yes
       on_output:
         for_accepted: |
-          growlnotify -t FlexGet:\ torrent\ from\ %(feed)s -m %(title)s \
+          growlnotify -t FlexGet:\ torrent\ from\ {{feed}} -m {{title}} \
             >/dev/null 2>&1
         phase: |
           # This is also run from cron every few minutes.
