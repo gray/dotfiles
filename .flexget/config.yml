@@ -28,10 +28,10 @@ presets:
       - 'True':
           set:
             path: ~/Media/Movies/.
-      - has_field('imdb_genres') and 'documentary' in imdb_genres:
+      - "'documentary' in imdb_genres":
           set:
             path: ~/Media/Movies/Documentaries/.
-      - has_field('imdb_languages') and 'english' != imdb_languages[0]:
+      - len(imdb_languages) and 'english' != imdb_languages[0]:
           set:
             path: ~/Media/Movies/Foreign/.
 
