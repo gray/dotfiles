@@ -337,10 +337,6 @@ let g:tagbar_type_xs = {
 
 let g:netrw_dirhistmax = 0
 
-let g:manpageview_winopen = 'hsplit='
-let g:manpageview_pgm_pl = 'cpandoc'
-let g:manpageview_options_pl = ';-f;-q'
-
 let g:LargeFile = 50
 
 
