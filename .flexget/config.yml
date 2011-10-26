@@ -28,6 +28,7 @@ presets:
         - german
         - italian
         - korean
+        - portuguese
         - spanish
       reject_genres:
         - musical
