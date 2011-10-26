@@ -9,8 +9,7 @@ presets:
       min: r5
     regexp:
       reject:
-        - '[\W_]r5[\W_].*?(?:_|\b)(?:line|mic|russian|cam[\W_]*audio)(?:_|\b)'
-        - '[\W_]r5[\W_].*?(?:_|\b)read[\W_]+nfo(?:_|\b)'
+        - '[\W_]read[\W_]*nfo(?:_|\b)'
         - '[\W_]3-?D(?:BD)?(?:_|\b)'
         - '[\W_]ppv(?:-?rip)?(?:_|\b)'
     content_size:
@@ -34,6 +33,10 @@ presets:
         - musical
     if:
       - 'imdb_year < now.year - 6': reject
+      - quality == 'r5':
+          regexp:
+            reject:
+              - '[\W_](?:cam|mic|line|russian)(?:_|\b)'
       - 'True':
           set:
             path: ~/Media/Movies/.
@@ -87,7 +90,7 @@ presets:
   # Grab the first episode of any new series.
   tv-premieres:
     series_premiere:
-      min_quality: hdtv
+      min_quality: dsr
       max_quality: dvdrip
       path: ~/Media/TV/_NEW_/.
       propers: no
