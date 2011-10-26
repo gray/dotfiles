@@ -21,6 +21,15 @@ presets:
     imdb:
       min_score: 6.2
       min_votes: 100
+      accept_languages:
+        - cantonese
+        - chinese
+        - english
+        - french
+        - german
+        - italian
+        - korean
+        - spanish
       reject_genres:
         - musical
     if:
