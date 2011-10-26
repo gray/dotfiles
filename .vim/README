@@ -86,11 +86,11 @@ go:
 json:
     http://www.vim.org/scripts/script.php?script_id=1945
 markdown:
-    http://github.com/tpope/vim-markdown
+    https://github.com/tpope/vim-markdown
 nginx:
     http://www.vim.org/scripts/script.php?script_id=1886
 perl:
-    http://github.com/petdance/vim-perl
+    https://github.com/petdance/vim-perl
 puppet:
     https://github.com/puppetlabs/puppet/blob/master/ext/vim/syntax/puppet.vim
 python:
@@ -107,13 +107,13 @@ yaml:
 installed colors:
 
 css_color:
-    http://github.com/ap/vim-css-color
+    https://github.com/ap/vim-css-color
 darkspectrum:
     http://www.vim.org/scripts/script.php?script_id=2215
 gentooish:
     http://www.vim.org/scripts/script.php?script_id=2474
 ir_black:
-    http://github.com/twerth/dotfiles/raw/master/etc/vim/colors/ir_black.vim
+    https://github.com/twerth/dotfiles/raw/master/etc/vim/colors/ir_black.vim
 jellybeans:
     http://www.vim.org/scripts/script.php?script_id=2555
 lettuce:
@@ -124,12 +124,16 @@ metacosm:
     http://www.vim.org/scripts/script.php?script_id=985
 molokai:
     http://www.vim.org/scripts/script.php?script_id=2340
+monokai:
+    https://github.com/sickill/vim-monokai
 neverness:
     http://www.vim.org/scripts/script.php?script_id=1560
 peaksea:
     http://www.vim.org/scripts/script.php?script_id=760
 solarized:
     http://www.vim.org/scripts/script.php?script_id=3520
+sunburst:
+    https://github.com/sickill/vim-sunburst
 synic:
     http://www.vim.org/scripts/script.php?script_id=1897
 vividchalk:
