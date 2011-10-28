@@ -22,12 +22,12 @@ presets:
       min_votes: 100
       accept_languages:
         - cantonese
-        - chinese
         - english
         - french
         - german
         - italian
         - korean
+        - mandarin
         - portuguese
         - spanish
       reject_genres:
