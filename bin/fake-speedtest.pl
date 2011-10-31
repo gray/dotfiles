@@ -49,19 +49,21 @@ die 'No server' unless $server;
 
 $_ *= 1_000 for ($up, $down);
 
-my $salt = substr md5_hex('or4ng$'), 0, 8;
+my $salt = '297aae72';
+my $hash = md5_hex(sprintf '%s-%s-%s-%s', $ping, $up, $down, $salt);
 my $res = $ua->post(
     'http://www.speedtest.net/api/api.php',
     referer => 'http://c.speedtest.net/flash/speedtest.swf',
-    Content => [
-        hash      => md5_hex(sprintf '%s-%s-%s-%s', $ping, $up, $down, $salt),
-        ping      => $ping,
-        startmode => 'pingselect',
-        upload    => $up,
-        accuracy  => 7 + int rand(20),  # ?
-        download  => $down,
+    content => [
+        startmode           => 'recommendedselect',
+        promo               => '',
+        upload              => $up,
+        accuracy            => 7 + int rand(20),  # ?
         recommendedserverid => $server,
-        serverid  => $server,
+        serverid            => $server,
+        ping                => $ping,
+        hash                => $hash,
+        download            => $down,
     ]
 );
 die $res->dump if $res->is_error;
@@ -80,7 +82,7 @@ sub parse_config {
     croak $res->status_line if $res->is_error;
 
     my $xml = $res->decoded_content;
-    return eval { XML::LibXML->new->parse_string($xml) };
+    return eval { XML::LibXML->new(recover => 2)->parse_string($xml) };
 }
 
 __END__
