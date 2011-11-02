@@ -12,6 +12,7 @@ presets:
         - '[\W_]read[\W_]*nfo(?:_|\b)'
         - '[\W_]3-?D(?:BD)?(?:_|\b)'
         - '[\W_]ppv(?:-?rip)?(?:_|\b)'
+      from: title
     content_size:
       min: 650
       max: 1750
@@ -38,6 +39,7 @@ presets:
           regexp:
             reject:
               - '[\W_](?:cam|mic|line|russian)(?:_|\b)'
+            from: title
       - 'True':
           set:
             path: ~/Media/Movies/.
@@ -102,13 +104,12 @@ presets:
     regexp:
       reject:
         - '[\W_]+(?:[hx][.-]?264|nuked)(?:_|\b)'
+      from: title
     content_filter:
       reject:
         - '*.m[4k]v'
         - '*.mp4'
         - '*.wmv'
-    # Plugin is apparently broken: http://flexget.com/ticket/1152
-    # torrent_scrub: on
     exec:
       auto_escape: yes
       on_output:
@@ -183,6 +184,7 @@ feeds:
     regexp:
       reject_excluding:
         - \((?:XviD|DivX)\)
+      from: title
   bitmetv:
     # Ratio-based tracker; hard to maintain.
     priority: 7
@@ -252,6 +254,7 @@ feeds:
     regexp:
       reject_excluding:
         - '- (?:XviD|DivX) / DVD / AVI /'
+      from: title
     # Idea for new plugin:
     # ptp_lookup_leechtype: [ free, neutral, half ]
   rlslog:
