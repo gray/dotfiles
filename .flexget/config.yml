@@ -21,20 +21,11 @@ presets:
     imdb:
       min_score: 6.2
       min_votes: 100
-      accept_languages:
-        - cantonese
-        - danish
-        - english
-        - french
-        - german
-        - italian
-        - japanese
-        - korean
-        - mandarin
-        - portuguese
-        - spanish
-      reject_genres:
-        - musical
+      accept_languages: [
+        cantonese, danish, dutch, english, french, german, italian,
+        japanese, korean, mandarin, portuguese, spanish
+      ]
+      reject_genres: [ musical ]
     if:
       - 'imdb_year < now.year - 6': reject
       - quality == 'r5':
@@ -111,10 +102,7 @@ presets:
         - '[\W_]+(?:[hx][.-]?264|nuked)(?:_|\b)'
       from: title
     content_filter:
-      reject:
-        - '*.m[4k]v'
-        - '*.mp4'
-        - '*.wmv'
+      reject: [ '*.m[4k]v', '*.mp4', '*.wmv' ]
     exec:
       auto_escape: yes
       on_output:
@@ -135,19 +123,13 @@ feeds:
     rss:
       url: http://ezrss.it/feed/
       silent: yes
-    preset:
-      - torrents
-      - tv
-      - tv-series
+    preset: [ torrents, tv, tv-series ]
   btn:
     priority: 2
     interval: 5 minutes
     include:
       - private/btn-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-series
+    preset: [ torrents, tv, tv-series ]
     # Use the scene release name.
     manipulate:
       - title:
@@ -158,10 +140,7 @@ feeds:
     interval: 5 minutes
     include:
       - private/tvt-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-series
+    preset: [ torrents, tv, tv-series ]
     manipulate:
       - description:
           from: title
@@ -170,20 +149,14 @@ feeds:
     interval: 5 minutes
     include:
       - private/torrentvault_tv-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-series
+    preset: [ torrents, tv, tv-series ]
   thebox:
     # Ratio-based tracker; easy to maintain. UK content.
     priority: 6
     interval: 15 minutes
     include:
       - private/thebox-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-series
+    preset: [ torrents, tv, tv-series ]
     if:
       - "str(now.year) + ')' not in title": reject
     regexp:
@@ -197,10 +170,7 @@ feeds:
     delay: 10 minutes
     include:
       - private/bitmetv-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-series
+    preset: [ torrents, tv, tv-series ]
 
   #####################
   # TV series premieres
@@ -210,19 +180,13 @@ feeds:
     interval: 5 minutes
     include:
       - private/torrentvault_tv-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-premieres
+    preset: [ torrents, tv, tv-premieres ]
   btn_premieres:
     priority: 23
     interval: 5 minutes
     include:
       - private/btn-rss.yml
-    preset:
-      - torrents
-      - tv
-      - tv-premieres
+    preset: [ torrents, tv, tv-premieres ]
     # Use the scene release name.
     manipulate:
       - title:
@@ -239,23 +203,17 @@ feeds:
     priority: 31
     include:
       - private/xspeeds_movies-rss.yml
-    preset:
-      - torrents
-      - movies
+    preset: [ torrents, movies ]
   ilt_movies:
     priority: 32
     include:
       - private/ilt_movies-rss.yml
-    preset:
-      - torrents
-      - movies
+    preset: [ torrents, movies ]
   ptp:
     priority: 33
     include:
       - private/ptp-rss.yml
-    preset:
-      - torrents
-      - movies
+    preset: [ torrents, movies ]
     regexp:
       reject_excluding:
         - '- (?:XviD|DivX) / DVD / AVI /'
@@ -265,6 +223,4 @@ feeds:
   rlslog:
     priority: 34
     rlslog: http://www.rlslog.net/category/movies/
-    preset:
-      - torrents
-      - movies
+    preset: [ torrents, movies ]
