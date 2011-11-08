@@ -163,3 +163,6 @@
 [submodule ".vim/bundle/sunburst"]
 	path = .vim/bundle/sunburst
 	url = git://github.com/sickill/vim-sunburst.git
+[submodule ".vim/bundle/nrrwrgn"]
+	path = .vim/bundle/nrrwrgn
+	url = git://github.com/chrisbra/NrrwRgn.git
