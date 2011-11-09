@@ -30,26 +30,21 @@ presets:
       - 'imdb_year < now.year - 6': reject
       - quality == 'r5':
           regexp:
-            reject:
-              - '[\W_](?:cam|mic|line|russian)(?:_|\b)'
+            reject: [ '[\W_](?:cam|mic|line|russian)(?:_|\b)' ]
             from: title
       - 'True':
-          set:
-            path: ~/Media/Movies/.
+          set: { path: ~/Media/Movies/. }
       - "'documentary' in imdb_genres":
-          set:
-            path: ~/Media/Movies/Documentaries/.
+          set: { path: ~/Media/Movies/Documentaries/. }
       - imdb_languages and 'english' != imdb_languages[0]:
           regexp:
             reject_excluding:
               - 'action|adventure|comedy|crime|mystery|sci_fi|thriller|war'
             from: imdb_genres
-          set:
-            path: ~/Media/Movies/Foreign/.
+          set: { path: ~/Media/Movies/Foreign/. }
 
   tv:
-    content_size:
-      max: 1500
+    content_size: { max: 1500 }
     manipulate:
       # Recognize webrip quality.
       - title:
@@ -62,8 +57,7 @@ presets:
             regexp: (?i)ws\.xvid-err0001
             format: hdtv
       # Clean description field to avoid false matches from series plugin.
-      - description:
-          extract: ''
+      - description: { extract: '' }
 
   tv-series:
     series:
@@ -83,11 +77,9 @@ presets:
           max_quality: bdrip
           path: ~/Media/TV/Talk Shows/{{series_name}}/.
           propers: 3 hours
-    include:
-      - private/series.yml
-    if:
-      # Reject season previews or recaps.
-      - series_episode == 0: reject
+    include: [ private/series.yml ]
+    # Reject season previews or recaps.
+    if: [ series_episode == 0: reject ]
 
   # Grab the first episode of any new series.
   tv-premieres:
@@ -96,8 +88,7 @@ presets:
       max_quality: dvdrip
       path: ~/Media/TV/_NEW_/.
       propers: no
-    include:
-      - private/series_premiere.yml
+    include: [ private/series_premiere.yml ]
 
   torrents:
     regexp:
@@ -130,46 +121,38 @@ feeds:
   btn:
     priority: 2
     interval: 5 minutes
-    include:
-      - private/btn-rss.yml
+    include: [ private/btn-rss.yml ]
     preset: [ torrents, tv, tv-series ]
     # Use the scene release name.
     manipulate:
-      - title:
-          extract: '\[ ([^]]+) \] *$'
+      - title: { extract: '\[ ([^]]+) \] *$' }
   tvt:
     # Ratio-based tracker; not easy to maintain.
     priority: 3
     interval: 5 minutes
-    include:
-      - private/tvt-rss.yml
+    include: [ private/tvt-rss.yml ]
     preset: [ torrents, tv, tv-series ]
   torrentvault_tv:
     priority: 5
     interval: 5 minutes
-    include:
-      - private/torrentvault_tv-rss.yml
+    include: [ private/torrentvault_tv-rss.yml ]
     preset: [ torrents, tv, tv-series ]
   thebox:
     # Ratio-based tracker; easy to maintain. UK content.
     priority: 6
     interval: 15 minutes
-    include:
-      - private/thebox-rss.yml
+    include: [ private/thebox-rss.yml ]
     preset: [ torrents, tv, tv-series ]
-    if:
-      - "str(now.year) + ')' not in title": reject
+    if: [ "str(now.year) + ')' not in title": reject ]
     regexp:
-      reject_excluding:
-        - \((?:XviD|DivX)\)
+      reject_excluding: [ '\((?:XviD|DivX)\)' ]
       from: title
   bitmetv:
     # Ratio-based tracker; hard to maintain.
     priority: 7
     interval: 5 minutes
     delay: 10 minutes
-    include:
-      - private/bitmetv-rss.yml
+    include: [ private/bitmetv-rss.yml ]
     preset: [ torrents, tv, tv-series ]
 
   #####################
@@ -178,14 +161,12 @@ feeds:
   torrentvault_tv_premieres:
     priority: 22
     interval: 5 minutes
-    include:
-      - private/torrentvault_tv-rss.yml
+    include: [ private/torrentvault_tv-rss.yml ]
     preset: [ torrents, tv, tv-premieres ]
   btn_premieres:
     priority: 23
     interval: 5 minutes
-    include:
-      - private/btn-rss.yml
+    include: [ private/btn-rss.yml ]
     preset: [ torrents, tv, tv-premieres ]
     # Use the scene release name.
     manipulate:
@@ -193,30 +174,25 @@ feeds:
           replace:
             regexp: '^[^[]+\[ (\d+) \].*?\[ ([^]]+) \] *$'
             format: '\2 \1'
-    if:
-      - "not title.endswith(str(now.year))": reject
+    if: [ "not title.endswith(str(now.year))": reject ]
 
   ########
   # Movies
   ########
   xspeeds_movies:
     priority: 31
-    include:
-      - private/xspeeds_movies-rss.yml
+    include: [ private/xspeeds_movies-rss.yml ]
     preset: [ torrents, movies ]
   ilt_movies:
     priority: 32
-    include:
-      - private/ilt_movies-rss.yml
+    include: [ private/ilt_movies-rss.yml ]
     preset: [ torrents, movies ]
   ptp:
     priority: 33
-    include:
-      - private/ptp-rss.yml
+    include: [ private/ptp-rss.yml ]
     preset: [ torrents, movies ]
     regexp:
-      reject_excluding:
-        - '- (?:XviD|DivX) / DVD / AVI /'
+      reject_excluding: [ '- (?:XviD|DivX) / DVD / AVI /' ]
       from: title
     # Idea for new plugin:
     # ptp_lookup_leechtype: [ free, neutral, half ]
