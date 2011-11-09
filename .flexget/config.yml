@@ -61,6 +61,9 @@ presets:
           replace:
             regexp: (?i)ws\.xvid-err0001
             format: hdtv
+      # Clean description field to avoid false matches from series plugin.
+      - description:
+          extract: ''
 
   tv-series:
     series:
@@ -141,9 +144,6 @@ feeds:
     include:
       - private/tvt-rss.yml
     preset: [ torrents, tv, tv-series ]
-    manipulate:
-      - description:
-          from: title
   torrentvault_tv:
     priority: 5
     interval: 5 minutes
