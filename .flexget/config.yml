@@ -57,6 +57,7 @@ presets:
             regexp: (?i)ws\.xvid-err0001
             format: hdtv
       # Clean description field to avoid false matches from series plugin.
+      - description: { from: title }
       - description: { extract: '' }
 
   tv-series:
