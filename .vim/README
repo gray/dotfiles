@@ -138,6 +138,8 @@ sunburst:
     https://github.com/sickill/vim-sunburst
 synic:
     http://www.vim.org/scripts/script.php?script_id=1897
+tomorrow:
+    https://github.com/ChrisKempson/Vim-Tomorrow-Theme
 vividchalk:
     http://www.vim.org/scripts/script.php?script_id=1891
 wombat256:

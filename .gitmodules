@@ -166,3 +166,6 @@
 [submodule ".vim/bundle/nrrwrgn"]
 	path = .vim/bundle/nrrwrgn
 	url = git://github.com/chrisbra/NrrwRgn.git
+[submodule ".vim/bundle/tomorrow"]
+	path = .vim/bundle/tomorrow
+	url = git://github.com/ChrisKempson/Vim-Tomorrow-Theme.git
