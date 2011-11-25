@@ -103,6 +103,8 @@ srt:
     http://www.linuxpages.org/srt.vim_en.php
 swig:
     http://www.vim.org/scripts/script.php?script_id=1615
+tmux:
+    http://tmux.svn.sourceforge.net/viewvc/tmux/trunk/examples/tmux.vim
 yaml:
     http://vim.googlecode.com/hg/runtime/syntax/yaml.vim
 
