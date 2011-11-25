@@ -94,7 +94,7 @@ nginx:
 perl:
     https://github.com/petdance/vim-perl
 puppet:
-    https://github.com/puppetlabs/puppet/blob/master/ext/vim/syntax/puppet.vim
+    https://github.com/puppetlabs/syntax-vim
 python:
     http://www.vim.org/scripts/script.php?script_id=790
 scala:
