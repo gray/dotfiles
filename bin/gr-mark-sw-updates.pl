@@ -12,9 +12,9 @@ use WebService::Google::Reader;
 
 use constant VERBOSE => not $ENV{CRON};
 
-my $dir = catpath((splitpath(realpath __FILE__))[0, 1]);
+my $dir  = catpath((splitpath(realpath __FILE__))[ 0, 1 ]);
 my $file = catfile($dir, '.unwanted-modules.bdb');
-my $db = tie my %db, DB_File => $file;
+my $db   = tie my %db, DB_File => $file;
 
 my $reader = WebService::Google::Reader->new(
     username => $ENV{GOOGLE_USERNAME},
@@ -22,15 +22,20 @@ my $reader = WebService::Google::Reader->new(
 );
 
 my %conf = (
-    perl => {
-        url  => 'http://search.cpan.org/uploads.rdf',
-        name => sub {
-            CPAN::DistnameInfo->new($_[0]->title . '.tgz')->dist
-        },
-        whitelist => [ is_perl_dist_installed() ],
-        blacklist => [
-            sub { $_[0]->link->href =~ m[ /~ (?: manwar | zoffix ) ]x },
-        ],
+    perl => do {
+        my $dist;
+        {
+            url  => 'http://search.cpan.org/uploads.rdf',
+            name => sub {
+                $dist = CPAN::DistnameInfo->new($_[0]->title . '.tgz');
+                $dist->dist;
+            },
+            whitelist => [ is_perl_dist_installed() ],
+            blacklist => [
+                sub { $_[0]->link->href =~ m[ /~ (?: manwar | zoffix ) ]x },
+                sub { 'released' ne $dist->maturity },
+            ],
+        }
     },
     python => {
         url  => 'http://pypi.python.org/pypi?:action=rss',
@@ -42,7 +47,10 @@ my %conf = (
         },
         blacklist => [
             qr/ (?:\b|_) (?:django | plone | zope) (?:\b|_) /ix,
-            qr/ \b nested .*? \blist /ix,
+            sub {
+                my $s = $_[0]->summary;
+                $s =~ qr/\b print/ix && $s =~ qr/\b list/ix;
+            },
         ],
     },
     ruby => {
