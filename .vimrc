@@ -110,7 +110,7 @@ if ! &diff && has('eval')
     filetype indent on
 endif
 
-set textwidth=76
+set textwidth=78
 set autoindent        " Use indent from previous line
 set smarttab          " Smart handling of the tab key
 set expandtab         " Use spaces for tabs
@@ -530,7 +530,7 @@ if has('autocmd')
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
-        \ setlocal nobackup nolist spell wrap spellcapcheck= |
+        \ setlocal nobackup nolist spell wrap spellcapcheck= textwidth=74 |
         \ let b:is_commit_msg = 1
     autocmd FileType crontab setlocal backupcopy=yes
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
