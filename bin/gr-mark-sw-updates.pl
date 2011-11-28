@@ -49,7 +49,9 @@ my %conf = (
             qr/ (?:\b|_) (?:django | plone | zope) (?:\b|_) /ix,
             sub {
                 my $s = $_[0]->summary;
-                $s =~ qr/\b print/ix && $s =~ qr/\b list/ix;
+                return 1 unless $s;
+                return 1 if 'unknown' eq lc $s;
+                return 1 if $s =~ qr/\b print /ix && $s =~ qr/\b list /ix;
             },
         ],
     },
