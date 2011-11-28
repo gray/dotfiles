@@ -172,3 +172,6 @@
 [submodule ".vim/bundle/puppet"]
 	path = .vim/bundle/puppet
 	url = git://github.com/puppetlabs/syntax-vim.git
+[submodule ".vim/bundle/golang"]
+	path = .vim/bundle/golang
+	url = git://github.com/jnwhiteh/vim-golang.git
