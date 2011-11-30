@@ -24,13 +24,19 @@ my $reader = WebService::Google::Reader->new(
 my %conf = (
     perl => do {
         my $dist;
+        my $test_perl_dist_installed = is_perl_dist_installed();
         {
             url  => 'http://search.cpan.org/uploads.rdf',
             name => sub {
                 $dist = CPAN::DistnameInfo->new($_[0]->title . '.tgz');
                 $dist->dist;
             },
-            whitelist => [ is_perl_dist_installed() ],
+            whitelist => [
+                sub {
+                    'released' eq $dist->maturity
+                        and $_[0] ~~ $test_perl_dist_installed
+                },
+            ],
             blacklist => [
                 sub { $_[0]->link->href =~ m[ /~ (?: manwar | zoffix ) ]x },
                 sub { 'released' ne $dist->maturity },
@@ -46,12 +52,13 @@ my %conf = (
             return $name;
         },
         blacklist => [
-            qr/ (?:\b|_) (?:django | plone | zope) (?:\b|_) /ix,
+            qr/ (?:\b|_) (?:django | flask | plone | zope) (?:\b|_) /ix,
             sub {
                 my $s = $_[0]->summary;
                 return 1 unless $s;
                 return 1 if 'unknown' eq lc $s;
-                return 1 if $s =~ qr/\b print /ix && $s =~ qr/\b list /ix;
+                return 1 if $s =~ qr/\b (?: print | nested) /ix
+                    && $s =~ qr/\b list /ix;
             },
         ],
     },
@@ -82,6 +89,7 @@ my %conf = (
     node => {
         url  => 'http://registry.npmjs.org/-/rss?descending=true&limit=50',
         name => sub { $_[0]->title =~ m[ (.*) \@ ]x; $1 },
+        blacklist => [ sub { not $_[0]->summary } ],
     }
 );
 
