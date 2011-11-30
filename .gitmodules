@@ -175,3 +175,6 @@
 [submodule ".vim/bundle/golang"]
 	path = .vim/bundle/golang
 	url = git://github.com/jnwhiteh/vim-golang.git
+[submodule ".vim/bundle/mark"]
+	path = .vim/bundle/mark
+	url = git://github.com/vim-scripts/Mark--Karkat.git

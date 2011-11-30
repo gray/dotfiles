@@ -339,6 +339,9 @@ let g:netrw_dirhistmax = 0
 
 let g:LargeFile = 50
 
+nmap <plug>IgnoreMarkSearchNext <plug>MarkSearchNext
+nmap <plug>IgnoreMarkSearchPrev <plug>MarkSearchPrev
+
 
 " Mappings ----------------------------------------------------------------{{{1
 
@@ -370,7 +373,9 @@ inoremap <c-w> <c-g>u<c-w>
 noremap n nzvzz
 noremap N Nzvzz
 noremap * *zvzz
+vnoremap <silent> * :call s:VisualSearch('f')<cr>
 noremap # #zvzz
+vnoremap <silent> # :call s:VisualSearch('b')<cr>
 noremap g* g*zvzz
 noremap g# g#zvzz
 
@@ -410,11 +415,11 @@ nmap gp :bprev<cr>
 nmap gN :cnext<cr>
 nmap gP :cprev<cr>
 
-" Redraw screen, remove search highlighting, sync syntax, show list.
-nnoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!
-    \ <cr><c-l>
-inoremap <c-l> <esc>:nohlsearch<cr>:syntax sync fromstart<cr>:setlocal list!
-    \ <cr><c-l>a
+" Redraw screen, toggle search highlighting, sync syntax, toggle list.
+nnoremap <silent> <c-l> <esc>:setlocal invhlsearch invlist
+    \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart<cr><c-l>
+inoremap <silent> <c-l> <esc>:setlocal invhlsearch invlist
+    \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart<cr><c-l>a
 
 function! YRRunAfterMaps()
     " Yank to end of line
@@ -450,9 +455,6 @@ noremap <localleader>fft :FufTag<cr>
 nmap <localleader>z <plug>ZoomWin
 
 " cnoremap <silent> <tab> <c-\>esherlock#completeForward()<cr>
-
-vnoremap <silent> * :call s:VisualSearch('f')<cr>
-vnoremap <silent> # :call s:VisualSearch('b')<cr>
 
 
 " Autocommands ------------------------------------------------------------{{{1
