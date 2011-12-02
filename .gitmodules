@@ -178,3 +178,6 @@
 [submodule ".vim/bundle/mark"]
 	path = .vim/bundle/mark
 	url = git://github.com/vim-scripts/Mark--Karkat.git
+[submodule ".vim/bundle/syntastic"]
+	path = .vim/bundle/syntastic
+	url = git://github.com/scrooloose/syntastic.git
