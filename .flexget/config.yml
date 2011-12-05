@@ -98,6 +98,8 @@ presets:
       from: title
     content_filter:
       reject: [ '*.m[4k]v', '*.mp4', '*.wmv' ]
+    torrent_scrub: on
+    torrent_alive: 5
     exec:
       auto_escape: yes
       on_output:
