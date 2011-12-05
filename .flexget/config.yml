@@ -129,20 +129,14 @@ feeds:
     # Use the scene release name.
     manipulate:
       - title: { extract: '\[ ([^]]+) \] *$' }
-  tvt:
-    # Ratio-based tracker; not easy to maintain.
+  torrentday_tv:
     priority: 3
     interval: 5 minutes
-    include: [ private/tvt-rss.yml ]
-    preset: [ torrents, tv, tv-series ]
-  torrentvault_tv:
-    priority: 5
-    interval: 5 minutes
-    include: [ private/torrentvault_tv-rss.yml ]
+    include: [ private/torrentday_tv-rss.yml ]
     preset: [ torrents, tv, tv-series ]
   thebox:
     # Ratio-based tracker; easy to maintain. UK content.
-    priority: 6
+    priority: 4
     interval: 15 minutes
     include: [ private/thebox-rss.yml ]
     preset: [ torrents, tv, tv-series ]
@@ -150,9 +144,19 @@ feeds:
     regexp:
       reject_excluding: [ '\((?:XviD|DivX)\)' ]
       from: title
+  theempire:
+    # Ratio-based tracker; easy to maintain. Non-UK commonwealth content.
+    priority: 5
+    interval: 15 minutes
+    include: [ private/theempire-rss.yml ]
+    preset: [ torrents, tv, tv-series ]
+    if: [ "str(now.year) + ')' not in title": reject ]
+    regexp:
+      reject_excluding: [ '\((?:XviD|DivX)\)' ]
+      from: title
   bitmetv:
     # Ratio-based tracker; hard to maintain.
-    priority: 7
+    priority: 6
     interval: 5 minutes
     delay: 10 minutes
     include: [ private/bitmetv-rss.yml ]
@@ -161,13 +165,8 @@ feeds:
   #####################
   # TV series premieres
   #####################
-  torrentvault_tv_premieres:
-    priority: 22
-    interval: 5 minutes
-    include: [ private/torrentvault_tv-rss.yml ]
-    preset: [ torrents, tv, tv-premieres ]
   btn_premieres:
-    priority: 23
+    priority: 22
     interval: 5 minutes
     include: [ private/btn-rss.yml ]
     preset: [ torrents, tv, tv-premieres ]
@@ -178,6 +177,11 @@ feeds:
             regexp: '^[^[]+\[ (\d+) \].*?\[ ([^]]+) \] *$'
             format: '\2 \1'
     if: [ "not title.endswith(str(now.year))": reject ]
+  torrentday_tv_premieres:
+    priority: 23
+    interval: 5 minutes
+    include: [ private/torrentday_tv-rss.yml ]
+    preset: [ torrents, tv, tv-premieres ]
 
   ########
   # Movies
