@@ -12,6 +12,7 @@ presets:
         - '[\W_]read[\W_]*nfo(?:_|\b)'
         - '[\W_]3-?D(?:BD)?(?:_|\b)'
         - '[\W_]ppv(?:-?rip)?(?:_|\b)'
+        - '[\W_](?:heb|kor|swe)sub(?:_|\b)'
       from: title
     content_size:
       min: 650
