@@ -144,16 +144,6 @@ feeds:
     regexp:
       reject_excluding: [ '\((?:XviD|DivX)\)' ]
       from: title
-  theempire:
-    # Ratio-based tracker; easy to maintain. Non-UK commonwealth content.
-    priority: 5
-    interval: 15 minutes
-    include: [ private/theempire-rss.yml ]
-    preset: [ torrents, tv, tv-series ]
-    if: [ "str(now.year) + ')' not in title": reject ]
-    regexp:
-      reject_excluding: [ '\((?:XviD|DivX)\)' ]
-      from: title
   bitmetv:
     # Ratio-based tracker; hard to maintain.
     priority: 6
