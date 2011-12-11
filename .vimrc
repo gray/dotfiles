@@ -28,8 +28,13 @@ endif
 set autoread        " Reload file if externally, but not internally modified
 set autowrite       " Write file if modified
 set writebackup     " Make a temporary backup file before overwriting
-set directory=~/.vim/tmp//
+set directory=~/.vim/tmp/swap//
 set backupdir=~/.vim/tmp
+
+if has('persistent_undo')
+    set undofile
+    set undodir=~/.vim/tmp/undo/
+endif
 
 
 " Display, Terminal -------------------------------------------------------{{{1
