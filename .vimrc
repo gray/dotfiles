@@ -342,6 +342,9 @@ let g:LargeFile = 50
 nmap <plug>IgnoreMarkSearchNext <plug>MarkSearchNext
 nmap <plug>IgnoreMarkSearchPrev <plug>MarkSearchPrev
 
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_enable_balloons = 0
+
 
 " Mappings ----------------------------------------------------------------{{{1
 
