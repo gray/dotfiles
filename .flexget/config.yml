@@ -44,7 +44,9 @@ presets:
           set: { path: ~/Media/Movies/Foreign/. }
 
   tv:
-    content_size: { max: 1500 }
+    content_size:
+      min: 50
+      max: 1500
     manipulate:
       # Recognize webrip quality.
       - title:
