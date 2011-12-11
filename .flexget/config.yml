@@ -195,7 +195,7 @@ feeds:
       from: title
     # Idea for new plugin:
     # ptp_lookup_leechtype: [ free, neutral, half ]
-  rlslog:
+  rlslog_movies:
     priority: 34
     rlslog: http://www.rlslog.net/category/movies/
     preset: [ torrents, movies ]
