@@ -169,9 +169,6 @@
 [submodule ".vim/bundle/tomorrow"]
 	path = .vim/bundle/tomorrow
 	url = git://github.com/ChrisKempson/Vim-Tomorrow-Theme.git
-[submodule ".vim/bundle/puppet"]
-	path = .vim/bundle/puppet
-	url = git://github.com/puppetlabs/syntax-vim.git
 [submodule ".vim/bundle/golang"]
 	path = .vim/bundle/golang
 	url = git://github.com/jnwhiteh/vim-golang.git
@@ -181,3 +178,6 @@
 [submodule ".vim/bundle/syntastic"]
 	path = .vim/bundle/syntastic
 	url = git://github.com/scrooloose/syntastic.git
+[submodule ".vim/bundle/puppet"]
+	path = .vim/bundle/puppet
+	url = git://github.com/puppetlabs/puppet-syntax-vim.git
