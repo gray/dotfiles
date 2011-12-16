@@ -411,18 +411,6 @@ inoremap <c-a> <home>
 inoremap <c-f> <right>
 inoremap <c-b> <left>
 
-map <localleader>tn :tabnew %<cr>
-map <localleader>tc :tabclose<cr>
-map <localleader>tm :tabmove
-
-" Buffer navigation
-nmap gn :bnext<cr>
-nmap gp :bprev<cr>
-
-" Quickfix navigation
-nmap gN :cnext<cr>
-nmap gP :cprev<cr>
-
 " Redraw screen, toggle search highlighting, sync syntax, toggle list.
 nnoremap <silent> <c-l> <esc>:setlocal invhlsearch invlist
     \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart<cr><c-l>
