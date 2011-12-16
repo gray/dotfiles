@@ -181,3 +181,6 @@
 [submodule ".vim/bundle/puppet"]
 	path = .vim/bundle/puppet
 	url = git://github.com/puppetlabs/puppet-syntax-vim.git
+[submodule ".vim/bundle/file_line"]
+	path = .vim/bundle/file_line
+	url = git://github.com/bogado/file-line.git
