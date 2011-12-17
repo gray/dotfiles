@@ -28,6 +28,8 @@ gitv:
     http://www.vim.org/scripts/script.php?script_id=3574
 histwin:
     http://www.vim.org/scripts/script.php?script_id=2932
+indent-object:
+    http://www.vim.org/scripts/script.php?script_id=3037
 largefile:
     http://www.vim.org/scripts/script.php?script_id=1506
 manpageview:

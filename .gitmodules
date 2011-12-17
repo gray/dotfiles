@@ -184,3 +184,6 @@
 [submodule ".vim/bundle/file_line"]
 	path = .vim/bundle/file_line
 	url = git://github.com/bogado/file-line.git
+[submodule ".vim/bundle/indent-object"]
+	path = .vim/bundle/indent-object
+	url = git://github.com/michaeljsmith/vim-indent-object.git
