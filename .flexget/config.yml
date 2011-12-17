@@ -6,7 +6,7 @@ presets:
     interval: 30 minutes
     quality:
       max: bdrip
-      min: r5
+      min: dvdscr
     regexp:
       reject:
         - '[\W_]read[\W_]*nfo(?:_|\b)'
@@ -29,10 +29,6 @@ presets:
       reject_genres: [ musical ]
     if:
       - 'imdb_year < now.year - 6': reject
-      - quality == 'r5':
-          regexp:
-            reject: [ '[\W_](?:cam|mic|line|russian)(?:_|\b)' ]
-            from: title
       - 'True':
           set: { path: ~/Media/Movies/. }
       - "'documentary' in imdb_genres":
