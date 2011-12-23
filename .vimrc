@@ -546,7 +546,7 @@ if has('autocmd')
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite
-        \ setlocal readonly nolist filetype=text
+        \ setlocal readonly nolist wrap filetype=text colorcolumn=
     autocmd FileType bdb1_hash
         \ execute 'silent %!perl -MDB_File -e ''tie \%db, DB_File => shift,'
         \    'O_RDONLY; while (($k, $v) = each \%db){ print "$k | $v\n" }'''
@@ -555,10 +555,10 @@ if has('autocmd')
         \ execute 'silent %!einfo -q -p' shellescape(expand('%')) '| lynx'
         \     ' -stdin -dump -force_html -display_charset=utf-8 -nolist'
     autocmd FileType pdf
-        \ execute 'silent %!pdftotext -q -nopgbrk' shellescape(expand('%'))
-        \     ' - | fmt -sw78'
+        \ execute 'silent %!pdftotext -q' shellescape(expand('%'))
+        \     ' - | par w78'
     autocmd FileType postscr
-        \ execute 'silent %!ps2ascii' shellescape(expand('%')) '| fmt -sw78'
+        \ execute 'silent %!ps2ascii' shellescape(expand('%')) '| par w78'
     autocmd FileType sqlite
         \ execute 'silent %!sqlite3' shellescape(expand('%')) '.dump'
     autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite setlocal nomodifiable
