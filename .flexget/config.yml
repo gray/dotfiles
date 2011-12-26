@@ -139,6 +139,7 @@ feeds:
     interval: 15 minutes
     include: [ private/thebox-rss.yml ]
     preset: [ torrents, tv, tv-series ]
+    disable_plugin: [ torrent_alive ]
     if: [ "str(now.year) + ')' not in title": reject ]
     regexp:
       reject_excluding: [ '\((?:XviD|DivX)\)' ]
@@ -183,10 +184,15 @@ feeds:
     priority: 32
     include: [ private/ilt_movies-rss.yml ]
     preset: [ torrents, movies ]
-  ptp:
+  torrentday_movies:
     priority: 33
+    include: [ private/torrentday_movies-rss.yml ]
+    preset: [ torrents, movies ]
+  ptp:
+    priority: 34
     include: [ private/ptp-rss.yml ]
     preset: [ torrents, movies ]
+    disable_plugin: [ torrent_alive ]
     regexp:
       reject_excluding: [ '- (?:XviD|DivX) / DVD / AVI /' ]
       from: title
