@@ -1,0 +1,28 @@
+use feature ':5.10';
+
+$_REPL->load_plugin($_) for qw(
+    B::Concise
+    Colors
+    Completion
+    CompletionDriver::Globals
+    CompletionDriver::INC
+    CompletionDriver::Keywords
+    CompletionDriver::LexEnv
+    CompletionDriver::Methods
+    CompletionDriver::Turtles
+    DataPrinter
+    FancyPrompt
+    Interrupt
+    LexEnv
+    MultiLine::PPI
+    Nopaste
+    OutputCache
+    PPI
+    Peek
+    ReadLineHistory
+    Refresh
+);
+
+package main;
+
+unshift @INC, 'lib';
