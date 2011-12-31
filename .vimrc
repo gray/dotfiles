@@ -529,7 +529,7 @@ if has('autocmd')
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
         \ setlocal nobackup nolist spell wrap spellcapcheck= textwidth=74
-        \     noundofile | setlocalet b:is_commit_msg = 1
+        \     noundofile | let b:is_commit_msg = 1
     autocmd FileType crontab setlocal backupcopy=yes
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html
