@@ -188,16 +188,6 @@ feeds:
     priority: 33
     include: [ private/torrentday_movies-rss.yml ]
     preset: [ torrents, movies ]
-  ptp:
-    priority: 34
-    include: [ private/ptp-rss.yml ]
-    preset: [ torrents, movies ]
-    disable_plugin: [ torrent_alive ]
-    regexp:
-      reject_excluding: [ '- (?:XviD|DivX) / DVD / AVI /' ]
-      from: title
-    # Idea for new plugin:
-    # ptp_lookup_leechtype: [ free, neutral, half ]
   rlslog_movies:
     priority: 34
     rlslog: http://www.rlslog.net/category/movies/
