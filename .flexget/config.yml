@@ -1,5 +1,6 @@
 presets:
   global:
+    cookies: ~/.flexget/private/cookies.sqlite
     download: ~/Downloads/.
 
   movies:
@@ -33,11 +34,11 @@ presets:
       - "'documentary' in imdb_genres":
           set: { path: ~/Media/Movies/Documentaries/. }
       - imdb_languages and 'english' != imdb_languages[0]:
+          set: { path: ~/Media/Movies/Foreign/. }
           regexp:
             reject_excluding:
-              - 'action|adventure|comedy|crime|mystery|sci_fi|thriller|war'
-            from: imdb_genres
-          set: { path: ~/Media/Movies/Foreign/. }
+              - 'action|adventure|comedy|crime|mystery|sci_fi|thriller|war':
+                  from: imdb_genres
       # Reject standup comedies.
       - "'comedy' in imdb_genres and 1 == len(imdb_actors)": reject
 
@@ -142,7 +143,9 @@ feeds:
     # Ratio-based tracker; easy to maintain. UK content.
     priority: 4
     interval: 15 minutes
-    include: [ private/thebox-rss.yml ]
+    rss:
+      url: http://thebox.bz/rss.php?feed=dl&cat[]=14&cat[]=18&cat[]=31&cat[]=8
+      silent: yes
     preset: [ torrents, tv, tv-series ]
     disable_plugin: [ torrent_alive ]
     if: [ "str(now.year) + ')' not in title": reject ]
