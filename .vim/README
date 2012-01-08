@@ -1,4 +1,26 @@
-installed plugins:
+submodule management
+====================
+
+add new plugin:
+
+    cd $REPO
+    # example
+    git submodule add git://github.com/mileszs/ack.vim.git .vim/bundle/ack
+    git submodule init
+    git commit -m "..." .gitmodules .vim/bundle/ack
+
+update plugins:
+
+    cd $REPO && git submodule -q foreach git pull -q --rebase origin master
+
+remove plugin:
+
+    cd $REPO
+    # rm reference from .git/config and .gitmodules
+    git rm --cached .vim/bundle/$PLUGIN_DIR
+
+installed plugins
+=================
 
 a:
     http://www.vim.org/scripts/script.php?script_id=31
@@ -34,6 +56,8 @@ largefile:
     http://www.vim.org/scripts/script.php?script_id=1506
 manpageview:
     http://www.vim.org/scripts/script.php?script_id=489
+mark:
+    http://www.vim.org/scripts/script.php?script_id=2666
 nrrwregn:
     http://www.vim.org/scripts/script.php?script_id=3075
 nerd commenter:
@@ -75,7 +99,8 @@ yankring:
 zoomwin:
     http://www.vim.org/scripts/script.php?script_id=508
 
-installed syntaxes:
+installed syntaxes
+==================
 
 after/syntax/c.vim:
     http://www.vim.org/scripts/script.php?script_id=3064
@@ -114,7 +139,8 @@ tmux:
 yaml:
     http://vim.googlecode.com/hg/runtime/syntax/yaml.vim
 
-installed colors:
+installed colors
+================
 
 css_color:
     https://github.com/ap/vim-css-color
@@ -130,8 +156,6 @@ lettuce:
     http://www.vim.org/scripts/script.php?script_id=1975
 liquidcarbon:
     http://www.vim.org/scripts/script.php?script_id=3274
-mark:
-    http://www.vim.org/scripts/script.php?script_id=2666
 metacosm:
     http://www.vim.org/scripts/script.php?script_id=985
 molokai:
@@ -156,25 +180,3 @@ wombat256:
     http://www.vim.org/scripts/script.php?script_id=2465
 xoria256:
     http://www.vim.org/scripts/script.php?script_id=2140
-
-plugin management
-=================
-
-add new plugin:
-
-    cd $REPO
-    # example
-    git submodule add git://github.com/mileszs/ack.vim.git .vim/bundle/ack
-    git submodule init
-    git commit -m "..." .gitmodules .vim/bundle/ack
-
-update plugins:
-
-    # add to crontab
-    @weekly cd $REPO && git submodule -q foreach git pull -q origin master
-
-remove plugin:
-
-    cd $REPO
-    # rm reference from .git/config and .gitmodules
-    git rm --cached .vim/bundle/$PLUGIN_DIR
