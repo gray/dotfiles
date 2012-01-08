@@ -10,10 +10,11 @@ presets:
       min: dvdscr
     regexp:
       reject:
-        - '[\W_]read[\W_]*nfo(?:_|\b)'
-        - '[\W_]3-?D(?:BD)?(?:_|\b)'
-        - '[\W_](?:heb|kor|swe)sub(?:_|\b)'
-        - '[\W_](?:dubbed|pldub|hardcoded|hardsubs?)(?:_|\b)'
+        - '[\W_]read[\W_]*nfo(?:_|\b)':      { from: title }
+        - '[\W_]3-?D(?:BD)?(?:_|\b)':        { from: title }
+        - '[\W_](?:heb|kor|swe)sub(?:_|\b)': { from: title }
+        - '[\W_](?:dubbed|pldub|hardcoded|hardsubs?)(?:_|\b)':
+            from: [ title, description ]
       from: title
     content_size:
       min: 650
@@ -201,19 +202,15 @@ feeds:
     priority: 34
     rlslog: http://www.rlslog.net/category/movies/
     preset: [ torrents, movies ]
-  # Foreign
-  eutorrents:
+  # Foreign: AsiaTorrents.com and EUTorrents.com
+  avistaz:
     priority: 35
-    rss:
-      url: http://feeds.feedburner.com/eutorrentsbt
-      silent: yes
+    sequence:
+      - rss: { url: 'http://feeds.feedburner.com/eutorrentsbt', silent: yes }
+      - rss: { url: 'http://feeds.feedburner.com/btavistaz',    silent: yes }
     preset: [ torrents, movies ]
-    if: [ "'English' not in description": reject ]
-  # Foreign
-  asiatorrents:
-    priority: 36
-    rss:
-      url: http://feeds.feedburner.com/btavistaz
-      silent: yes
-    preset: [ torrents, movies ]
+    urlrewrite:
+      site:
+        regexp: '^http://(?P<host>[^/]+).*?&id=(?P<id>[^&]+)'
+        format: 'http://\g<host>/download.php?id=\g<id>&f=\g<id>.torrent'
     if: [ "'English' not in description": reject ]
