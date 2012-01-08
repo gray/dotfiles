@@ -31,6 +31,9 @@ presets:
       reject_genres: [ musical ]
     if:
       - 'imdb_year < now.year - 6': reject
+      - imdb_genres == ['music']: reject
+      # Probably a standup comedy.
+      - "'comedy' in imdb_genres and 1 == len(imdb_actors)": reject
       - 'True':
           set: { path: ~/Media/Movies/. }
       - "'documentary' in imdb_genres":
@@ -41,8 +44,6 @@ presets:
             reject_excluding:
               - 'action|adventure|comedy|crime|mystery|sci_fi|thriller|war':
                   from: imdb_genres
-      # Reject standup comedies.
-      - "'comedy' in imdb_genres and 1 == len(imdb_actors)": reject
 
   tv:
     content_size:
