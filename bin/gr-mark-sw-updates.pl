@@ -17,14 +17,14 @@ my $file = catfile($dir, '.unwanted-modules.bdb');
 my $db   = tie my %db, DB_File => $file;
 
 my $reader = WebService::Google::Reader->new(
-    username => $ENV{GOOGLE_USERNAME},
-    password => $ENV{GOOGLE_PASSWORD},
+    username => ($ENV{GOOGLE_USERNAME} || die "Missing GOOGLE_USERNAME"),
+    password => ($ENV{GOOGLE_PASSWORD} || die "Missing GOOGLE_PASSWORD"),
 );
 
 my %conf = (
     perl => do {
         my $dist;
-        my $test_perl_dist_installed = is_perl_dist_installed();
+        my $test_perl_dist_installed;
         {
             url  => 'http://search.cpan.org/uploads.rdf',
             name => sub {
@@ -33,12 +33,15 @@ my %conf = (
             },
             whitelist => [
                 sub {
+                    $test_perl_dist_installed //= is_perl_dist_installed();
                     'released' eq $dist->maturity
                         and $_[0] ~~ $test_perl_dist_installed
                 },
             ],
             blacklist => [
-                sub { $_[0]->link->href =~ m[ /~ (?: manwar | zoffix ) ]x },
+                sub { $_[0]->link->href =~ m[
+                    /~ (?: manwar | reneeb | tobyink | zoffix )
+                ]x },
                 sub { 'released' ne $dist->maturity },
             ],
         }
@@ -94,6 +97,8 @@ my %conf = (
 );
 
 # Get list of feed subscription times.
+# TODO: cache last run time and only check new items since last run instead
+# of rechecking all unread items.
 my %subs;
 for my $sub ($reader->feeds) {
     (my $id = $sub->id) =~ s[^feed/][] or next;
