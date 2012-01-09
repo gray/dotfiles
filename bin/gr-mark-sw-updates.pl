@@ -21,168 +21,156 @@ my $reader = WebService::Google::Reader->new(
     password => ($ENV{GOOGLE_PASSWORD} || die "Missing GOOGLE_PASSWORD"),
 );
 
-my %conf = (
-    perl => do {
-        my $dist;
-        my $test_perl_dist_installed;
-        {
-            url  => 'http://search.cpan.org/uploads.rdf',
-            name => sub {
-                $dist = CPAN::DistnameInfo->new($_[0]->title . '.tgz');
-                $dist->dist;
-            },
-            whitelist => [
-                sub {
-                    $test_perl_dist_installed //= is_perl_dist_installed();
-                    'released' eq $dist->maturity
-                        and $_[0] ~~ $test_perl_dist_installed
-                },
-            ],
-            blacklist => [
-                sub { $_[0]->link->href =~ m[
-                    /~ (?: manwar | reneeb | tobyink | zoffix )
-                ]x },
-                sub { 'released' ne $dist->maturity },
-            ],
-        }
-    },
-    python => {
-        url  => 'http://pypi.python.org/pypi?:action=rss',
-        name => sub {
-            my ($name) = $_[0]->link->href =~ m[
-                ^http://pypi\.python\.org/pypi/([^/]+)
-            ]x;
-            return $name;
-        },
-        blacklist => [
-            qr/ (?:\b|_) (?:django | flask | plone | zope) (?:\b|_) /ix,
-            sub {
-                my $s = $_[0]->summary;
-                return 1 unless $s;
-                return 1 if 'unknown' eq lc $s;
-                return 1 if $s =~ qr/\b (?: print | nested) /ix
-                    && $s =~ qr/\b list /ix;
-            },
-        ],
-    },
-    ruby => {
-        url  => 'http://feeds.feedburner.com/gemcutter-latest',
-        name => sub {
-            my ($name) = $_[0]->link->href =~ m[
-                ^http://rubygems\.org/gems/([^?/]+)
-            ]x;
-            return $name;
-        },
-        blacklist => [
-            qr/ (?:\b|_) (?:rails | active\W?record) (?:\b|_) /ix,
-        ],
-    },
-    haskell => {
-        url  => 'http://hackage.haskell.org/packages/archive/recent.rss',
-        name => sub { ($_[0]->title =~ m[^\s*(\S+)])[0] },
-    },
-    vimscripts => {
-        url  => 'http://feed43.com/vim-scripts.xml',
-        name => sub {
-            my ($title, $name) = $_[0]->title =~ m[^\s*((.*?)\s+\S+) --];
-            $_[0]->title($title);
-            return $name;
-        },
-    },
-    node => {
-        url  => 'http://registry.npmjs.org/-/rss?descending=true&limit=50',
-        name => sub { $_[0]->title =~ m[ (.*) \@ ]x; $1 },
-        blacklist => [ sub { not $_[0]->summary } ],
-    }
+my $conf = read_conf();
+my $feed = $reader->tag(Modules =>
+    count      => 500,
+    exclude    => { state => 'read' },
+    start_time => $db{_last_time},
 );
+die $reader->error unless $feed;
 
-# Get list of feed subscription times.
-# TODO: cache last run time and only check new items since last run instead
-# of rechecking all unread items.
-my %subs;
-for my $sub ($reader->feeds) {
-    (my $id = $sub->id) =~ s[^feed/][] or next;
-    $subs{$id} = int $sub->firstitemmsec / 1000;
-}
+my (%unread, @unwanted_entries);
 
-while (my ($lang, $conf) = each %conf) {
-    my $feed = $reader->feed(
-        $conf->{url},
-        count      => 100,
-        exclude    => { state => 'read' },
-        start_time => $subs{$conf->{url}},
-    );
-    die $reader->error unless $feed;
+FEED:
+for my $entry ($feed->entries) {
+    my $source  = substr $entry->source->id, 32;
+    my $conf    = $conf->{$source}
+        or warn "Unexpected feed: $source\n" and next;
+    my $title   = $entry->title;
+    my $name    = $conf->{name}($entry)
+        or warn "Couldn't extract name from $title\n" and next;
+    my $lang    = $conf->{lang};
+    my $summary = $entry->summary // '';
+    my $desc    = $entry->content // '';
+       $desc  &&= $desc->body;
 
-    my %unread;
-    my @blacklist = @{ $conf->{blacklist} || [] };
-    my @whitelist = @{ $conf->{whitelist} || [] };
-
-    my @unwanted_entries;
-    {
-        for my $entry ($feed->entries) {
-            my $name    = $conf->{name}->($entry);
-            my $title   = $entry->title;
-            my $summary = $entry->summary || '';
-            my $desc    = $entry->content || '';
-            $desc &&= $desc->body;
-            # say "$lang | $name | $title | $summary | $desc\n" and next;
-
-            unless ($name) {
-                warn "Couldn't extract name from $title\n";
-                next;
-            }
-
-            if ($name ~~ %unread) {
-                push @unwanted_entries, $entry;
-                say "$lang - $name - discarding in favor of newer unread entry"
-                    if VERBOSE;
-                next;
-            }
-            else {
-                $unread{$name} = undef;
-            }
-
-            my $listed;
-            for my $w (@whitelist) {
-                next if not $name ~~ $w;
-                $listed = 1;
-                VERBOSE && say "$lang - $name - whitelisted";
-                last;
-            }
-            next if $listed;
-
-            for my $b (@blacklist) {
-                if ('CODE' eq ref $b) {
-                    next unless $b->($entry);
-                }
-                else {
-                    next unless [$name, $title, $summary, $desc] ~~ $b;
-                }
-                $listed = 1;
-                push @unwanted_entries, $entry;
-                VERBOSE && say "$lang - $name - blacklisted";
-                last;
-            }
-            next if $listed;
-
-            if ("$lang|$name" ~~ %db and $title ne $db{"$lang|$name"}) {
-                push @unwanted_entries, $entry;
-                VERBOSE && say "$lang - $name - unwanted because seen";
-            }
-            else {
-                $db{"$lang|$name"} = $title;
-            }
-        }
-
-        sleep 0.25;
-        redo if $reader->more($feed);
+    if ($name ~~ %{$unread{$lang}}) {
+        push @unwanted_entries, $entry;
+        say "$lang - $name - discarding in favor of newer unread entry"
+            if VERBOSE;
+        next;
+    }
+    else {
+        $unread{$lang}{$name} = undef;
     }
 
-    $reader->mark_read_entry(\@unwanted_entries);
+    my $listed;
+    for my $w (@{$conf->{whitelist} || []}) {
+        next if not $name ~~ $w;
+        $listed = 1;
+        VERBOSE && say "$lang - $name - whitelisted";
+        last;
+    }
+    next if $listed;
+
+    for my $b (@{$conf->{blacklist} || []}) {
+        if ('CODE' eq ref $b) {
+            next unless $b->($entry);
+        }
+        else {
+            next unless [$name, $title, $summary, $desc] ~~ $b;
+        }
+        $listed = 1;
+        push @unwanted_entries, $entry;
+        VERBOSE && say "$lang - $name - blacklisted";
+        last;
+    }
+    next if $listed;
+
+    if ("$lang|$name" ~~ %db and $title ne $db{"$lang|$name"}) {
+        push @unwanted_entries, $entry;
+        VERBOSE && say "$lang - $name - unwanted because seen";
+    }
+    else {
+        $db{"$lang|$name"} = $title;
+    }
 }
+
+sleep 0.25;
+redo FEED if $reader->more($feed);
+
+$reader->mark_read_entry(\@unwanted_entries);
+
+$db{_last_time} = time;
 
 exit;
+
+
+sub read_conf {
+    return {
+        'http://search.cpan.org/uploads.rdf' => do {
+            my ($dist, $test_perl_dist_installed);
+            {
+                lang => 'perl',
+                name => sub {
+                    $dist = CPAN::DistnameInfo->new($_[0]->title . '.tgz');
+                    $dist->dist;
+                },
+                whitelist => [
+                    sub {
+                        $test_perl_dist_installed //= is_perl_dist_installed();
+                        'released' eq $dist->maturity
+                            and $_[0] ~~ $test_perl_dist_installed;
+                    },
+                ],
+                blacklist => [
+                    sub { $_[0]->link->href =~ m[
+                        /~ (?: manwar | reneeb | tobyink | zoffix )
+                    ]x },
+                    sub { 'released' ne $dist->maturity },
+                ],
+            }
+        },
+        'http://pypi.python.org/pypi?:action=rss' => {
+            lang => 'python',
+            name => sub {
+                my ($name) = $_[0]->link->href =~ m[
+                    ^http://pypi\.python\.org/pypi/([^/]+)
+                ]x;
+                return $name;
+            },
+            blacklist => [
+                qr/ (?:\b|_) (?:django | flask | plone | zope) (?:\b|_) /ix,
+                sub {
+                    my $s = $_[0]->summary;
+                    return 1 unless $s;
+                    return 1 if 'unknown' eq lc $s;
+                    return 1 if $s =~ qr/\b (?: print | nested) /ix
+                        && $s =~ qr/\b list /ix;
+                },
+            ],
+        },
+        'http://feeds.feedburner.com/gemcutter-latest' => {
+            lang => 'ruby',
+            name => sub {
+                my ($name) = $_[0]->link->href =~ m[
+                    ^http://rubygems\.org/gems/([^?/]+)
+                ]x;
+                return $name;
+            },
+            blacklist => [
+                qr/ (?:\b|_) (?:rails | active\W?record) (?:\b|_) /ix,
+            ],
+        },
+        'http://hackage.haskell.org/packages/archive/recent.rss' => {
+            lang => 'haskell',
+            name => sub { ($_[0]->title =~ m[^\s*(\S+)])[0] },
+        },
+        'http://feed43.com/vim-scripts.xml' => {
+            lang => 'vimscripts',
+            name => sub {
+                my ($title, $name) = $_[0]->title =~ m[^\s*((.*?)\s+\S+) --];
+                $_[0]->title($title);
+                return $name;
+            },
+        },
+        'http://registry.npmjs.org/-/rss?descending=true&limit=50' => {
+            lang => 'node',
+            name => sub { $_[0]->title =~ m[ (.*) \@ ]x; $1 },
+            blacklist => [ sub { not $_[0]->summary } ],
+        },
+    };
+}
 
 
 # Return a sub that checks if the given Perl dist is installed.
