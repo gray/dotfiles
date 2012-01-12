@@ -50,11 +50,6 @@ presets:
       min: 50
       max: 1500
     manipulate:
-      # Recognize webrip quality.
-      - title:
-          replace:
-            regexp: (?i)webrip
-            format: dsr
       # Recognize the quality of a particular ripper.
       - title:
           replace:
