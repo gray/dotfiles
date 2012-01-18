@@ -36,10 +36,10 @@ for my $entry ($feed->entries) {
     my $source  = substr $entry->source->id, 32;
     my $conf    = $conf->{$source}
         or warn "Unexpected feed: $source\n" and next;
+    my $lang    = $conf->{lang} // next;
     my $title   = $entry->title;
     my $name    = $conf->{name}($entry)
         or warn "Couldn't extract name from $title\n" and next;
-    my $lang    = $conf->{lang};
     my $summary = $entry->summary // '';
     my $desc    = $entry->content // '';
        $desc  &&= $desc->body;
@@ -87,7 +87,7 @@ for my $entry ($feed->entries) {
 }
 
 sleep 0.25;
-redo FEED if $reader->more($feed);
+goto FEED if $reader->more($feed);
 
 $reader->mark_read_entry(\@unwanted_entries);
 
@@ -169,6 +169,8 @@ sub read_conf {
             name => sub { $_[0]->title =~ m[ (.*) \@ ]x; $1 },
             blacklist => [ sub { not $_[0]->summary } ],
         },
+        # This feed only contains new packages; no updates.
+        'http://dirk.eddelbuettel.com/cranberries/cran/new/index.rss' => {},
     };
 }
 
