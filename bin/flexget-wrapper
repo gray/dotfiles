@@ -1,0 +1,30 @@
+#!/bin/sh
+
+FLEXDIR=$HOME/.flexget
+MOUNTDIR=/Volumes/FlexGet
+
+set -o errexit
+set -o nounset
+
+LOCK="/tmp/${0##*/}.lock"
+PATH=$PATH:/sbin
+
+[ -e "$FLEXDIR/.config.lock" ] && exit
+trap 'status=$?; rm -f "$LOCK"; exit $status' HUP INT QUIT TERM
+shlock -f "$LOCK" -p $$ || exit
+trap 'rm -f "$LOCK"; exit' EXIT
+
+# TODO: determine needed size automatically - du + 10MB
+SECTORS=122880  # BYTES / 512
+RAMDISK=$(hdid -nomount ramdisk://$SECTORS)
+
+newfs_hfs $RAMDISK >/dev/null
+mkdir -p "$MOUNTDIR"
+mount -t hfs $RAMDISK "$MOUNTDIR"
+
+rsync -aq --exclude /received "$FLEXDIR"/ "$MOUNTDIR"
+flexget -c "$MOUNTDIR/config.yml" $@
+rsync -aq --exclude /.fseventsd "$MOUNTDIR"/ "$FLEXDIR"
+
+umount "$MOUNTDIR"
+hdiutil detach -quiet $RAMDISK
