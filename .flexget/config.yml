@@ -21,28 +21,30 @@ presets:
       max: 1750
     seen_movies: strict
     imdb_required: yes
-    imdb:
-      min_score: 6.2
-      min_votes: 100
-      accept_languages: [
-        cantonese, danish, dutch, english, french, german, italian,
-        japanese, korean, mandarin, portuguese, spanish
-      ]
-      reject_genres: [ musical ]
     if:
       - 'imdb_year < now.year - 6': reject
-      - imdb_genres == ['music']: reject
+      - "['music'] == imdb_genres": reject
+      - musical in imdb_genres: reject
       # Probably a standup comedy.
       - "'comedy' in imdb_genres and 1 == len(imdb_actors)": reject
       - 'True':
           set: { path: ~/Media/Movies/. }
       - "'documentary' in imdb_genres":
           set: { path: ~/Media/Movies/Documentaries/. }
-      - imdb_languages and 'english' != imdb_languages[0]:
+      - "'english' == (imdb_languages or ['english'])[0]":
+          imdb: { min_score: 6.2, min_votes: 250 }
+      - "'english' != (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/Foreign/. }
+          imdb:
+            min_score: 6.8
+            min_votes: 100
+            accept_languages: [
+              cantonese, danish, dutch, french, german, italian, japanese,
+              korean, mandarin, portuguese, spanish
+            ]
           regexp:
             reject_excluding:
-              - 'action|adventure|comedy|crime|mystery|sci_fi|thriller|war':
+              - 'action|adventure|comedy|crime|mystery|sci-fi|thriller|war':
                   from: imdb_genres
 
   tv:
@@ -79,7 +81,7 @@ presets:
           propers: 3 hours
     include: [ private/series.yml ]
     # Reject season previews or recaps.
-    if: [ series_episode == 0: reject ]
+    if: [ '1 < series_season and 0 == series_episode': reject ]
 
   # Grab the first episode of any new series.
   tv-premieres:
