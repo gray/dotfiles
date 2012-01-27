@@ -1,19 +1,3 @@
-# Prevent $PATH from growing every time this file is sourced.
-SYSTEM_PATH=${SYSTEM_PATH:-$PATH}
-PATH=$HOME/bin:$HOME/local/bin
-PATH=$PATH:/opt/local/bin:/opt/local/sbin
-PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
-PATH=$PATH:$SYSTEM_PATH
-export PATH
-
-# Non-interactive (e.g. login) shell
-if [[ -z $PS1 ]]; then
-    # Interactive shells set the perlbrew path later, dynamically.
-    PATH=$HOME/local/perlbrew/perls/latest/bin:$PATH
-
-    return
-fi
-
 shopt -s no_empty_cmd_completion
 shopt -s checkwinsize  # Update windows size after each command.
 shopt -s cmdhist       # Store multiline commands as a single entry.
@@ -22,11 +6,6 @@ shopt -s histappend    # Append history from all running bash processes.
 shopt -s histreedit    # Reedit a history substitution line upon failure.
 shopt -s histverify    # Edit a recalled history line before executing.
 set -o ignoreeof       # Prevent accidental exiting of shell via C-d.
-
-umask 0022
-
-# Prevent C-s from accidentally freezing the terminal.
-[[ -t 0 ]] && stty ixany
 
 PROMPT_COMMAND='history -a; history -c; history -r;'
 
@@ -90,16 +69,6 @@ else
     LSCOLORS=$LSCOLORS'43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
     export LSCOLORS
 fi
-
-case $OSTYPE in
-    darwin*)
-        # XCode 4 no longer supports PPC.
-        export ARCHFLAGS='-arch i386 -arch x86_64'
-
-        # Prevent tar from copying resource forks.
-        export COPY_EXTENDED_ATTRIBUTES_DISABLE=1
-        export COPYFILE_DISABLE=1
-esac
 
 # groff bug converts some characters to utf-8.
 export PERLDOC='-n"nroff -Tascii"'
