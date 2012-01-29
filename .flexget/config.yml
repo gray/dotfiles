@@ -21,6 +21,12 @@ presets:
       max: 1750
     seen_movies: strict
     imdb_required: yes
+    imdb:
+      min_score: 6.2
+      accept_languages: [
+        cantonese, danish, dutch, english, french, german, italian, japanese,
+        korean, mandarin, portuguese, spanish
+      ]
     if:
       - 'imdb_year < now.year - 6': reject
       - "['music'] == imdb_genres": reject
@@ -32,19 +38,13 @@ presets:
       - "'documentary' in imdb_genres":
           set: { path: ~/Media/Movies/Documentaries/. }
       - "'english' == (imdb_languages or ['english'])[0]":
-          imdb: { min_score: 6.2, min_votes: 250 }
+          if: [ 'imdb_votes < 250': reject ]
       - "'english' != (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/Foreign/. }
-          imdb:
-            min_score: 6.8
-            min_votes: 100
-            accept_languages: [
-              cantonese, danish, dutch, french, german, italian, japanese,
-              korean, mandarin, portuguese, spanish
-            ]
+          if: [ 'imdb_score < 6.8 and imdb_votes < 100': reject ]
           regexp:
             reject_excluding:
-              - 'action|adventure|comedy|crime|mystery|sci-fi|thriller|war':
+              - '^(?:action|adventure|comedy|crime|mystery|sci-fi|thriller|war)$':
                   from: imdb_genres
 
   tv:
