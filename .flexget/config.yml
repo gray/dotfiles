@@ -111,8 +111,7 @@ presets:
         for_accepted: |
           growlnotify -t FlexGet:\ torrent\ from\ {{feed}} -m {{title}} \
             >/dev/null 2>&1
-          tmux display -t FlexGet:\ torrent\ from\ {{feed}} -m {{title}} \
-            >/dev/null 2>&1
+          tmux display-message 'FlexGet: {{feed}}: {{title}}' >/dev/null 2>&1
         phase: |
           # This is also run from cron every few minutes.
           nice -n 20 transmission-watchdog
