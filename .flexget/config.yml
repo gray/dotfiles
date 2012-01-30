@@ -19,9 +19,10 @@ presets:
     content_size:
       min: 650
       max: 1750
-    imdb_lookup: yes
-    imdb_required: yes
     seen_movies: strict
+    imdb_required: yes
+    # Run before if, which has a priority of 80.
+    plugin_priority: { imdb_required: 81 }
     if:
       - "'english' == (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/. }
@@ -211,4 +212,7 @@ feeds:
       site:
         regexp: '^http://(?P<host>[^/]+).*?&id=(?P<id>[^&]+)'
         format: 'http://\g<host>/download.php?id=\g<id>&f=\g<id>.torrent'
-    if: [ "'English' not in description": reject ]
+    regexp:
+      reject_excluding: [ '\benglish\b' ]
+      reject: [ '\bdubbed\b' ]
+      from: description
