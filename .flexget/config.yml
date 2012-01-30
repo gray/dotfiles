@@ -19,33 +19,32 @@ presets:
     content_size:
       min: 650
       max: 1750
-    seen_movies: strict
+    imdb_lookup: yes
     imdb_required: yes
-    imdb:
-      min_score: 6.2
-      accept_languages: [
-        cantonese, danish, dutch, english, french, german, italian, japanese,
-        korean, mandarin, portuguese, spanish
-      ]
+    seen_movies: strict
     if:
-      - 'imdb_year < now.year - 6': reject
-      - "['music'] == imdb_genres": reject
-      - musical in imdb_genres: reject
-      # Probably a standup comedy.
-      - "'comedy' in imdb_genres and 1 == len(imdb_actors)": reject
-      - 'True':
+      - "'english' == (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/. }
+          imdb: { min_score: 6.2, min_votes: 100 }
       - "'documentary' in imdb_genres":
           set: { path: ~/Media/Movies/Documentaries/. }
-      - "'english' == (imdb_languages or ['english'])[0]":
-          if: [ 'imdb_votes < 250': reject ]
       - "'english' != (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/Foreign/. }
-          if: [ 'imdb_score < 6.8 and imdb_votes < 100': reject ]
+          imdb:
+            min_score: 6.8
+            min_votes: 100
+            accept_languages: [
+              cantonese, danish, dutch, french, german, italian, japanese,
+              korean, mandarin, portuguese, spanish ]
           regexp:
             reject_excluding:
               - '^(?:action|adventure|comedy|crime|mystery|sci-fi|thriller|war)$'
             from: imdb_genres
+      - 'imdb_year < now.year - 6': reject
+      - "['music'] == imdb_genres": reject
+      - "'musical' in imdb_genres": reject
+      # Probably a standup comedy.
+      - "'comedy' in imdb_genres and 1 == len(imdb_actors)": reject
 
   tv:
     content_size:
