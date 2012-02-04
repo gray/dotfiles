@@ -6,8 +6,6 @@ PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
 PATH=$PATH:$DEFAULT_PATH
 export PATH
 
-export MANPATH=/opt/local/share/man:$MANPATH
-
 umask 0022
 
 # Prevent C-s from accidentally freezing the terminal.
