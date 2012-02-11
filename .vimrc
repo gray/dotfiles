@@ -55,7 +55,7 @@ if $TERM_PROGRAM == 'Apple_Terminal'
         set t_Co=16
     endif
     " Fixes backspace interaction with delimitMate.
-    execute "set t_kb=\<c-h>"
+    execute 'set t_kb=\<c-h>'
 elseif &term =~ '256-\?color'
     set t_Co=256
 elseif &term =~ 'xterm'
@@ -238,6 +238,7 @@ function! s:AdjustColorScheme ()
     highlight Search gui=NONE guifg=yellow guibg=blue
     highlight CursorLine term=reverse cterm=reverse gui=reverse
     highlight CursorColumn term=reverse cterm=reverse gui=reverse
+    highlight ColorColumn ctermbg=red ctermfg=white guibg=red guifg=white
     highlight SpellBad ctermbg=red ctermfg=white guibg=red guifg=white
 
     let l:bg = synIDattr(hlID('Normal'), 'bg#')
