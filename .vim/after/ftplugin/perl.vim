@@ -4,7 +4,9 @@ compiler perl
 " Show line numbers
 setlocal number
 
-setlocal keywordprg=sh\ -c\ 'cpandoc\ \$1\ \|\|\ cpandoc\ -f\ \$1\'\ --
+setlocal iskeyword+=:
+
+setlocal keywordprg=p5doc
 if has('mac')
     " groff bug converts some characters to utf-8.
     let b:keywordprg = "PERLDOC='-n\"nroff -Tascii\"' " . &keywordprg
