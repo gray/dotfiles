@@ -15,7 +15,6 @@ presets:
         - '[\W_](?:heb|kor|swe)sub(?:_|\b)': { from: title }
         - '[\W_](?:dubbed|pldub|hardcoded|hardsubs?)(?:_|\b)':
             from: [ title, description ]
-      from: title
     content_size:
       min: 650
       max: 1750
@@ -24,9 +23,10 @@ presets:
     # Run before if, which has a priority of 80.
     plugin_priority: { imdb_required: 81 }
     if:
+      - "'dvdrip r5' == quality": reject
       - "'english' == (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/. }
-          imdb: { min_score: 6.2, min_votes: 100 }
+          imdb: { min_score: 6.2, min_votes: 500 }
       - "'documentary' in imdb_genres":
           set: { path: ~/Media/Movies/Documentaries/. }
       - "'english' != (imdb_languages or ['english'])[0]":
@@ -43,6 +43,9 @@ presets:
             from: imdb_genres
       - 'imdb_year < now.year - 6': reject
       - "['music'] == imdb_genres": reject
+      - "['biography', 'music'] == imdb_genres": reject
+      - "['biography', 'documentary', 'music'] == imdb_genres": reject
+      - "['documentary', 'music'] == imdb_genres": reject
       - "'musical' in imdb_genres": reject
       # Probably a standup comedy.
       - "'comedy' in imdb_genres and 1 == len(imdb_actors)": reject
@@ -132,9 +135,15 @@ feeds:
     interval: 5 minutes
     include: [ private/btn-rss.yml ]
     preset: [ torrents, tv, tv-series ]
-    # Use the scene release name.
     manipulate:
+      # Use the scene release name.
       - title: { extract: '\[ ([^]]+) \] *$' }
+      # Recognize the extended interview as a separate series. These would
+      # otherwise be skipped as dupes, because of the way rippers label them.
+      - title:
+          replace:
+            regexp: (?i)the\W+daily\W+show(?=.+extended\W+interview)
+            format: The Daily Show Extended Interview
   torrentday_tv:
     priority: 3
     interval: 5 minutes
