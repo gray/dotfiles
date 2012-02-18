@@ -5,9 +5,7 @@ presets:
 
   movies:
     interval: 30 minutes
-    quality:
-      max: bdrip
-      min: dvdscr
+    quality: { min: hdtv, max: bdrip }
     regexp:
       reject:
         - '[\W_]read[\W_]*nfo(?:_|\b)':      { from: title }
@@ -23,7 +21,6 @@ presets:
     # Run before if, which has a priority of 80.
     plugin_priority: { imdb_required: 81 }
     if:
-      - "'dvdrip r5' == quality": reject
       - "'english' == (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/. }
           imdb: { min_score: 6.2, min_votes: 500 }
