@@ -135,12 +135,6 @@ feeds:
     manipulate:
       # Use the scene release name.
       - title: { extract: '\[ ([^]]+) \] *$' }
-      # Recognize the extended interview as a separate series. These would
-      # otherwise be skipped as dupes, because of the way rippers label them.
-      - title:
-          replace:
-            regexp: (?i)the\W+daily\W+show(?=.+extended\W+interview)
-            format: The Daily Show Extended Interview
   torrentday_tv:
     priority: 3
     interval: 5 minutes
@@ -175,8 +169,8 @@ feeds:
     interval: 5 minutes
     include: [ private/btn-rss.yml ]
     preset: [ torrents, tv, tv-premieres ]
-    # Use the scene release name.
     manipulate:
+      # Use the scene release name.
       - title:
           replace:
             regexp: '^[^[]+\[ (\d+) \].*?\[ ([^]]+) \] *$'
