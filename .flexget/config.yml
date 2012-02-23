@@ -8,10 +8,10 @@ presets:
     quality: { min: hdtv, max: bdrip }
     regexp:
       reject:
-        - '[\W_]read[\W_]*nfo(?:_|\b)':      { from: title }
-        - '[\W_]3-?D(?:BD)?(?:_|\b)':        { from: title }
-        - '[\W_](?:heb|kor|swe)sub(?:_|\b)': { from: title }
-        - '[\W_](?:dubbed|pldub|hardcoded|hardsubs?)(?:_|\b)':
+        - '(?x) [\W_] read[\W_]*nfo (?:_|\b)':             { from: title }
+        - '(?x) [\W_] 3-?D(?:BD)? (?:_|\b)':               { from: title }
+        - '(?x) [\W_] (?: heb | kor | swe ) sub (?:_|\b)': { from: title }
+        - '(?x) [\W_] (?: dubbed | pldub | hardcoded | hardsubs? ) (?:_|\b)':
             from: [ title, description ]
     content_size:
       min: 650
@@ -36,7 +36,8 @@ presets:
               korean, mandarin, portuguese, spanish ]
           regexp:
             reject_excluding:
-              - '^(?:action|adventure|comedy|crime|mystery|sci-fi|thriller|war)$'
+              - '(?x) ^ (?: action | adventure | comedy | crime | mystery"
+                          | sci-fi | thriller | war ) $'
             from: imdb_genres
       - 'imdb_year < now.year - 6': reject
       - "['music'] == imdb_genres": reject
@@ -92,14 +93,16 @@ presets:
       propers: no
       allow_seasonless: yes
     regexp:
-      reject: [ '\d{4}(\W*)\d{2}\1\d{2}.*\bpart' ]
+      reject:
+        - '(?x) [\W_] \d{4} (\W*) \d{2} \1 \d{2} .*? (?:_|\b) part'
+        - '(?x) [\W_] (?: pdtv | au | sports | ufc ) (?:_|\b)'
+        - '(?x) [\W_] brit(?: ish | ain | annia )'
       from: title
-    include: [ private/series_premiere.yml ]
 
   torrents:
     regexp:
       reject:
-        - '[\W_]+(?:[hx][.-]?264|nuked)(?:_|\b)'
+        - '(?x) [\W_] (?: [hx][.-]?264 | nuked ) (?:_|\b)'
       from: title
     content_filter:
       reject: [ '*.m[4k]v', '*.mp4', '*.wmv' ]
@@ -151,7 +154,7 @@ feeds:
     disable_plugin: [ torrent_alive ]
     if: [ "str(now.year) + ')' not in title": reject ]
     regexp:
-      reject_excluding: [ '\((?:XviD|DivX)\)' ]
+      reject_excluding: [ '(?x) \((?: XviD | DivX )\)' ]
       from: title
   bitmetv:
     # Ratio-based tracker; hard to maintain.
@@ -210,9 +213,9 @@ feeds:
     preset: [ torrents, movies ]
     urlrewrite:
       site:
-        regexp: '^http://(?P<host>[^/]+).*?&id=(?P<id>[^&]+)'
+        regexp: '(?x) ^ http:// (?P<host>[^/]+) .*? &id= (?P<id>[^&]+)'
         format: 'http://\g<host>/download.php?id=\g<id>&f=\g<id>.torrent'
     regexp:
-      reject_excluding: [ '\benglish\b' ]
-      reject: [ '\bdubbed\b' ]
+      reject_excluding: [ '(?x) \b english \b' ]
+      reject: [ '(?x) \b dubbed \b' ]
       from: description
