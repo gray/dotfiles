@@ -216,7 +216,6 @@ done
 
 has_cmd unrar    && HAS_UNRAR=1    || HAS_UNRAR=0
 has_cmd cksfv    && HAS_CKSFV=1    || HAS_CKSFV=0
-has_cmd setlabel && HAS_SETLABEL=1 || HAS_SETLABEL=0
 
 for line in $(remote --torrent all --info); do
     val=${line#*: }
@@ -362,14 +361,13 @@ for line in $(remote --torrent all --info); do
                 -name \( -name *.srt -o -name *.idx -o -name *.sub \)  \
                 -exec rm -f {} + 2>/dev/null
         esac
-
     fi
 
-    # Mark files a different color in Finder to indicate they are
-    # finished seeding and can safely be deleted.
-    if [ 1 = $HAS_SETLABEL ]; then
-        ! find "$dir/$name" -exec setlabel -s Red {} + 2>/dev/null
-    fi
+    # Mark files a different color in Finder to indicate they are finished
+    # seeding and can safely be deleted.
+    ! find "$dir/$name" -exec  xattr -wx com.apple.FinderInfo               \
+        0000000000000000000C00000000000000000000000000000000000000000000 {} \
+        + 2>/dev/null
 
     remote --torrent "$hash" --remove >/dev/null
     log "Removed torrent: $name"
