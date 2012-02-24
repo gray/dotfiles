@@ -36,7 +36,7 @@ presets:
               korean, mandarin, portuguese, spanish ]
           regexp:
             reject_excluding:
-              - '(?x) ^ (?: action | adventure | comedy | crime | mystery"
+              - '(?x) ^ (?: action | adventure | comedy | crime | mystery
                           | sci-fi | thriller | war ) $'
             from: imdb_genres
       - 'imdb_year < now.year - 6': reject
