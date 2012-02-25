@@ -175,7 +175,7 @@ sunburst:
 synic:
     http://www.vim.org/scripts/script.php?script_id=1897
 tomorrow:
-    https://github.com/ChrisKempson/Vim-Tomorrow-Theme
+    https://github.com/chriskempson/Vim-Tomorrow-Theme
 vividchalk:
     http://www.vim.org/scripts/script.php?script_id=1891
 wombat256:
