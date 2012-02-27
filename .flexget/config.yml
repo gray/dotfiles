@@ -102,10 +102,10 @@ presets:
   torrents:
     regexp:
       reject:
-        - '(?x) [\W_] (?: [hx][.-]?264 | nuked ) (?:_|\b)'
+        - '(?x) [\W_] nuked (?:_|\b)'
       from: title
     content_filter:
-      reject: [ '*.m[4k]v', '*.mp4', '*.wmv' ]
+      reject: [ '*.m4v', '*.wmv' ]
     torrent_scrub: on
     torrent_alive: 5
     exec:
@@ -153,9 +153,6 @@ feeds:
     preset: [ torrents, tv, tv-series ]
     disable_plugin: [ torrent_alive ]
     if: [ "str(now.year) + ')' not in title": reject ]
-    regexp:
-      reject_excluding: [ '(?x) \((?: XviD | DivX )\)' ]
-      from: title
   bitmetv:
     # Ratio-based tracker; hard to maintain.
     priority: 6
