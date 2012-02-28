@@ -8,9 +8,7 @@ autocmd BufNewFile,BufRead *.as setfiletype actionscript
 autocmd BufNewFile,BufRead *.applescript setfiletype applescript
 autocmd BufNewFile,BufRead *.pde setfiletype arduino
 autocmd BufNewFile,BufRead Changes setfiletype changelog
-autocmd BufNewFile,BufRead *.csv setfiletype csv
-autocmd BufNewFile,BufRead *.tsv setfiletype csv | setlocal nolist |
-    \ let b:csv_delimiter = "\t"
+autocmd BufNewFile,BufRead *.tsv setfiletype csv | setlocal nolist
 autocmd BufNewFile,BufRead *.epub setfiletype epub
 autocmd BufNewFile,BufRead *.go setfiletype go
 autocmd BufNewFile,BufRead hg-editor-*.txt setf hgcommit

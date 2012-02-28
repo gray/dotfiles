@@ -101,8 +101,8 @@ yankring:
 zoomwin:
     http://www.vim.org/scripts/script.php?script_id=508
 
-installed syntaxes
-==================
+installed filetypes
+===================
 
 after/syntax/c.vim:
     http://www.vim.org/scripts/script.php?script_id=3064
@@ -115,7 +115,7 @@ arduino:
 asciidoc:
     http://asciidoc.googlecode.com/hg/vim/syntax/asciidoc.vim
 csv:
-    http://vim.wikia.com/wiki/Working_with_CSV_files
+    http://www.vim.org/scripts/script.php?script_id=2830
 go:
     https://github.com/jnwhiteh/vim-golang
 json:
