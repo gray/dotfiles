@@ -111,10 +111,9 @@ presets:
                           | sci-fi | thriller | war ) $'
             from: imdb_genres
       - 'imdb_year < now.year - 6': reject
-      - "['music'] == imdb_genres": reject
-      - "['biography', 'music'] == imdb_genres": reject
-      - "['biography', 'documentary', 'music'] == imdb_genres": reject
-      - "['documentary', 'music'] == imdb_genres": reject
+      - ? "sorted(imdb_genres) in [['music'], ['biography', 'music'],
+            ['documentary', 'music'], ['biography', 'documentary', 'music']]"
+        : reject
       - "'musical' in imdb_genres": reject
       # Probably a standup comedy.
       - "'comedy' in imdb_genres and 1 == len(imdb_actors)": reject
