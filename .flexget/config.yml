@@ -25,8 +25,8 @@ presets:
 
   tv:
     content_size:
-      min: 50
-      max: 1500
+      min: 25
+      max: 1750
     manipulate:
       # Recognize the quality of a particular ripper.
       - title:
@@ -79,8 +79,8 @@ presets:
         - '(?x) [\W_] (?: dubbed | pldub | hardcoded | hardsubs? ) (?:_|\b)':
             from: [ title, description ]
     content_size:
-      min: 650
-      max: 1750
+      min: 300
+      max: 2500
     seen_movies: strict
     imdb_required: yes
     # Run before if, which has a priority of 80.
