@@ -64,7 +64,7 @@ presets:
     regexp:
       reject:
         - '(?x) [\W_] \d{4} (\W*) \d{2} \1 \d{2} .*? (?:_|\b) part'
-        - '(?x) [\W_] (?: pdtv | au | sports | ufc ) (?:_|\b)'
+        - '(?x) [\W_] (?: au | nz | ufc | sports ) (?:_|\b)'
         - '(?x) [\W_] brit(?: ish | ain | annia )'
       from: title
 
@@ -76,8 +76,9 @@ presets:
         - '(?x) [\W_] read[\W_]*nfo (?:_|\b)':             { from: title }
         - '(?x) [\W_] 3-?D(?:BD)? (?:_|\b)':               { from: title }
         - '(?x) [\W_] (?: heb | kor | swe ) sub (?:_|\b)': { from: title }
-        - '(?x) [\W_] (?: dubbed | pldub | hardcoded | hardsubs? ) (?:_|\b)':
-            from: [ title, description ]
+        - ? '(?x) [\W_] (?: dubbed | pldub | hard[\W_]*coded
+                            | hard[\W_]*sub(?:s|bed|titles?)? ) (?:_|\b)'
+          : { from: [ title, description ] }
     content_size:
       min: 300
       max: 2500
@@ -163,7 +164,7 @@ feeds:
     include: [ private/btn-rss.yml ]
     preset: [ torrents, tv, tv-premieres ]
     manipulate:
-      # Use the scene release name.
+      # Use the scene release name with the btn-determined series year.
       - title:
           replace:
             regexp: '^[^[]+\[ (\d+) \].*?\[ ([^]]+) \] *$'
@@ -206,6 +207,9 @@ feeds:
         regexp: '(?x) ^ http:// (?P<host>[^/]+) .*? &id= (?P<id>[^&]+)'
         format: 'http://\g<host>/download.php?id=\g<id>&f=\g<id>.torrent'
     regexp:
-      reject_excluding: [ '(?x) \b english \b' ]
-      reject: [ '(?x) \b dubbed \b' ]
-      from: description
+      reject_excluding:
+        - '(?x) \b english \b': { from: [ title, description ] }
+      reject:
+        - ? '(?x) \b (?: dubbed  | episodes | broadcast \W+ network
+                       | tv \W+ program | air \W+ (?:date | time) ) \b'
+          : { from: [ title, description ] }
