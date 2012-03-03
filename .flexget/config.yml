@@ -40,21 +40,17 @@ presets:
   tv-series:
     series:
       settings:
-        tv:
+        tv: &TV_SETTING
           min_quality: dsr
           max_quality: bdrip
+          propers: 3 hours
           path: ~/Media/TV/{{series_name}}/.
-          propers: 3 hours
         documentaries:
-          min_quality: dsr
-          max_quality: bdrip
+          << : *TV_SETTING
           path: ~/Media/TV/Documentaries/{{series_name}}/.
-          propers: 3 hours
         talk_shows:
-          min_quality: dsr
-          max_quality: bdrip
+          << : *TV_SETTING
           path: ~/Media/TV/Talk Shows/{{series_name}}/.
-          propers: 3 hours
     include: [ private/series.yml ]
     # Reject season previews or recaps.
     if: [ '1 < series_season and 0 == series_episode': reject ]
@@ -62,11 +58,9 @@ presets:
   # Grab the first episode of any new series.
   tv-premieres:
     series_premiere:
-      min_quality: dsr
-      max_quality: dvdrip
-      path: ~/Media/TV/_NEW_/.
-      propers: no
+      <<: *TV_SETTING
       allow_seasonless: yes
+      path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
         - '(?x) [\W_] \d{4} (\W*) \d{2} \1 \d{2} .*? (?:_|\b) part'
