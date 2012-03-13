@@ -166,9 +166,6 @@
 [submodule ".vim/bundle/nrrwrgn"]
 	path = .vim/bundle/nrrwrgn
 	url = git://github.com/chrisbra/NrrwRgn.git
-[submodule ".vim/bundle/tomorrow"]
-	path = .vim/bundle/tomorrow
-	url = git://github.com/chriskempson/Vim-Tomorrow-Theme.git
 [submodule ".vim/bundle/golang"]
 	path = .vim/bundle/golang
 	url = git://github.com/jnwhiteh/vim-golang.git
@@ -193,3 +190,6 @@
 [submodule ".vim/bundle/csv"]
 	path = .vim/bundle/csv
 	url = git://github.com/chrisbra/csv.vim.git
+[submodule ".vim/bundle/tomorrow"]
+	path = .vim/bundle/tomorrow
+	url = git://github.com/chriskempson/vim-tomorrow-theme.git
