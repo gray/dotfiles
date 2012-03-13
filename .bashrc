@@ -1,3 +1,6 @@
+# Allow only interactive shells.
+[[ "$PS1" ]] || return
+
 shopt -s no_empty_cmd_completion
 shopt -s checkwinsize  # Update windows size after each command.
 shopt -s cmdhist       # Store multiline commands as a single entry.
@@ -57,17 +60,15 @@ export LESS_TERMCAP_us=${ANSI_BOLD}${ANSI_GREEN}
 export GREP_OPTIONS='--color=auto --devices=skip --binary-files=without-match'
 export GREP_COLOR='33;44'
 
-ls --version >/dev/null 2>&1
-if [[ $? ]]; then
+if ls --version >/dev/null 2>&1; then
+    # GNU
+    LS_OPTIONS='--color=auto --time-style="+%b %d %T %Y"'
+    LS_COLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;'
+    export LS_COLORS=$LS_COLORS'43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
+else
     # BSD
     LS_OPTIONS='-GT'
     export LSCOLORS=gxfxcxdxbxegedabagacad
-else
-    # GNU
-    LS_OPTIONS='--color=auto --time-style="+%b %d %T %Y"'
-    LSCOLORS='di=36;40:ln=35;40:so=32;40:pi=33;40:ex=31;40:bd=34;46:cd=34;'
-    LSCOLORS=$LSCOLORS'43:su=0;41:sg=0;46:tw=0;42:ow=0;43:'
-    export LSCOLORS
 fi
 
 # groff bug converts some characters to utf-8.
