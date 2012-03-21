@@ -115,12 +115,13 @@ sub read_conf {
                 ],
                 blacklist => [
                     sub { $_[0]->link->href =~ m[
-                        /~ (?: manwar | reneeb | tobyink | zoffix )
+                        /~ (?: manwar | reneeb | sharyanto | tobyink | zoffix )
                     ]x },
                     sub { 'released' ne $dist->maturity },
                 ],
             }
         },
+
         'http://pypi.python.org/pypi?:action=rss' => {
             lang => 'python',
             name => sub {
@@ -135,11 +136,12 @@ sub read_conf {
                     my $s = $_[0]->summary;
                     return 1 unless $s;
                     return 1 if 'unknown' eq lc $s;
-                    return 1 if $s =~ qr/\b (?: print | nested) /ix
-                        && $s =~ qr/\b list /ix;
+                    return 1 if $s =~ /\b (?: print | nested) /ix
+                        and $s =~ /\b list /ix;
                 },
             ],
         },
+
         'http://feeds.feedburner.com/gemcutter-latest' => {
             lang => 'ruby',
             name => sub {
@@ -152,10 +154,12 @@ sub read_conf {
                 qr/ (?:\b|_) (?:rails | active\W?record) (?:\b|_) /ix,
             ],
         },
+
         'http://hackage.haskell.org/packages/archive/recent.rss' => {
             lang => 'haskell',
             name => sub { ($_[0]->title =~ m[^\s*(\S+)])[0] },
         },
+
         'http://feed43.com/vim-scripts.xml' => {
             lang => 'vimscripts',
             name => sub {
@@ -164,13 +168,19 @@ sub read_conf {
                 return $name;
             },
         },
+
         'http://registry.npmjs.org/-/rss?descending=true&limit=50' => {
             lang => 'node',
             name => sub { $_[0]->title =~ m[ (.*) \@ ]x; $1 },
             blacklist => [ sub { not $_[0]->summary } ],
         },
-        # This feed only contains new packages; no updates.
-        'http://dirk.eddelbuettel.com/cranberries/cran/new/index.rss' => {},
+
+        # These feeds only contain new packages, so no filtering is needed.
+        map({ $_ => {} } qw(
+            http://dirk.eddelbuettel.com/cranberries/cran/new/index.rss
+            http://feed43.com/golang_libraries.xml
+            http://feed43.com/golang_bindings.xml
+        )),
     };
 }
 
