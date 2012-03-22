@@ -7,35 +7,44 @@
 timer_start () { : ${timer=$SECONDS}; }
 
 timer_stop  () {
-    RUNTIME=$(($SECONDS - $timer))
+    local _RUNTIME=$(($SECONDS - $timer))
     unset timer
 
     # Convert seconds to hms.
-    RUNTIME_FORMATTED=
-    [[ $RUNTIME -gt 3600 ]] && RUNTIME_FORMATTED+=$(($RUNTIME / 3600))h
-    [[ $RUNTIME -gt 60 ]]   && RUNTIME_FORMATTED+=$(($RUNTIME % 3600 / 60))m
-    [[ $RUNTIME -gt 0 ]]    && RUNTIME_FORMATTED+=$(($RUNTIME % 60))s
-    : ${RUNTIME_FORMATTED:=0s}
+    _RUNTIME_FORMATTED=
+    [[ $_RUNTIME -gt 3600 ]] && _RUNTIME_FORMATTED+=$(($_RUNTIME / 3600))h
+    [[ $_RUNTIME -gt 60 ]]   && _RUNTIME_FORMATTED+=$(($_RUNTIME % 3600 / 60))m
+    [[ $_RUNTIME -gt 0 ]]    && _RUNTIME_FORMATTED+=$(($_RUNTIME % 60))s
+    : ${_RUNTIME_FORMATTED:=0s}
 }
 
 trap 'timer_start' DEBUG
-PROMPT_COMMAND='get_exit_status; '$PROMPT_COMMAND' timer_stop;'
+PROMPT_COMMAND='_exit_status_color; '$PROMPT_COMMAND' timer_stop;'
 
-get_exit_status () {
-    EXIT_STATUS=$?
-    if [[ 0 -eq $EXIT_STATUS ]]; then
-        EXIT_STATUS_COLOR=${ANSI_BOLD}${ANSI_GREEN}
+_exit_status_color () {
+    if [[ 0 -eq $? ]]; then
+        _EXIT_STATUS_FORMATTED=${ANSI_BOLD}${ANSI_GREEN}
     else
-        EXIT_STATUS_COLOR=${ANSI_BOLD}${ANSI_RED}
+        _EXIT_STATUS_FORMATTED=${ANSI_BOLD}${ANSI_RED}
     fi
 }
+
+if [[ -n $SSH_CLIENT ]]; then
+    _HOST_FORMATTED='${ANSI_YELLOW}\h${ANSI_RESET}'
+else
+    _HOST_FORMATTED='\h'
+fi
 
 PS1='\[${ANSI_RESET}\]'
 
 # Set the terminal title.
 PS1=$PS1'\[\e]0;\w\a\]'
 
-PS1=$PS1'\n\t | ${RUNTIME_FORMATTED} | (${SHLVL}) | %\j | !\!'
-PS1=$PS1'\n\u@\h:\[${ANSI_CYAN}\]\w\[${ANSI_RESET}\]'
-PS1=$PS1'\n\[${EXIT_STATUS_COLOR}\]\$\[${ANSI_RESET}\] '
+PS1=$PS1'\n\t | ${_RUNTIME_FORMATTED} | (${SHLVL}) | %\j | !\!'
+PS1=$PS1'\n\u@'${_HOST_FORMATTED}':\[${ANSI_CYAN}\]\w\[${ANSI_RESET}\]'
+PS1=$PS1'\n\[${_EXIT_STATUS_FORMATTED}\]\$\[${ANSI_RESET}\] '
 export PS1
+
+for v in RUNTIME EXIT_STATUS HOST; do
+    unset _${v}_FORMATTED
+done
