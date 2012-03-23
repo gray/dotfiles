@@ -1,5 +1,5 @@
 # Allow only interactive shells.
-[[ "$PS1" ]] || return
+[[ -z $PS1 ]] && return
 
 shopt -s no_empty_cmd_completion
 shopt -s checkwinsize  # Update windows size after each command.
