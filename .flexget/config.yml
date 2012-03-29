@@ -2,6 +2,7 @@ presets:
   global:
     cookies: ~/.flexget/private/cookies.sqlite
     download: ~/Downloads/.
+    # include: [ private/email.yml ]
 
   torrents:
     regexp:
@@ -53,14 +54,13 @@ presets:
   # Grab the first episode of any new series.
   tv-premieres:
     series_premiere:
-      <<: *TV_SETTING
+      << : *TV_SETTING
       allow_seasonless: yes
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
-        - '(?x) [\W_] \d{4} (\W*) \d{2} \1 \d{2} .*? (?:_|\b) part'
         - '(?x) [\W_] (?: au | nz | ufc | sports ) (?:_|\b)'
-        - '(?x) [\W_] brit(?: ish | ain | annia )'
+        - '(?x) [\W_] (?: brit(?: ish | ain | annia) | england | australia )'
       from: title
 
   movies:
@@ -68,12 +68,14 @@ presets:
     quality: { min: hdtv, max: bdrip }
     regexp:
       reject:
-        - '(?x) [\W_] read[\W_]*nfo (?:_|\b)':             { from: title }
-        - '(?x) [\W_] 3-?D(?:BD)? (?:_|\b)':               { from: title }
-        - '(?x) [\W_] (?: heb | kor | swe ) sub (?:_|\b)': { from: title }
+        - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | (?:heb|kor|swe)sub )
+                (?:_|\b)'
         - ? '(?x) [\W_] (?: dubbed | pldub | hard[\W_]*coded
                             | hard[\W_]*sub(?:s|bed|titles?)? ) (?:_|\b)'
           : { from: [ title, description ] }
+        # Avoid certain groups.
+        - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village ) (?:_|\b)'
+      from: title
     content_size:
       min: 300
       max: 2500
@@ -207,5 +209,5 @@ feeds:
         - '(?x) \b english \b': { from: [ title, description ] }
       reject:
         - ? '(?x) \b (?: dubbed  | episodes | broadcast \W+ network
-                       | tv \W+ program | air \W+ (?:date | time) ) \b'
+                         | tv \W+ program | air \W+ (?:date | time) ) \b'
           : { from: [ title, description ] }
