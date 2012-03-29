@@ -28,11 +28,6 @@ presets:
       min: 25
       max: 1750
     manipulate:
-      # Recognize the quality of a particular ripper.
-      - title:
-          replace:
-            regexp: (?i)ws\.xvid-err0001
-            format: hdtv
       # Clean description field to avoid false matches from series plugin.
       - description: { from: title }
       - description: { extract: '' }
