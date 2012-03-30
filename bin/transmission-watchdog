@@ -239,6 +239,16 @@ for line in $(remote --torrent all --info); do
 
     # Verify directory is valid and in expected location.
     real_dir "$dir" && dir=$_real_dir || dir=
+
+    # Data was likely prematurely removed; remove torrent when finished.
+    if [ -z "$dir" ] || [ ! -e "$dir/$name" ]; then
+        if [ Finished = "$state" ]; then
+            remote --torrent "$hash" --remove >/dev/null
+            log "Removed torrent: $name"
+        fi
+        continue
+    fi
+
     case $dir/ in
         "$ZOMBIE_DIR"/*) continue ;;
         "$WATCH_DIR"/*) ;;
