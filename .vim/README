@@ -70,6 +70,8 @@ perlprove:
     http://www.vim.org/scripts/script.php?script_id=1319
 ragtag:
     http://www.vim.org/scripts/script.php?script_id=1896
+recover:
+    http://www.vim.org/scripts/script.php?script_id=3068
 ref:
     http://www.vim.org/scripts/script.php?script_id=3067
 repeat:

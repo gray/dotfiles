@@ -193,3 +193,6 @@
 [submodule ".vim/bundle/tomorrow"]
 	path = .vim/bundle/tomorrow
 	url = git://github.com/chriskempson/vim-tomorrow-theme.git
+[submodule ".vim/bundle/recover"]
+	path = .vim/bundle/recover
+	url = git://github.com/chrisbra/Recover.vim.git
