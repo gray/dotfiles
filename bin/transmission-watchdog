@@ -132,10 +132,17 @@ for file in $(
 do
     dir=${file%/*}
 
+    # Until flexget can filter series premieres via tvrage, add these as
+    # paused, so they can be manually started or deleted.
+    state=--start
+    if [ "$dir" = "$WATCH_DIR"/TV/_NEW_ ]; then
+        state=--stop
+    fi
+
     # Parse the debug output.
     # Use the torrent hash because the ids are not persistent across sessions.
     result=
-    response=$(remote --debug --add "$file" --download-dir "$dir" 2>&1)
+    response=$(remote --debug --add "$file" $state --download-dir "$dir" 2>&1)
     for line in $response; do
         case $line in '{"arguments":{'*'"result":'*) result=$line; esac
     done
