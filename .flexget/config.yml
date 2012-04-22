@@ -120,6 +120,7 @@ feeds:
     interval: 5 minutes
     rss:
       url: http://ezrss.it/feed/
+      title: filename
       silent: yes
     preset: [ torrents, tv, tv-series ]
   btn:
