@@ -108,7 +108,7 @@
 	url = git://github.com/altercation/vim-colors-solarized.git
 [submodule ".vim/bundle/tagbar"]
 	path = .vim/bundle/tagbar
-	url = git://github.com/majutsushi/tagbar
+	url = git://github.com/majutsushi/tagbar.git
 [submodule ".vim/bundle/replacewithregister"]
 	path = .vim/bundle/replacewithregister
 	url = git://github.com/vim-scripts/ReplaceWithRegister.git
