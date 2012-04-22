@@ -62,8 +62,9 @@ presets:
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
-        - '(?x) [\W_] (?: au | nz | ufc | sports ) (?:_|\b)'
-        - '(?x) [\W_] (?: brit(?: ish | ain | annia) | england | australia )'
+        - '(?x) (?:_|\b) (?: au | nz | ufc | sports ) (?:_|\b)'
+        - '(?x) (?:_|\b) (?: brit(?: ish | ain | annia) | england | australia
+                         | norwegian )'
       from: title
 
   movies:
@@ -73,9 +74,8 @@ presets:
       reject:
         - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | (?:heb|kor|swe)sub )
                 (?:_|\b)'
-        - ? '(?x) [\W_] (?: dubbed | pldub | hard[\W_]*coded
-                            | hard[\W_]*sub(?:s|bed|titles?)? ) (?:_|\b)'
-          : { from: [ title, description ] }
+        - '(?x) [\W_] (?: dubbed | pldub ) (?:_|\b)':
+            from: [ title, description ]
         # Avoid certain groups.
         - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village ) (?:_|\b)'
       from: title
