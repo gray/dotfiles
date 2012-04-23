@@ -133,7 +133,7 @@ feeds:
     preset: [ torrents, tv, tv-series ]
     manipulate:
       # Use the scene release name.
-      - title: { extract: '\[ ([^]]+) \] *$' }
+      - title: { extract: '.*\[ (.+?) \] *$' }
   torrentday_tv:
     priority: 3
     interval: 5 minutes
@@ -169,7 +169,7 @@ feeds:
       # Use the scene release name with the btn-determined series year.
       - title:
           replace:
-            regexp: '^[^[]+\[ (\d+) \].*?\[ ([^]]+) \] *$'
+            regexp: '^[^[]+\[ (\d+) \].*\[ (.+?) \] *$'
             format: '\2 \1'
     if: [ "not title.endswith(str(now.year))": reject ]
   torrentday_tv_premieres:
