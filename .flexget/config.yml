@@ -10,7 +10,7 @@ presets:
         - '(?x) [\W_] nuked (?:_|\b)'
       from: title
     content_filter:
-      reject: [ '*.m4v', '*.wmv' ]
+      require: [ '*.avi', '*.mkv', '*.mp4', '*.rar' ]
     torrent_scrub: on
     torrent_alive: 5
     exec:
