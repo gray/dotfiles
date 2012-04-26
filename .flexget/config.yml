@@ -101,13 +101,14 @@ presets:
       - "'documentary' in imdb_genres":
           set: { path: ~/Media/Movies/Documentaries/. }
       - "'english' != (imdb_languages or ['english'])[0]":
-          set: { path: ~/Media/Movies/Foreign/. }
+          set:
+            path: ~/Media/Movies/Foreign/{{imdb_languages[0] | capitalize}}/.
           imdb:
             min_score: 6.8
             min_votes: 100
             accept_languages: [
-              cantonese, danish, dutch, french, german, italian, japanese,
-              korean, mandarin, portuguese, spanish ]
+              cantonese, danish, dutch, french, german, italian, norwegian,
+              japanese, korean, mandarin, portuguese, spanish ]
           regexp:
             reject_excluding:
               - '(?x) ^ (?: action | adventure | comedy | crime | mystery
