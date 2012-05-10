@@ -86,8 +86,8 @@ presets:
       min: 300
       max: 2500
     seen_movies: strict
-    imdb_lookup: yes
     if:
+      - not has_field('imdb_id'): { imdb_lookup: yes }
       - not has_field('imdb_id'): reject
       - 'imdb_year < now.year - 6': reject
       - ? "sorted(imdb_genres) in [['music'], ['biography', 'music'],
