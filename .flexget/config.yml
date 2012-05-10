@@ -41,15 +41,18 @@ presets:
           max_quality: bdrip
           propers: 3 hours
           path: ~/Media/TV/{{series_name}}/.
-        documentaries:
-          << : *TV_SETTING
-          path: ~/Media/TV/Documentaries/{{series_name}}/.
-        talk_shows:
-          << : *TV_SETTING
-          path: ~/Media/TV/Talk Shows/{{series_name}}/.
         animation:
           << : *TV_SETTING
           path: ~/Media/TV/Animation/{{series_name}}/.
+        documentaries:
+          << : *TV_SETTING
+          path: ~/Media/TV/Documentaries/{{series_name}}/.
+        foreign:
+          << : *TV_SETTING
+          path: ~/Media/TV/Foreign/{{series_name}}/.
+        talk_shows:
+          << : *TV_SETTING
+          path: ~/Media/TV/Talk Shows/{{series_name}}/.
     include: [ private/series.yml ]
     # Reject season previews or recaps.
     if: [ '1 < series_season and 0 == series_episode': reject ]
