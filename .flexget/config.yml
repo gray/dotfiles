@@ -43,6 +43,7 @@ presets:
           path: ~/Media/TV/{{series_name}}/.
         animation:
           << : *TV_SETTING
+          min_quality: hdtv
           path: ~/Media/TV/Animation/{{series_name}}/.
         documentaries:
           << : *TV_SETTING
