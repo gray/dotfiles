@@ -40,6 +40,7 @@ presets:
           min_quality: dsr
           max_quality: bdrip
           propers: 3 hours
+          specials: no
           path: ~/Media/TV/{{series_name}}/.
         animation:
           << : *TV_SETTING
