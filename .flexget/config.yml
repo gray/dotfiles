@@ -111,8 +111,9 @@ presets:
             min_score: 6.8
             min_votes: 100
             accept_languages: [
-              cantonese, danish, dutch, french, german, italian, norwegian,
-              japanese, korean, mandarin, portuguese, spanish ]
+              cantonese, chinese, danish, dutch, french, german, icelandic,
+              italian, norwegian, japanese, korean, mandarin, portuguese,
+              spanish ]
           regexp:
             reject_excluding:
               - '(?x) ^ (?: action | adventure | comedy | crime | mystery
