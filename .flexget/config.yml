@@ -37,14 +37,13 @@ presets:
     series:
       settings:
         tv: &TV_SETTING
-          min_quality: dsr
-          max_quality: bdrip
+          quality: dsr+ <720p
           propers: 3 hours
           specials: no
           path: ~/Media/TV/{{series_name}}/.
         animation:
           << : *TV_SETTING
-          min_quality: hdtv
+          quality: hdtv+ <720p
           path: ~/Media/TV/Animation/{{series_name}}/.
         documentaries:
           << : *TV_SETTING
@@ -74,7 +73,7 @@ presets:
 
   movies:
     interval: 30 minutes
-    quality: { min: hdtv, max: bdrip }
+    quality: hdtv+ <720p
     regexp:
       reject:
         - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | (?:heb|kor|swe)sub )
