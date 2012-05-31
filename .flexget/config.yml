@@ -140,14 +140,19 @@ feeds:
     manipulate:
       # Use the scene release name.
       - title: { extract: '.*\[ (.+?) \] *$' }
-  torrentday_tv:
+  xspeeds_tv:
     priority: 3
+    interval: 5 minutes
+    include: [ private/xspeeds_tv-rss.yml ]
+    preset: [ torrents, tv, tv-series ]
+  torrentday_tv:
+    priority: 4
     interval: 5 minutes
     include: [ private/torrentday_tv-rss.yml ]
     preset: [ torrents, tv, tv-series ]
   thebox:
     # Ratio-based tracker; easy to maintain. UK content.
-    priority: 4
+    priority: 5
     interval: 15 minutes
     rss:
       url: http://thebox.bz/rss.php?feed=dl&cat[]=14&cat[]=18&cat[]=31&cat[]=8
@@ -157,7 +162,7 @@ feeds:
     if: [ "str(now.year) + ')' not in title": reject ]
   bitmetv:
     # Ratio-based tracker; hard to maintain.
-    priority: 6
+    priority: 7
     interval: 5 minutes
     delay: 10 minutes
     include: [ private/bitmetv-rss.yml ]
