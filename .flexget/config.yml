@@ -38,7 +38,7 @@ presets:
       settings:
         tv: &TV_SETTING
           quality: dsr+ <720p
-          propers: 3 hours
+          propers: 6 hours
           specials: no
           path: ~/Media/TV/{{series_name}}/.
         animation:
@@ -88,9 +88,9 @@ presets:
     content_size:
       min: 300
       max: 2500
+    imdb_lookup: yes
     seen_movies: strict
     if:
-      - not has_field('imdb_id'): { imdb_lookup: yes }
       - not has_field('imdb_id'): reject
       - 'imdb_year < now.year - 6': reject
       - ? "sorted(imdb_genres) in [['music'], ['biography', 'music'],
