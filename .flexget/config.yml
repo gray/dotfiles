@@ -55,8 +55,11 @@ presets:
           << : *TV_SETTING
           path: ~/Media/TV/Talk Shows/{{series_name}}/.
     include: [ private/series.yml ]
-    # Reject season previews or recaps.
-    if: [ '1 < series_season and 0 == series_episode': reject ]
+    if:
+      # Reject season previews or recaps.
+      - ? 'has_field("series_season")
+             and 1 < series_season and 0 == series_episode'
+        : reject
 
   # Grab the first episode of any new series.
   tv-premieres:
