@@ -29,9 +29,8 @@ presets:
       min: 25
       max: 1750
     manipulate:
-      # Clean description field to avoid false matches from series plugin.
-      - description: { from: title }
-      - description: { extract: '' }
+      # Remove description field to avoid false matches from series plugin.
+      - description: { remove: yes }
 
   tv-series:
     series:
