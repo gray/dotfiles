@@ -118,7 +118,7 @@ presets:
             accept_languages: [
               cantonese, chinese, danish, dutch, french, german, icelandic,
               italian, norwegian, japanese, korean, mandarin, portuguese,
-              spanish ]
+              spanish, swedish ]
           regexp:
             reject_excluding:
               - '(?x) ^ (?: action | adventure | comedy | crime | mystery
