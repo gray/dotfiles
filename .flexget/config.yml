@@ -36,13 +36,15 @@ presets:
     series:
       settings:
         tv: &TV_SETTING
-          quality: dsr+ <720p
+          quality: dsr+ <=720p
+          timeframe: 6 hours
+          enough: <720p
           propers: 6 hours
           specials: no
           path: ~/Media/TV/{{series_name}}/.
         animation:
           << : *TV_SETTING
-          quality: hdtv+ <720p
+          quality: hdtv+ <=720p
           path: ~/Media/TV/Animation/{{series_name}}/.
         documentaries:
           << : *TV_SETTING
