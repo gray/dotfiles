@@ -210,10 +210,6 @@ feeds:
     priority: 33
     include: [ private/torrentday_movies-rss.yml ]
     preset: [ torrents, movies ]
-  rlslog_movies:
-    priority: 34
-    rlslog: http://www.rlslog.net/category/movies/
-    preset: [ torrents, movies ]
   # Foreign: AsiaTorrents.com and EUTorrents.com
   avistaz:
     priority: 35
