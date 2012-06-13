@@ -188,6 +188,12 @@ feeds:
           replace:
             regexp: '^[^[]+\[ (\d+) \].*\[ (.+?) \] *$'
             format: '\2 \1'
+      # Remove backslashes and apostrophes.
+      - title:
+          replace: { regexp: '[\\'']+', format: '' }
+      # Normalize '&' and '&amp;' to 'and'.
+      - title:
+          replace: { regexp: '\s*&(?:amp;)?\s*', format: ' and ' }
     if: [ "not title.endswith(str(now.year))": reject ]
   torrentday_tv_premieres:
     priority: 23
