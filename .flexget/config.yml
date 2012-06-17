@@ -79,7 +79,7 @@ presets:
     quality: hdtv+ <720p
     regexp:
       reject:
-        - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | hdrip ) (?:_|\b)'
+        - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? ) (?:_|\b)'
         - ? '(?x) [\W_] (?: dubbed | pldub | cropped | (?:heb|kor|swe)sub )
                 (?:_|\b)'
           : { from: [ title, description ] }
