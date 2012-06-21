@@ -76,7 +76,7 @@ real_dir () {
 }
 
 real_dir "$WATCH_DIR" && WATCH_DIR=$_real_dir || {
-    err "WATCH_DIR directory $WATCH_DIR does not exist" 
+    err "WATCH_DIR directory $WATCH_DIR does not exist"
     exit -1
 }
 mkdir -p "$ZOMBIE_DIR"
@@ -205,17 +205,21 @@ do
                 udp://tracker.${tracker}:80/announce >/dev/null
         done
 
-        # Deselect sample files and subs for tv series.
+        # Deselect sample files and subs for non-foreign tv series.
         ids=; count=0
         for line in $(remote --torrent "$hash" --files); do
             # Skip header lines
             [ $count -lt 2 ] && count=$((count+1)) && continue
             deselect=
             case $line in
-                *[/.\ ][Ss][Aa][Mm][Pp][Ll][Ee].avi) deselect=1 ;;
-                */[Ss][Aa][Mm][Pp][Ll][Ee]/*)        deselect=1 ;;
-                */[Ss][Uu][Bb][Ss]/*)
-                    case $dir/ in "$WATCH_DIR"/TV/*) deselect=1; esac
+                */[Ss][Aa][Mm][Pp][Ll][Ee]/*)         deselect=1 ;;
+                *[/.\ -][Ss][Aa][Mm][Pp][Ll][Ee].???) deselect=1 ;;
+                */[Ss][Uu][Bb][Ss]/* | \
+                */[Ss][Uu][Bb][Tt][Ii][Tt][Ll][Ee][Ss]/*)
+                    case $dir/ in
+                        "$WATCH_DIR"/TV/Foreign/*) deselect= ;;
+                        "$WATCH_DIR"/TV/*)         deselect=1
+                    esac
             esac
             if [ "$deselect" ]; then
                 SAVED_IFS=$IFS; IFS=': '; set -- $line; IFS=$SAVED_IFS
@@ -376,18 +380,23 @@ for line in $(remote --torrent all --info); do
         ! find "$dir/$name/" -type d -depth \
             -name [Ss][Aa][Mm][Pp][Ll][Ee]  \
             -exec rm -rf {} + 2>/dev/null
-        case $dir/ in "$WATCH_DIR"/TV/*)
-            ! find "$dir/$name/" -type d -depth -name [Ss][Uu][Bb][Ss] \
-                -exec rm -rf {} + 2>/dev/null
-            ! find "$dir/$name/" -type f                               \
-                -name \( -name *.srt -o -name *.idx -o -name *.sub \)  \
-                -exec rm -f {} + 2>/dev/null
+
+        case $dir/ in
+            "$WATCH_DIR"/TV/Foreign/*) ;;
+            "$WATCH_DIR"/TV/*)
+                ! find "$dir/$name/" -type d -depth \(         \
+                    -name [Ss][Uu][Bb][Ss] -o                  \
+                    -name [Ss][Uu][Bb][Tt][Ii][Tt][Ll][Ee][Ss] \
+                    -exec rm -rf {} + 2>/dev/null
+                ! find "$dir/$name/" -type f                              \
+                    -name \( -name *.srt -o -name *.idx -o -name *.sub \) \
+                    -exec rm -f {} + 2>/dev/null
         esac
     fi
 
     # Mark files a different color in Finder to indicate they are finished
     # seeding and can safely be deleted.
-    ! find "$dir/$name" -exec  xattr -wx com.apple.FinderInfo               \
+    ! find "$dir/$name" -exec xattr -wx com.apple.FinderInfo                \
         0000000000000000000C00000000000000000000000000000000000000000000 {} \
         + 2>/dev/null
 
