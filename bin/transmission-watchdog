@@ -199,6 +199,11 @@ do
         # Throttle torrent.
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
+        # Add some public trackers.
+        for tracker in openbittorrent.com publicbt.com ccc.de istole.it; do
+            remote --torrent "$hash" --tracker-add \
+                udp://tracker.${tracker}:80/announce >/dev/null
+        done
 
         # Deselect sample files and subs for tv series.
         ids=; count=0
