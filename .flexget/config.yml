@@ -36,7 +36,7 @@ presets:
         tv: &TV_SETTING
           quality: dsr+ <=720p
           timeframe: 6 hours
-          enough: <720p
+          target: <720p
           propers: 6 hours
           specials: no
           path: ~/Media/TV/{{series_name}}/.
