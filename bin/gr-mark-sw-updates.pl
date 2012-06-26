@@ -25,7 +25,8 @@ my $conf = read_conf();
 my $feed = $reader->tag(Modules =>
     count      => 500,
     exclude    => { state => 'read' },
-    start_time => $db{_last_time},
+    order      => 'asc',
+    VERBOSE ? ( start_time => $db{_last_time} ) : (),
 );
 die $reader->error unless $feed;
 
@@ -45,14 +46,11 @@ for my $entry ($feed->entries) {
        $desc  &&= $desc->body;
 
     if ($name ~~ %{$unread{$lang}}) {
-        push @unwanted_entries, $entry;
+        push @unwanted_entries, delete $unread{$lang}{$name};
         say "$lang - $name - discarding in favor of newer unread entry"
             if VERBOSE;
-        next;
     }
-    else {
-        $unread{$lang}{$name} = undef;
-    }
+    $unread{$lang}{$name} = $entry;
 
     my $listed;
     for my $w (@{$conf->{whitelist} || []}) {
