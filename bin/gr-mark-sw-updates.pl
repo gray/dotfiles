@@ -112,9 +112,14 @@ sub read_conf {
                     },
                 ],
                 blacklist => [
-                    sub { $_[0]->link->href =~ m[
-                        /~ (?: manwar | reneeb | sharyanto | tobyink | zoffix )
-                    ]x },
+                    sub {
+                        $dist->dist =~ /^(?: acme | dist-zilla ) -/ix ||
+                        $_[0]->link->href =~ m[
+                            /~ (?: avenj | manwar | reneeb | sharyanto
+                                   | tobyink | zoffix
+                               )
+                        ]x
+                    },
                     sub { 'released' ne $dist->maturity },
                 ],
             }
