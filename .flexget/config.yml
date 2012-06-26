@@ -69,9 +69,9 @@ presets:
     regexp:
       reject:
         - '(?x) (?:_|\b) (?: pdtv | au | nz | ufc | sports | championships?
-                             | 24-7 ) (?:_|\b)'
+                             | 24(?:h|-7) | bake | baking ) (?:_|\b)'
         - '(?x) (?:_|\b) (?: brit(?: ish | ain | annia) | england | australia
-                             | norwegian | kitchen | food )'
+                             | norwegian | kitchen | food | cook )'
       from: title
 
   movies:
@@ -179,18 +179,19 @@ feeds:
     include: [ private/btn-rss.yml ]
     preset: [ torrents, tv, tv-premieres ]
     manipulate:
-      # Use the scene release name with the btn-determined series year.
-      - title:
-          replace:
-            regexp: '^[^[]+\[ (\d+) \].*\[ (.+?) \] *$'
-            format: '\2 \1'
+      - year: { from: title, extract: '^[^[]+\[ (\d{4}) \]' }
+      # Use the scene release name.
+      - title: { extract: '.*\[ (.+?) \] *$' }
       # Remove backslashes and apostrophes.
-      - title:
-          replace: { regexp: '[\\'']+', format: '' }
+      - title: { replace: { regexp: '[\\'']+', format: '' } }
       # Normalize '&' and '&amp;' to 'and'.
-      - title:
-          replace: { regexp: '\s*&(?:amp;)?\s*', format: ' and ' }
-    if: [ "not title.endswith(str(now.year))": reject ]
+      - title: { replace: { regexp: '\s*&(?:amp;)?\s*', format: ' and ' } }
+    # Run if filter before series filter.
+    plugin_priority: { if: 130 }
+    if:
+      # Accept only the current year, respecting dates near the boundary.
+      - ? 'int(year) not in [(now + timedelta(n)).year for n in (0, -30, 30)]'
+        :  reject
   torrentday_tv_premieres:
     priority: 23
     interval: 5 minutes
