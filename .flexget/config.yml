@@ -186,6 +186,12 @@ feeds:
       - title: { replace: { regexp: '[\\'']+', format: '' } }
       # Normalize '&' and '&amp;' to 'and'.
       - title: { replace: { regexp: '\s*&(?:amp;)?\s*', format: ' and ' } }
+    rss: { other_fields: [ comments ] }
+    regexp:
+      reject:
+        - ? '(?x) \b (?: anime | cooking | dance | dating | fashion | food
+              | gameshow | homeandgarden | music | soap | sport ) \b'
+          : { from: [ comments ] }
     # Run if filter before series filter.
     plugin_priority: { if: 130 }
     if:
