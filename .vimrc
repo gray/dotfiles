@@ -2,7 +2,7 @@
 
 set nocompatible  " Explicitly set in case Vim was started with the -u flag
 
-" Adds .vim/bundle/* to runtimepath
+" Adds .vim/bundle/* to runtimepath.
 source ~/.vim/bundle/pathogen/autoload/pathogen.vim
 silent! call pathogen#infect()
 silent! call pathogen#helptags()
@@ -14,22 +14,21 @@ set history=1000    " Size of command/search history
 set viminfo='1000   " Save marks for N files
 set viminfo+=<1000  " Save N lines for each register
 set viminfo+=h      " Disable hlsearch at startup
+set viminfo+=r/tmp  " Disable viminfo for tmp directories
+set viminfo+=r/private/var/tmp
+set viminfo+=r$TMPDIR
+set viminfo+=n~/.vim/tmp/.viminfo  " Save the viminfo file elsewhere
 
 set cpoptions+=W    " Do not overwrite readonly files
 set cpoptions+=>    " Separate register items by line breaks
 
 set modelines=0     " Trust no one
 
-" Switch to the directory of the current file.
-if exists('+autochdir')
-    set autochdir
-endif
-
 set autoread        " Reload file if externally, but not internally modified
 set autowrite       " Write file if modified
-set writebackup     " Make a temporary backup file before overwriting
 set directory=~/.vim/tmp/swap//
-set backupdir=~/.vim/tmp
+set backupdir=~/.vim/tmp/
+set backupskip+=/private/tmp/*
 
 if has('persistent_undo')
     set undofile
@@ -73,10 +72,7 @@ endif
 set nowrap            " Don't wrap long lines
 set linebreak         " Wrap lines at convenient points
 set list              " Visually display tabs and trailing spaces
-let &listchars = 'tab:'      . nr2char(187) . nr2char(183) . ',' .
-               \ 'trail:'    . nr2char(183) . ',' .
-               \ 'extends:'  . nr2char(187) . ',' .
-               \ 'precedes:' . nr2char(171)
+let &listchars="tab:\ubb\ub7,trail:\ub7,extends:\ubb,precedes:\uab"
 
 set ttimeoutlen=50    " Reduce delay for key codes
 
@@ -110,7 +106,7 @@ set nostartofline    " Keep the cursor in the same column
 
 " Text-Formatting, Identing, Tabbing --------------------------------------{{{1
 
-if ! &diff && has('eval')
+if has('eval') && ! &diff
     filetype plugin on
     filetype indent on
 endif
@@ -140,9 +136,6 @@ set foldclose=all     " Close folds at startup
 set showmatch        " Show matching bracket
 set matchtime=2      " (for only .2 seconds)
 
-" Extended matching with '%'
-runtime macros/matchit.vim
-
 set incsearch        " Show search matches as you type
 set ignorecase       " Ignore case when searching
 set smartcase        " Override 'ignorecase' when needed
@@ -162,10 +155,10 @@ set infercase              " Try to adjust insert completions for case
 
 set wildmenu                    " Enable wildmenu for completion
 set wildmode=list:longest,full  " Complete longest common string,
-set wildignore+=*~,*.swo,*.swp
+set wildignore+=*~,*.swo,*.swp,*/.vim/tmp/*,tags
 set wildignore+=*.a,*.class,*.la,*.mo,*.o,*.obj,*.pyc,*.pyo,*.so
-set wildignore+=*.gif,*.jpg,*.png
-set wildignore+=CVS,SVN,.bzr,.git,.hg
+set wildignore+=.DS_Store,*.gif,*.jpg,*.png
+set wildignore+=CVS,.bzr,.git,.hg,.svn,blib
 
 set tags=tags;/  " Search for a ctags file
 set showfulltag
@@ -192,12 +185,8 @@ set tabpagemax=128     " Maximum number of tabs open
 " Syntax Highlighting -----------------------------------------------------{{{1
 
 " NOTE: enabling syntax clears any pre-existing Syntax autocommands.
-if ! &diff && has('syntax')
+if has('syntax') && ! &diff
     syntax enable
-
-    if exists('+colorcolumn')
-        set colorcolumn=80
-    endif
 endif
 
 " For sh syntax; most shells are POSIX-compliant.
@@ -207,20 +196,18 @@ let g:is_posix = 1
 " Functions ---------------------------------------------------------------{{{1
 
 " Search with * or # for current visual selection.
-function! s:VisualSearch (direction) range
-    let l:saved_reg = @"
-    execute 'normal! vgvy'
-    let l:pattern = escape(@", '\\/.*$^~[]')
-    let l:pattern = substitute(l:pattern, '\n$', '', '')
-    execute 'normal ' . ('b' == a:direction ? '?' : '/') . l:pattern
-    let @/ = l:pattern
-    let @" = l:saved_reg
+function! s:VisualSearch (cmd)
+    let [l:saved_reg, l:saved_reg_type] = [getreg('"'), getregtype('"')]
+    normal! vgv""y
+    let @/ = '\V' . substitute(escape(@", '\'), '\n', '\\n', 'g')
+    execute 'normal ' . a:cmd
+    redraw
+    call setreg('"', l:saved_reg, l:saved_reg_type)
 endfunction
 
-" Must pass the line numbers as arguments instead of using a range because
-" calling this function from a ranged-command triggers a bug that resets
-" the cursor position to 1,1 before the function is called; so the cursor
-" position could not be restored.
+" Calling a function from a ranged-command triggers a bug that resets the
+" cursor position to 1,1 before the function is called. To avoid this, pass in
+" the line numbers as arguments instead of using a range.
 function! s:StripWhitespace (line1, line2)
     let l:saved_pos = getpos('.')
     let l:saved_search = @/
@@ -234,22 +221,15 @@ function! GetCurrentSyntax ()
 endfunction
 
 function! s:AdjustColorScheme ()
-    highlight Search cterm=NONE ctermfg=yellow ctermbg=blue
-    highlight Search gui=NONE guifg=yellow guibg=blue
-    highlight CursorLine term=reverse cterm=reverse gui=reverse
-    highlight CursorColumn term=reverse cterm=reverse gui=reverse
-    highlight ColorColumn ctermbg=red ctermfg=white guibg=red guifg=white
-    highlight SpellBad ctermbg=red ctermfg=white guibg=red guifg=white
-
     let l:bg = synIDattr(hlID('Normal'), 'bg#')
     if l:bg == '' || l:bg == -1
         return
     endif
 
+    " Determine if the background color is dark.
     if has('gui_running')
-        let l:r = str2nr(l:bg[1:2], 16)
-        let l:g = str2nr(l:bg[3:4], 16)
-        let l:b = str2nr(l:bg[5:6], 16)
+        " Calculate the perceived brightness.
+        let [l:r, l:g, l:b] = map([1,3,5], 'str2nr(l:bg[v:val : 1+v:val], 16)')
         let l:light = sqrt(0.241 * l:r*l:r + 0.691 * l:g*l:g + 0.068 * l:b*l:b)
         let l:bg_is_dark = l:light < 130
     else
@@ -258,8 +238,8 @@ function! s:AdjustColorScheme ()
             \ + [196, 197] + range(232, 244)
         let l:bg_is_dark = index(l:dark_range, str2nr(l:bg)) >= 0
 
-        " Vim resets the background to light if a colorscheme sets the
-        " Normal group's ctermbg to a value greater than 8.
+        " Vim resets the background to light if a colorscheme sets the Normal
+        " group's ctermbg to a value greater than 8.
         if &t_Co == 256 && l:bg_is_dark
             set background=dark
         endif
@@ -270,7 +250,14 @@ function! s:AdjustColorScheme ()
     endif
 endfunction
 
-function! s:ExtendSyntaxHighlighting ()
+function! s:AdjustSyntaxHighlighting ()
+    highlight Search cterm=NONE ctermfg=yellow ctermbg=blue
+    highlight Search gui=NONE guifg=yellow guibg=blue
+    highlight CursorLine term=reverse cterm=reverse gui=reverse
+    highlight CursorColumn term=reverse cterm=reverse gui=reverse
+    highlight ColorColumn ctermbg=red ctermfg=white guibg=red guifg=white
+    highlight SpellBad ctermbg=red ctermfg=white guibg=red guifg=white
+
     syntax keyword myTodo containedin=.*Comment,perlPOD contained
         \ BUG FIXME HACK NOTE README TBD TODO WARNING XXX
     highlight default link myTodo Todo
@@ -288,7 +275,7 @@ command! DiffBuff vertical new | let t:diff_bufnr = bufnr('$') |
     \ if exists('b:current_syntax') | let b:saved_syntax = b:current_syntax |
     \ endif | syntax clear
 
-" Close DiffBuff's diff window and reset syntax
+" Close DiffBuff's diff window and reset syntax.
 command! DiffOff execute 'bwipeout ' . t:diff_bufnr | diffoff |
     \ if exists('b:saved_syntax') | let &l:syntax = b:saved_syntax | endif
 
@@ -297,17 +284,13 @@ command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 
 " Plugin Settings ---------------------------------------------------------{{{1
 
-let g:yankring_history_dir = '~/.vim/tmp'
+let g:SuperTabDefaultCompletionType = 'context'
 
-let delimitMate_expand_cr = 1
-" let delimitMate_smart_matchpairs = '^\%([^\s\!\#]\)'
-
-let g:SuperTabCrMapping = 0
-let g:SuperTabLeadingSpaceCompletion = 0
-let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
-let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&completefunc']
-let g:SuperTabContextDiscoverDiscovery =
-    \ ["&completefunc:<c-x><c-u>", "&omnifunc:<c-x><c-o>"]
+let g:ctrlp_map = '<leader>ff'
+let g:ctrlp_cache_dir = '~/.vim/tmp/cache/ctrlp'
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_working_path_mode = 0
+let g:ctrlp_extensions = [ 'tag', 'buffertag', 'dir', 'line', 'rtscript' ]
 
 let g:NERDSpaceDelims = 1
 let g:NERDTreeShowHidden = 1
@@ -339,7 +322,7 @@ let g:tagbar_type_xs = {
     \ 'sro'        : '::',
     \ 'kind2scope' : { 'g' : 'enum', 's' : 'struct', 'u' : 'union' },
     \ 'scope2kind' : { 'enum' : 'g', 'struct' : 's', 'union' : 'u' },
-\ }
+    \ }
 
 let g:netrw_dirhistmax = 0
 
@@ -351,17 +334,22 @@ nmap <plug>IgnoreMarkSearchPrev <plug>MarkSearchPrev
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_enable_balloons = 0
 
+let g:gist_show_privates = 1
+let g:gist_post_private = 1
+let g:gist_detect_filetype = 1
+
+let g:ref_cache_dir = expand('~/.vim/tmp/cache', 1)
 let g:ref_perldoc_cmd = 'p5doc'
 
 
 " Mappings ----------------------------------------------------------------{{{1
 
-let maplocalleader = ','
 let mapleader = ','
+let maplocalleader = ','
 
 inoremap jj <esc>
 
-" Use ,, to work around , as leader
+" Use ,, to work around , as leader.
 noremap ,, ,
 
 nnoremap <f1> :set invpaste paste?<cr>
@@ -373,28 +361,29 @@ cnoremap <silent> w!! :execute 'write !sudo tee >/dev/null'
     \ shellescape(expand('%'))<cr><bar><cr>:edit!<cr><cr><cr>
 
 " Insert a single character.
-noremap <localleader>i i<space><esc>r
+noremap <leader>i i<space><esc>r
+
+" Make this consistent with C and D operators.
+nnoremap Y y$
 
 " Preserve undo history.
 inoremap <c-u> <c-g>u<c-u>
+inoremap <c-@> <c-g>u<c-@>
+inoremap <c-a> <c-g>u<c-a>
 inoremap <c-w> <c-g>u<c-w>
 
-" Position search matches in the middle of the screen and open any
-" containing folds.
-noremap n nzvzz
-noremap N Nzvzz
-noremap * *zvzz
-vnoremap <silent> * :call s:VisualSearch('f')<cr>
-noremap # #zvzz
-vnoremap <silent> # :call s:VisualSearch('b')<cr>
-noremap g* g*zvzz
-noremap g# g#zvzz
+" Position cursor in the center of the window and open any containing folds.
+for s:cmd in ['G', 'n', 'N', 'gn', 'gN', '*', '#', 'g*', 'g#', 'g;', 'g,']
+    execute 'nnoremap ' . s:cmd . ' ' . s:cmd . 'zvzz'
+endfor
+xnoremap <silent> * :call <sid>VisualSearch('n')<cr>gn
+xnoremap <silent> # :call <sid>VisualSearch('N')<cr>gN
 
-" Make it easier to navigate displayed lines when lines wrap
+" Make it easier to navigate displayed lines when lines wrap.
 inoremap <down> <c-o>gj
 inoremap <up> <c-o>gk
-noremap j  gj
-noremap k  gk
+noremap j gj
+noremap k gk
 noremap gj j
 noremap gk k
 
@@ -405,9 +394,6 @@ noremap <silent> <pagedown> <c-d><c-d>
 noremap <silent> <pageup> <c-u><c-u>
 inoremap <silent> <pagedown> <c-\><c-o><c-d><c-\><c-o><c-d>
 inoremap <silent> <pageup> <c-\><c-o><c-u><c-\><c-o><c-u>
-
-" Maximize current window (width and height)
-nmap <silent> <localleader>mw <c-w>_<c-w><bar>
 
 cnoremap <c-a> <home>
 inoremap <c-a> <home>
@@ -420,40 +406,32 @@ nnoremap <silent> <c-l> <esc>:setlocal invhlsearch invlist
 inoremap <silent> <c-l> <esc>:setlocal invhlsearch invlist
     \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart<cr><c-l>a
 
-function! YRRunAfterMaps()
-    " Yank to end of line
-    nnoremap <silent> Y :<c-u>YRYankCount 'y$'<cr>
-endfunction
-
-" Return to visual mode after indenting
+" Return to visual mode after indenting.
 vnoremap < <gv
 vnoremap > >gv
 
-" Select last pasted text
+" Select last pasted text.
 nnoremap gV `[v`]
 
-" Paragraph formatting
+" Paragraph formatting.
 nnoremap Q gqap
 vnoremap Q gq
 
-" Avoid accidentally calling up the command history
-nnoremap q: <silent>
+" Avoid accidentally calling up the command history.
+nnoremap q: <nop>
 
-" Toggle various plugins
-noremap <silent> <localleader>nt :NERDTreeToggle<cr>
-noremap <silent> <localleader>tl :TlistToggle<cr>
-noremap <silent> <localleader>tb :TagbarToggle<cr>
-noremap <localleader>fff :FufFile<cr>
-noremap <localleader>ffb :FufBookmark<cr>
-noremap <localleader>ffa :FufAddBookmark<cr>
-noremap <localleader>ffd :FufDir<cr>
-noremap <localleader>ffm :FufMruFile<cr>
-noremap <localleader>fft :FufTag<cr>
+" Toggle various plugins.
+noremap <silent> <leader>fb :CtrlPBuffer<cr>
+noremap <silent> <leader>fr :CtrlPMRU<cr>
+noremap <silent> <leader>fv :CtrlPRTS<cr>
+noremap <silent> <leader>nt :NERDTreeToggle<cr>
+noremap <silent> <leader>tl :TlistToggle<cr>
+noremap <silent> <leader>tb :TagbarToggle<cr>
 
-" Zoom in on the current window
-nmap <localleader>z <plug>ZoomWin
+nmap <silent> <leader>z <plug>ZoomWin
 
-" cnoremap <silent> <tab> <c-\>esherlock#completeForward()<cr>
+noremap <silent> <leader>ss :SplitjoinSplit<cr>
+noremap <silent> <leader>sj :SplitjoinJoin<cr>
 
 
 " Autocommands ------------------------------------------------------------{{{1
@@ -462,42 +440,47 @@ if has('autocmd')
     augroup vimrc
     autocmd!
 
-    " GUI startup resets the visual bell; turn it back off
+    " GUI startup resets the visual bell; turn it back off.
     autocmd GUIEnter * set visualbell t_vb=
 
     autocmd GUIEnter,ColorScheme * call s:AdjustColorScheme()
-    autocmd Syntax * call s:ExtendSyntaxHighlighting()
+    autocmd Syntax * call s:AdjustSyntaxHighlighting()
 
-    " Switch to the directory of the current file.
-    if ! exists('+autochdir')
-        autocmd BufEnter * execute 'silent! lcd' fnameescape(expand('%:p:h'))
+    " Disable undo files for tmp directories.
+    if has('persistent_undo') |
+        autocmd BufReadPre /tmp/*,/private/tmp/*,$TMPDIR/*
+            \ setlocal noundofile |
     endif
 
     " Restore the cursor position.
     autocmd BufRead *
-        \ if line("'\"") > 0 && line("'\"") <= line('$')
-        \         && ! &diff && ! exists('b:is_commit_msg') |
-        \     execute 'normal! g`"' |
-        \     let b:restored_pos = 1 |
+        \ if line("'\"") > 0 && line("'\"") <= line('$') && ! &diff |
+        \     execute 'normal! g`"' | let b:restored_pos = 1 |
         \ endif
-    " Open any containing folds when restoring cursor position.
+    " Open any containing folds on startup or when restoring cursor position.
+    autocmd VimEnter * execute 'normal! zv'
     autocmd BufWinEnter *
         \ if exists('b:restored_pos') |
-        \     execute 'normal! zv' |
-        \     unlet b:restored_pos |
+        \     execute 'normal! zv' | unlet b:restored_pos |
         \ endif
 
-    " Make new scripts executable
+    " Create the parent directory if it does not already exist.
+    autocmd BufWritePre,FileWritePre *
+        \ if ! isdirectory(expand('<afile>:p:h')) |
+        \     silent! call mkdir(fnameescape(expand('<afile>:p:h')), 'p') |
+        \ endif
+
+    " Make new scripts executable.
     autocmd BufNewFile * let b:is_new_file = 1
     autocmd BufWritePost,FileWritePost *
         \ if exists('b:is_new_file') |
         \     unlet b:is_new_file |
         \     if getline(1) =~ '^#!.*/bin/' |
-        \         execute 'silent! !chmod +x' shellescape(expand('%')) |
+        \         execute 'silent! !chmod +x' shellescape(expand('<afile>')) |
         \     endif |
         \ endif
 
-    " Set 'updatetime' to 15 seconds when in insert mode.
+    " Set updatetime to 15 seconds in insert mode.
     autocmd InsertEnter * let b:saved_updatetime = &l:updatetime |
         \ setlocal updatetime=15000
     autocmd InsertLeave * let &l:updatetime = b:saved_updatetime
@@ -514,26 +497,42 @@ if has('autocmd')
         \     unlet w:saved_foldmethod |
         \ endif
 
+    " Automatically unset paste mode.
+    autocmd InsertLeave * setlocal nopaste
+
     " Turn off insert mode when idle.
     autocmd CursorHoldI * stopinsert
 
-    " Make the cursor easier to find when idle.
-    autocmd CursorHold * setlocal cursorline cursorcolumn
-    autocmd CursorMoved,InsertEnter *
-        \ if &l:cursorline | setlocal nocursorline nocursorcolumn | endif
+    " Make visible only in insert mode.
+    if exists('+colorcolumn')
+        autocmd InsertEnter * setlocal colorcolumn=80
+        autocmd InsertLeave * setlocal colorcolumn=
+    end
 
-    " Automatically unset paste mode
-    autocmd InsertLeave * setlocal nopaste
+    " Make the cursor easier to find when idle.
+    if exists('+cursorline')
+        autocmd CursorHold * setlocal cursorline cursorcolumn
+        autocmd CursorMoved,InsertEnter *
+            \ if &l:cursorline | setlocal nocursorline nocursorcolumn | endif
+    endif
 
     autocmd BufRead .vimrc setlocal foldmethod=marker
     autocmd BufNewFile,BufRead *.t compiler perlprove
 
+    " Use syntax highlighting keywords for keyword completion.
+    if exists('+omnifunc')
+        autocmd Filetype *
+            \ if &omnifunc == ''
+            \         || (&filetype =~ '^python3\?$' && ! has(&filetype)) |
+            \     setlocal omnifunc=syntaxcomplete#Complete |
+            \ endif
+    endif
+
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
-        \ setlocal nobackup nolist spell wrap spellcapcheck= textwidth=74
-        \     noundofile | let b:is_commit_msg = 1
-    autocmd FileType crontab setlocal backupcopy=yes
+        \ setlocal nowritebackup nolist spell spellcapcheck= wrap textwidth=74 |
+        \ if has('persistent_undo') | setlocal noundofile | endif |
     autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html
         \ setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
@@ -542,37 +541,30 @@ if has('autocmd')
     autocmd FileType nfo edit ++enc=cp437 | setlocal nolist
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType qf setlocal nobuflisted wrap number
-    autocmd FileType vim setlocal keywordprg=:help
+    autocmd FileType vim setlocal keywordprg=:help | let g:vim_indent_cont=4
     autocmd FileType xml
         \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
         \     matchpairs+=<:>
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite
-        \ setlocal readonly nolist wrap filetype=text colorcolumn=
+        \ setlocal readonly nolist wrap filetype=text
     autocmd FileType bdb1_hash
         \ execute 'silent %!perl -MDB_File -e ''tie \%db, DB_File => shift,'
         \    'O_RDONLY; while (($k, $v) = each \%db){ print "$k | $v\n" }'''
-        \    shellescape(expand('%'))
+        \    shellescape(expand('<afile>'))
     autocmd FileType epub
-        \ execute 'silent %!einfo -q -p' shellescape(expand('%')) '| lynx'
-        \     ' -stdin -dump -force_html -display_charset=utf-8 -nolist'
+        \ execute 'silent %!einfo -q -p' shellescape(expand('<afile>'))
+        \     '| lynx -stdin -dump -force_html -display_charset=utf-8 -nolist'
     autocmd FileType pdf
-        \ execute 'silent %!pdftotext -q' shellescape(expand('%'))
+        \ execute 'silent %!pdftotext -q' shellescape(expand('<afile>'))
         \     ' - | par w78'
     autocmd FileType postscr
-        \ execute 'silent %!ps2ascii' shellescape(expand('%')) '| par w78'
+        \ execute 'silent %!ps2ascii' shellescape(expand('<afile>'))
+        \     '| par w78'
     autocmd FileType sqlite
-        \ execute 'silent %!sqlite3' shellescape(expand('%')) '.dump'
+        \ execute 'silent %!sqlite3' shellescape(expand('<afile>')) '.dump'
     autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite setlocal nomodifiable
-
-    " Use syntax highlighting keywords for keyword completion
-    "if exists('+omnifunc')
-    "    autocmd Filetype *
-    "        \ if &omnifunc == '' |
-    "        \     setlocal omnifunc=syntaxcomplete#Complete |
-    "        \ endif
-    "endif
 
     augroup end
 endif

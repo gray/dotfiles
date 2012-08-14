@@ -12,6 +12,8 @@ add new plugin:
 update plugins:
 
     cd $REPO && git submodule -q foreach git pull -q --rebase origin master
+    # crontab entry
+    @weekly cd $REPO && git submodule -q foreach git pull -q --rebase origin master | grep -qv '^Current branch .* is up to date.$' && git status .vim/bundle
 
 remove plugin:
 
@@ -34,6 +36,8 @@ bufkill:
     http://www.vim.org/scripts/script.php?script_id=1147
 camelcasemotion:
     http://www.vim.org/scripts/script.php?script_id=1905
+ctrlp:
+    http://www.vim.org/scripts/script.php?script_id=3736
 delimitMate:
     http://www.vim.org/scripts/script.php?script_id=2754
 endwise:
@@ -42,8 +46,6 @@ file_line:
     http://www.vim.org/scripts/script.php?script_id=2184
 fugitive:
     http://www.vim.org/scripts/script.php?script_id=2975
-fuzzy finder:
-    http://www.vim.org/scripts/script.php?script_id=1984
 gist:
     http://www.vim.org/scripts/script.php?script_id=2423
 gitv:
@@ -58,6 +60,8 @@ manpageview:
     http://www.vim.org/scripts/script.php?script_id=489
 mark:
     http://www.vim.org/scripts/script.php?script_id=2666
+matchit:
+    http://www.vim.org/scripts/script.php?script_id=39
 nrrwregn:
     http://www.vim.org/scripts/script.php?script_id=3075
 nerd commenter:
@@ -66,6 +70,8 @@ nerd tree:
     http://www.vim.org/scripts/script.php?script_id=1658
 pathogen:
     http://www.vim.org/scripts/script.php?script_id=2332
+perlomni:
+    http://www.vim.org/scripts/script.php?script_id=2852
 perlprove:
     http://www.vim.org/scripts/script.php?script_id=1319
 ragtag:
@@ -78,16 +84,16 @@ repeat:
     http://www.vim.org/scripts/script.php?script_id=2136
 replace with register:
     http://www.vim.org/scripts/script.php?script_id=2703
-sherlock:
-    http://www.vim.org/scripts/script.php?script_id=2731
-snipmate:
-    http://www.vim.org/scripts/script.php?script_id=2540
+splitjoin:
+    http://www.vim.org/scripts/script.php?script_id=3613
 supertab:
     http://www.vim.org/scripts/script.php?script_id=1643
 surround:
     http://www.vim.org/scripts/script.php?script_id=1697
 syntastic:
     http://www.vim.org/scripts/script.php?script_id=2736
+tabular:
+    https://github.com/godlygeek/tabular
 tagbar:
     http://www.vim.org/scripts/script.php?script_id=3465
 taglist:
@@ -98,8 +104,8 @@ universal text linking:
     http://www.vim.org/scripts/script.php?script_id=293
 vcscommand:
     http://www.vim.org/scripts/script.php?script_id=90
-yankring:
-    http://www.vim.org/scripts/script.php?script_id=1234
+visualrepeat:
+    http://www.vim.org/scripts/script.php?script_id=3848
 zoomwin:
     http://www.vim.org/scripts/script.php?script_id=508
 
