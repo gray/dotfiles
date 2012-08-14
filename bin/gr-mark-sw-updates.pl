@@ -26,7 +26,7 @@ my $feed = $reader->tag(Modules =>
     count      => 500,
     exclude    => { state => 'read' },
     order      => 'asc',
-    VERBOSE ? ( start_time => $db{_last_time} ) : (),
+    VERBOSE ? () : ( start_time => $db{_last_time} ),
 );
 die $reader->error unless $feed;
 
@@ -53,14 +53,6 @@ for my $entry ($feed->entries) {
     $unread{$lang}{$name} = $entry;
 
     my $listed;
-    for my $w (@{$conf->{whitelist} || []}) {
-        next if not $name ~~ $w;
-        $listed = 1;
-        VERBOSE && say "$lang - $name - whitelisted";
-        last;
-    }
-    next if $listed;
-
     for my $b (@{$conf->{blacklist} || []}) {
         if ('CODE' eq ref $b) {
             next unless $b->($entry);
@@ -71,6 +63,14 @@ for my $entry ($feed->entries) {
         $listed = 1;
         push @unwanted_entries, $entry;
         VERBOSE && say "$lang - $name - blacklisted";
+        last;
+    }
+    next if $listed;
+
+    for my $w (@{$conf->{whitelist} || []}) {
+        next if not $name ~~ $w;
+        $listed = 1;
+        VERBOSE && say "$lang - $name - whitelisted";
         last;
     }
     next if $listed;
@@ -113,12 +113,14 @@ sub read_conf {
                 ],
                 blacklist => [
                     sub {
-                        $dist->dist =~ /^(?: acme | dist-zilla ) -/ix ||
-                        $_[0]->link->href =~ m[
-                            /~ (?: avenj | manwar | reneeb | sharyanto
-                                   | tobyink | zoffix
+                        return 1 if $dist->dist =~ m[
+                            ^ (?: acme | dist-zilla | mojo[^-]* ) -
+                        ]ix;
+                        return 1 if $_[0]->link->href =~ m[
+                            /~ (?: avenj | cjcollier | manwar | reneeb
+                                   | sharyanto | tobyink | zoffix
                                )
-                        ]x
+                        ]x;
                     },
                     sub { 'released' ne $dist->maturity },
                 ],
@@ -139,8 +141,8 @@ sub read_conf {
                     my $s = $_[0]->summary;
                     return 1 unless $s;
                     return 1 if 'unknown' eq lc $s;
-                    return 1 if $s =~ /\b (?: print | nested) /ix
-                        and $s =~ /\b list /ix;
+                    return 1 if $s =~ /\b [nt]est /ix;
+                    return 1 if $s =~ /\b print /ix and $s =~ /\b list /ix;
                 },
             ],
         },
