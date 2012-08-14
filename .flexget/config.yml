@@ -2,7 +2,6 @@ presets:
   global:
     cookies: ~/.flexget/private/cookies.sqlite
     download: ~/Downloads/.
-    # include: [ private/email.yml ]
 
   torrents:
     regexp:
@@ -16,27 +15,33 @@ presets:
     exec:
       on_output:
         for_accepted: |
-          growlnotify -t 'FlexGet: torrent from {{feed}}' -m \
+          growlnotify -t 'FlexGet: torrent from {{task}}' -m \
             '{{ title | re_replace("['']", "") }}' >/dev/null 2>&1
-          tmux display-message 'FlexGet: {{feed}}: {{
+          tmux display-message 'FlexGet: {{task}}: {{
             title | re_replace("['']", "") }}' >/dev/null 2>&1
         phase: |
           # This is also run from cron every few minutes.
           nice -n 20 transmission-watchdog
 
+  private-torrents:
+    preset: torrents
+    private_torrents: yes
+
   tv:
-    content_size: { min: 25, max: 1750 }
+    interval: 5 minutes
+    content_size: { min: 25, strict: yes }
     manipulate:
       # Remove description field to avoid false matches from series plugin.
       - description: { remove: yes }
 
   tv-series:
+    preset: tv
     series:
       settings:
         tv: &TV_SETTING
           quality: dsr+ <=720p
-          timeframe: 6 hours
           target: <720p
+          timeframe: 2 hours
           propers: 6 hours
           specials: no
           path: ~/Media/TV/{{series_name}}/.
@@ -54,14 +59,17 @@ presets:
           << : *TV_SETTING
           path: ~/Media/TV/Talk Shows/{{series_name}}/.
     include: [ private/series.yml ]
+    # Run if filter before series filter (prevents extra timeframe waiting).
+    plugin_priority: { if: 130 }
     if:
       # Reject season previews or recaps.
-      - ? 'has_field("series_season")
+      - ? 'has_field("series_season") and has_field("series_episode")
              and 1 < series_season and 0 == series_episode'
         : reject
 
   # Grab the first episode of any new series.
   tv-premieres:
+    preset: tv
     series_premiere:
       << : *TV_SETTING
       allow_seasonless: yes
@@ -69,25 +77,26 @@ presets:
     regexp:
       reject:
         - '(?x) (?:_|\b) (?: pdtv | au | nz | ufc | sports | championships?
-                             | 24(?:h|-7) | bake | baking ) (?:_|\b)'
-        - '(?x) (?:_|\b) (?: brit(?: ish | ain | annia) | england | australia
+                             | 24(?:h|-7) | bake | baking | world \W+ series)
+                (?:_|\b)'
+        - '(?x) (?:_|\b) (?: brit(?:ish | ain | annia) | england | australia
                              | norwegian | kitchen | food | cook )'
       from: title
 
   movies:
     interval: 30 minutes
-    quality: hdtv+ <720p
+    quality: dvdrip+ <720p
     regexp:
       reject:
-        - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? ) (?:_|\b)'
+        - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | live\W+at ) (?:_|\b)'
         - ? '(?x) [\W_] (?: dubbed | pldub | cropped | (?:heb|kor|swe)sub )
-                (?:_|\b)'
+                  (?:_|\b)'
           : { from: [ title, description ] }
         # Avoid certain groups.
-        - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr )
-                (?:_|\b)'
+        - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | afg
+                          | msd) $'
       from: title
-    content_size: { min: 300, max: 2500 }
+    content_size: { min: 300, max: 2500, strict: yes }
     imdb_lookup: yes
     seen_movies: strict
     if:
@@ -122,36 +131,25 @@ presets:
                             | sci-fi | thriller | war ) $'
             from: imdb_genres
 
-feeds:
+tasks:
   ###########
   # TV series
   ###########
-  eztv:
-    priority: 1
-    interval: 5 minutes
-    rss:
-      url: http://ezrss.it/feed/
-      title: filename
-      silent: yes
-    preset: [ torrents, tv, tv-series ]
   btn:
     priority: 2
-    interval: 5 minutes
     include: [ private/btn-rss.yml ]
-    preset: [ torrents, tv, tv-series ]
+    preset: [ private-torrents, tv-series ]
     manipulate:
       # Use the scene release name.
       - title: { extract: '.*\[ (.+?) \] *$' }
   xspeeds_tv:
     priority: 3
-    interval: 5 minutes
     include: [ private/xspeeds_tv-rss.yml ]
-    preset: [ torrents, tv, tv-series ]
+    preset: [ private-torrents, tv-series ]
   torrentday_tv:
     priority: 4
-    interval: 5 minutes
     include: [ private/torrentday_tv-rss.yml ]
-    preset: [ torrents, tv, tv-series ]
+    preset: [ private-torrents, tv-series ]
   thebox:
     # Ratio-based tracker; easy to maintain. UK content.
     priority: 5
@@ -159,50 +157,51 @@ feeds:
     rss:
       url: http://thebox.bz/rss.php?feed=dl&cat[]=14&cat[]=18&cat[]=31&cat[]=8
       silent: yes
-    preset: [ torrents, tv, tv-series ]
+    preset: [ private-torrents, tv-series ]
     disable_plugin: [ torrent_alive ]
     if: [ "str(now.year) + ')' not in title": reject ]
   bitmetv:
     # Ratio-based tracker; hard to maintain.
     priority: 7
-    interval: 5 minutes
     delay: 10 minutes
     include: [ private/bitmetv-rss.yml ]
-    preset: [ torrents, tv, tv-series ]
+    preset: [ private-torrents, tv-series ]
 
   #####################
   # TV series premieres
   #####################
   btn_premieres:
     priority: 22
-    interval: 5 minutes
     include: [ private/btn-rss.yml ]
-    preset: [ torrents, tv, tv-premieres ]
+    preset: [ private-torrents, tv-premieres ]
     manipulate:
       - year: { from: title, extract: '^[^[]+\[ (\d{4}) \]' }
       # Use the scene release name.
       - title: { extract: '.*\[ (.+?) \] *$' }
-      # Remove backslashes and apostrophes.
-      - title: { replace: { regexp: '[\\'']+', format: '' } }
-      # Normalize '&' and '&amp;' to 'and'.
+      # Series guessing does inadequate name normalization:
+      - title: { replace: { regexp: '[\\''"]+', format: '' } }
+      - title: { replace: { regexp: '\W+', format: ' ' } }
+      # Normalize '&', '&amp;' and 'and'.
       - title: { replace: { regexp: '\s*&(?:amp;)?\s*', format: ' and ' } }
     rss: { other_fields: [ comments ] }
     regexp:
       reject:
-        - ? '(?x) \b (?: anime | cooking | dance | dating | fashion | food
-              | gameshow | homeandgarden | music | soap | sport ) \b'
+        - ? '(?x) \b (?: anime | celebrities | cooking | dance | dating
+              | fashion | food | gameshow | homeandgarden | lifestyle | music
+              | soap | sport ) \b'
           : { from: [ comments ] }
+        - '(?x) ^ \W* reality \W* $': { from: [ comments ] }
     # Run if filter before series filter.
     plugin_priority: { if: 130 }
     if:
       # Accept only the current year, respecting dates near the boundary.
-      - ? 'int(year) not in [(now + timedelta(n)).year for n in (0, -30, 30)]'
+      - ? 'not str(year).isdigit() or int(year) not in
+            [(now + timedelta(n)).year for n in (0, -60, 60)]'
         :  reject
   torrentday_tv_premieres:
     priority: 23
-    interval: 5 minutes
     include: [ private/torrentday_tv-rss.yml ]
-    preset: [ torrents, tv, tv-premieres ]
+    preset: [ private-torrents, tv-premieres ]
 
   ########
   # Movies
@@ -210,22 +209,30 @@ feeds:
   xspeeds_movies:
     priority: 31
     include: [ private/xspeeds_movies-rss.yml ]
-    preset: [ torrents, movies ]
-  ilt_movies:
+    preset: [ private-torrents, movies ]
+    rss: { other_fields: [ author ] }
+    regexp:
+      reject:
+        - '(?x) ^ mama  $': { from: [ author ] }
+  ptp:
     priority: 32
-    include: [ private/ilt_movies-rss.yml ]
-    preset: [ torrents, movies ]
-  torrentday_movies:
+    include: [ private/ptp-rss.yml ]
+    preset: [ private-torrents, movies ]
+  ilt_movies:
     priority: 33
+    include: [ private/ilt_movies-rss.yml ]
+    preset: [ private-torrents, movies ]
+  torrentday_movies:
+    priority: 34
     include: [ private/torrentday_movies-rss.yml ]
-    preset: [ torrents, movies ]
+    preset: [ private-torrents, movies ]
   # Foreign: AsiaTorrents.com and EUTorrents.com
   avistaz:
     priority: 35
     sequence:
       - rss: { url: 'http://feeds.feedburner.com/eutorrentsbt', silent: yes }
       - rss: { url: 'http://feeds.feedburner.com/btavistaz',    silent: yes }
-    preset: [ torrents, movies ]
+    preset: [ private-torrents, movies ]
     urlrewrite:
       site:
         regexp: '(?x) ^ http:// (?P<host>[^/]+) .*? &id= (?P<id>[^&]+)'
@@ -234,6 +241,6 @@ feeds:
       reject_excluding:
         - '(?x) \b english \b': { from: [ title, description ] }
       reject:
-        - ? '(?x) \b (?: dubbed  | episodes | broadcast \W+ network
+        - ? '(?x) \b (?: dubbed  | episodes? | broadcast \W+ network
                          | tv \W+ program | air \W+ (?:date | time) ) \b'
           : { from: [ title, description ] }
