@@ -4,7 +4,6 @@
 #   - finds torrents under a directory (including its subdirectories) and
 #     adds them to transmission, specifying the directory from where the
 #     torrent was located to be the completed directory for the data
-#   - deselects sample files
 #   - throttles public torrents
 #   - removes certain "bad" trackers from torrents
 #   - labels files of seeding torrents
@@ -110,24 +109,28 @@ fi
 remote () {
     # TODO: add retry and kill logic
     exec 3>&1 4>&2
-    if ! error=$(
+    if ! remote_error=$(
         { timeout 30 transmission-remote -N "$NETRC" "$@" 2>&4 1>&3; } 4>&1
     ); then
-        case $error in
+        case $remote_error in
             *"Couldn't connect to server")
-                err "$error"
+                err "$remote_error"
                 exit 1
         esac
     fi
     exec 3>&- 4>&-
-    printf "$error" >&2
+    printf "$remote_error" >&2
 }
 
 IFS=$(printf "\n\t")
 
 # Add any new torrent files to transmission.
+# Only recurse into the TV and Movies directories.
 for file in $(
-    find "$WATCH_DIR" -type f -name "*.torrent" \! -size 0 2>/dev/null
+    find "$WATCH_DIR" -type d \( -path "$WATCH_DIR/TV" -o                \
+        -path "$WATCH_DIR/TV/*" -o -path "$WATCH_DIR/Movies" -o          \
+        -path "$WATCH_DIR/Movies/*" -o -path "$WATCH_DIR/*" -prune \) -o \
+        \( -type f -name '*.torrent' \! -size 0 \) -print 2>/dev/null
 )
 do
     dir=${file%/*}
@@ -204,30 +207,6 @@ do
             remote --torrent "$hash" --tracker-add \
                 udp://tracker.${tracker}:80/announce >/dev/null
         done
-
-        # Deselect sample files and subs for non-foreign tv series.
-        ids=; count=0
-        for line in $(remote --torrent "$hash" --files); do
-            # Skip header lines
-            [ $count -lt 2 ] && count=$((count+1)) && continue
-            deselect=
-            case $line in
-                */[Ss][Aa][Mm][Pp][Ll][Ee]/*)         deselect=1 ;;
-                [Ss][Aa][Mm][Pp][Ll][Ee].???)         deselect=1 ;;
-                *[/.\ -][Ss][Aa][Mm][Pp][Ll][Ee].???) deselect=1 ;;
-                */[Ss][Uu][Bb][Ss]/* | \
-                */[Ss][Uu][Bb][Tt][Ii][Tt][Ll][Ee][Ss]/*)
-                    case $dir/ in
-                        "$WATCH_DIR"/TV/Foreign/*) deselect= ;;
-                        "$WATCH_DIR"/TV/*)         deselect=1
-                    esac
-            esac
-            if [ "$deselect" ]; then
-                SAVED_IFS=$IFS; IFS=': '; set -- $line; IFS=$SAVED_IFS
-                [ "$ids" ] && ids=$ids,$1 || ids=$1
-            fi
-        done
-        [ "$ids" ] && remote --torrent "$hash" --no-get "$ids" >/dev/null
     fi
 done
 
@@ -237,13 +216,14 @@ has_cmd cksfv    && HAS_CKSFV=1    || HAS_CKSFV=0
 for line in $(remote --torrent all --info); do
     val=${line#*: }
     case $line in
-        '  Name: '?*)         name=$val    ;;
-        '  Hash: '?*)         hash=$val    ;;
-        '  State: '?*)        state=$val   ;;
-        '  Location: '?*)     dir=$val     ;;
-        '  Percent Done: '?*) percent=$val ;;
-        '  Upload Limit: '?*) up_limit=$val
-                              do=1
+        '  Name: '?*)                  name=$val          ;;
+        '  Hash: '?*)                  hash=$val          ;;
+        '  State: '?*)                 state=$val         ;;
+        '  Location: '?*)              dir=$val           ;;
+        '  Percent Done: '?*)          percent=$val       ;;
+        '  Tracker gave an error: '?*) tracker_error=$val ;;
+        '  Upload Limit: '?*)          up_limit=$val
+                                       do=1
     esac
 
     [ 1 != "${do:-0}" ] && continue
@@ -252,10 +232,13 @@ for line in $(remote --torrent all --info); do
     [ '100%' != "$percent" ] && continue
     case $state in Verifying*) continue; esac
 
-    last_dir=; last_file_base=; has_rar=0
-
     # Verify directory is valid and in expected location.
     real_dir "$dir" && dir=$_real_dir || dir=
+
+    if [ 'unregistered torrent' = "${tracker_error-}" ]; then
+        log "Stopped unregistered torrent: $name"
+        state=Finished; tracker_error=
+    fi
 
     # Data was likely prematurely removed; remove torrent when finished.
     if [ -z "$dir" ] || [ ! -e "$dir/$name" ]; then
@@ -284,6 +267,8 @@ for line in $(remote --torrent all --info); do
             >/dev/null
         log "Moving data for zombified torrent: $name"
     fi
+
+    last_dir=; last_file_base=; has_rar=0
 
     # Multiple torrents could write to the same location, so a single lock
     # file per torrent location will not suffice; each RAR archive requires
@@ -380,18 +365,18 @@ for line in $(remote --torrent all --info); do
     esac
 
     if [ -d "$dir/$name" ]; then
-        ! find "$dir/$name" \(                                           \
-            \( -type d -name [Ss][Aa][Mm][Pp][Ll][Ee] -prune \) -o       \
-            \( -type f \(                                                \
-                -name *.message -o -name *.localized -o -name *.part -o  \
-                -name *.txt -o -name *.[Nn][Ff][Oo] -o -name *.url -o    \
-                -name [Ss][Aa][Mm][Pp][Ll][Ee].??? -o                    \
-                -name *[/.\ -][Ss][Aa][Mm][Pp][Ll][Ee].???               \
-            \) \) \) -exec rm -rf {} + 2>/dev/null
+        ! find "$dir/$name" -type f \(                               \
+            -name *.message -o -name *.localized -o -name *.part -o  \
+            -name *.url -o -name *.[Dd][Ii][Zz] \)                   \
+            -exec rm -f {} + 2>/dev/null
 
+        # Only keep subtitles for foreign videos.
+        is_video_dir=0
         case $dir/ in
-            "$WATCH_DIR"/TV/Foreign/*) ;;
-            "$WATCH_DIR"/TV/*)
+            "$WATCH_DIR"/TV/Foreign/* | "$WATCH_DIR"/Movies/Foreign/*)
+                is_video_dir=1 ;;
+            "$WATCH_DIR"/TV/* | "$WATCH_DIR"/Movies/*)
+                is_video_dir=1
                 ! find "$dir/$name/" \(                                 \
                     \( -type d \(                                       \
                         -name [Ss][Uu][Bb][Ss] -o                       \
@@ -402,16 +387,30 @@ for line in $(remote --torrent all --info); do
                     \) \) \)  -exec rm -rf {} + 2>/dev/null
         esac
 
+        if [ $is_video_dir ]; then
+            ! find "$dir/$name" \(                                      \
+                \( -type d -name [Ss][Aa][Mm][Pp][Ll][Ee] -prune \) -o  \
+                \( -type f \(                                           \
+                    -name *.[Tt][Xx][Tt] -o -name *.[Nn][Ff][Oo] -o     \
+                    -name *.[Hh][Tt][Mm][Ll] -o -name *.[Jj][Pp][Gg] -o \
+                    -name *.[Jj][Pp][Ee][Gg] -o -name *.[Pp][Nn][Gg] -o \
+                    -name *.[Gg][Ii][Ff] -o                             \
+                    -name [Ss][Aa][Mm][Pp][Ll][Ee].??? -o               \
+                    -name *[/.\ -][Ss][Aa][Mm][Pp][Ll][Ee].???          \
+                \) \) \) -exec rm -rf {} + 2>/dev/null
+        fi
+
         # Move data out of extraneous container directory.
         count=0
         for file in $(find "$dir/$name" -type f); do
             count=$((count+1)) && [ $count -gt 1 ] && break
         done
         if [ $count -eq 1 ]; then
-            lc_name=$(echo $name | tr '[:upper:]' '[:lower:]')
-            lc_file=$(echo ${file##*/} | tr '[:upper:]' '[:lower:]')
-            if [ "$lc_name" = "${lc_file%.*}" ] && [ ! -f "$dir/$file" ]
-            then
+            lc_name=$(echo $name | tr '[:upper:]' '[:lower:]' \
+                | tr -Cd '[:alnum:]' )
+            lc_file=$(echo ${file##*/} | tr '[:upper:]' '[:lower:]' )
+            lc_file=$(echo ${lc_file%.*} | tr -Cd '[:alnum:]' )
+            if [ "$lc_name" = "$lc_file" ] && [ ! -f "$dir/$file" ]; then
                 mv -f "$file" "$dir"
             fi
         fi
