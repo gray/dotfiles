@@ -12,14 +12,14 @@ set -o ignoreeof       # Prevent accidental exiting of shell via C-d.
 
 PROMPT_COMMAND='history -a; history -c; history -r;'
 
-HISTCONTROL=ignoreboth:erasedups
+HISTCONTROL=ignoredups:erasedups
 HISTIGNORE='?:??:pwd:.. *:jobs:history:clear:exit:ll[a.c]:llc[a.]'
 HISTIGNORE=$HISTIGNORE':*password=*:*PASSWORD=*'
 HISTSIZE=20000
 HISTFILESIZE=$HISTSIZE
 HISTTIMEFORMAT='[%F %T] '
 
-FIGNORE=~:.a:.class:.la:.mo:.o:.obj:.pyc:.pyo:.so:.swo:.swp
+FIGNORE='~:.a:.class:.la:.mo:.o:.obj:.pyc:.pyo:.so:.swo:.swp'
 
 # Not always exported.
 export LINES COLUMNS
