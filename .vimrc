@@ -226,27 +226,47 @@ function! s:AdjustColorScheme ()
         return
     endif
 
-    " Determine if the background color is dark.
+    " If the background color is dark, set it to black.
     if has('gui_running')
         " Calculate the perceived brightness.
         let [l:r, l:g, l:b] = map([1,3,5], 'str2nr(l:bg[v:val : 1+v:val], 16)')
         let l:light = sqrt(0.241 * l:r*l:r + 0.691 * l:g*l:g + 0.068 * l:b*l:b)
-        let l:bg_is_dark = l:light < 130
+        if l:light < 130
+            highlight Normal guibg=black
+        endif
     else
         let l:dark_range = range(7) + [8] + range(16, 32) + range(52, 67)
             \ + range(88, 99) + range(124, 134) + range(160, 165)
             \ + [196, 197] + range(232, 244)
-        let l:bg_is_dark = index(l:dark_range, str2nr(l:bg)) >= 0
+        if index(l:dark_range, str2nr(l:bg)) >= 0
+            " Vim resets the colors to default if the cterbg for the Normal
+            " group is set without first unsetting g:colors_name and setting
+            " g:syntax_cmd to an invalid value.
+            if exists('g:colors_name')
+                let l:colors_name = g:colors_name
+                unlet g:colors_name
+            endif
+            if exists('g:syntax_cmd')
+                let l:syntax_cmd = g:syntax_cmd
+            endif
+            let g:syntax_cmd = 'do not reset to default colors'
 
-        " Vim resets the background to light if a colorscheme sets the Normal
-        " group's ctermbg to a value greater than 8.
-        if &t_Co == 256 && l:bg_is_dark
-            set background=dark
+            highlight Normal ctermbg=black
+
+            " Vim resets the background to light if a colorscheme sets the Normal
+            " group's ctermbg to a value greater than 8.
+            if &t_Co == 256
+                set background=dark
+            endif
+
+            if exists('l:colors_name')
+                let g:colors_name = l:colors_name
+            endif
+            unlet g:syntax_cmd
+            if exists('l:syntax_cmd')
+                let g:syntax_cmd = l:syntax_cmd
+            endif
         endif
-    endif
-    if l:bg_is_dark
-        " All dark backgrounds should be black.
-        highlight Normal ctermbg=black guibg=black
     endif
 endfunction
 
@@ -517,6 +537,8 @@ if has('autocmd')
     endif
 
     autocmd BufRead .vimrc setlocal foldmethod=marker
+    autocmd BufWritePost $MYVIMRC source $MYVIMRC | doautocmd ColorScheme
+
     autocmd BufNewFile,BufRead *.t compiler perlprove
 
     " Use syntax highlighting keywords for keyword completion.
