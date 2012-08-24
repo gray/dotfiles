@@ -61,12 +61,14 @@ elseif &term =~ 'xterm'
     set t_Co=8
 endif
 
-set encoding=utf-8
-if &termencoding == ''
-    set termencoding=utf-8
-endif
-if &termencoding == 'utf-8'
-    let &showbreak = nr2char(8618) . ' '
+if has('multi_byte')
+    set encoding=utf-8
+    if &termencoding == ''
+        set termencoding=utf-8
+    endif
+    if &termencoding == 'utf-8'
+        let &showbreak = nr2char(8618) . ' '
+    endif
 endif
 
 set nowrap            " Don't wrap long lines
@@ -200,7 +202,7 @@ function! s:VisualSearch (cmd)
     let [l:saved_reg, l:saved_reg_type] = [getreg('"'), getregtype('"')]
     normal! vgv""y
     let @/ = '\V' . substitute(escape(@", '\'), '\n', '\\n', 'g')
-    execute 'normal ' . a:cmd
+    execute 'normal' a:cmd
     redraw
     call setreg('"', l:saved_reg, l:saved_reg_type)
 endfunction
@@ -211,7 +213,7 @@ endfunction
 function! s:StripWhitespace (line1, line2)
     let l:saved_pos = getpos('.')
     let l:saved_search = @/
-    execute 'silent! keepjumps ' . a:line1 . ',' . a:line2 . 's/\s\+$//e'
+    execute 'silent! keepjumps' a:line1 . ',' . a:line2 . 's/\s\+$//e'
     call setpos('.', l:saved_pos)
     let @/ = l:saved_search
 endfunction
@@ -280,6 +282,7 @@ function! s:AdjustSyntaxHighlighting ()
 
     syntax keyword myTodo containedin=.*Comment,perlPOD contained
         \ BUG FIXME HACK NOTE README TBD TODO WARNING XXX
+        \ BUG: FIXME: HACK: NOTE: README: TBD: TODO: WARNING: XXX:
     highlight default link myTodo Todo
 endfunction
 
@@ -296,7 +299,7 @@ command! DiffBuff vertical new | let t:diff_bufnr = bufnr('$') |
     \ endif | syntax clear
 
 " Close DiffBuff's diff window and reset syntax.
-command! DiffOff execute 'bwipeout ' . t:diff_bufnr | diffoff |
+command! DiffOff execute 'bwipeout' t:diff_bufnr | diffoff |
     \ if exists('b:saved_syntax') | let &l:syntax = b:saved_syntax | endif
 
 command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
@@ -394,7 +397,7 @@ inoremap <c-w> <c-g>u<c-w>
 
 " Position cursor in the center of the window and open any containing folds.
 for s:cmd in ['G', 'n', 'N', 'gn', 'gN', '*', '#', 'g*', 'g#', 'g;', 'g,']
-    execute 'nnoremap ' . s:cmd . ' ' . s:cmd . 'zvzz'
+    execute 'nnoremap' s:cmd s:cmd . 'zvzz'
 endfor
 xnoremap <silent> * :call <sid>VisualSearch('n')<cr>gn
 xnoremap <silent> # :call <sid>VisualSearch('N')<cr>gN
@@ -464,7 +467,7 @@ if has('autocmd')
     autocmd GUIEnter * set visualbell t_vb=
 
     autocmd GUIEnter,ColorScheme * call s:AdjustColorScheme()
-    autocmd Syntax * call s:AdjustSyntaxHighlighting()
+    autocmd ColorScheme,Syntax * call s:AdjustSyntaxHighlighting()
 
     " Disable undo files for tmp directories.
     if has('persistent_undo') |
@@ -474,7 +477,7 @@ if has('autocmd')
 
     " Restore the cursor position.
     autocmd BufRead *
-        \ if line("'\"") > 0 && line("'\"") <= line('$') && ! &diff |
+        \ if line("'\"") <= line('$') && ! &diff |
         \     execute 'normal! g`"' | let b:restored_pos = 1 |
         \ endif
     " Open any containing folds on startup or when restoring cursor position.
