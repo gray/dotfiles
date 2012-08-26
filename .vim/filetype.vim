@@ -9,7 +9,6 @@ autocmd BufNewFile,BufRead *.applescript setfiletype applescript
 autocmd BufNewFile,BufRead *.pde setfiletype arduino
 autocmd BufNewFile,BufRead Changes setfiletype changelog
 autocmd BufNewFile,BufRead *.epub setfiletype epub
-autocmd BufNewFile,BufRead *.go setfiletype go
 autocmd BufNewFile,BufRead hg-editor-*.txt setfiletype hgcommit
 autocmd BufNewFile,BufRead *.json setfiletype javascript
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
