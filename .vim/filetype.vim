@@ -18,7 +18,6 @@ autocmd BufNewFile,BufRead .bash_* call SetFileTypeSH('bash')
 autocmd BufNewFile,BufRead bash-fc-\d\+ call SetFileTypeSH('bash')
 autocmd BufNewFile,BufRead *.srt setfiletype srt
 autocmd BufNewFile,BufRead *.{i,swg,swig} setfiletype swig
-autocmd BufNewFile,BufRead .tmux.conf,tmux.conf setfiletype tmux
 autocmd BufNewFile,BufRead *.tt setfiletype tt2html
 
 autocmd BufNewFile,BufRead /**/apache*/**/*.conf setfiletype apache

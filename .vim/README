@@ -13,7 +13,7 @@ update plugins:
 
     cd $REPO && git submodule -q foreach git pull -q --rebase origin master
     # crontab entry
-    @weekly cd $REPO && git submodule -q foreach git pull -q --rebase origin master | grep -qv '^Current branch .* is up to date.$' && git status .vim/bundle
+    @weekly cd $REPO && git submodule -q foreach git pull -q --rebase origin master | grep -qv '^Current branch .* is up to date.$' && git status -s .vim/bundle
 
 remove plugin:
 
@@ -145,7 +145,7 @@ srt:
 swig:
     http://www.vim.org/scripts/script.php?script_id=1615
 tmux:
-    http://tmux.svn.sourceforge.net/viewvc/tmux/trunk/examples/tmux.vim
+    https://github.com/tejr/vim-tmux
 yaml:
     http://vim.googlecode.com/hg/runtime/syntax/yaml.vim
 
