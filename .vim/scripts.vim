@@ -1,4 +1,4 @@
-if did_filetype()
+if did_filetype() || ! executable('file')
     finish
 endif
 
