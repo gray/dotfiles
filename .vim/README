@@ -98,6 +98,8 @@ tagbar:
     http://www.vim.org/scripts/script.php?script_id=3465
 taglist:
     http://www.vim.org/scripts/script.php?script_id=273
+undotree:
+    http://www.vim.org/scripts/script.php?script_id=4177
 unimpaired:
     http://www.vim.org/scripts/script.php?script_id=1590
 universal text linking:

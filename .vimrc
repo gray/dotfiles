@@ -453,6 +453,8 @@ noremap <silent> <leader>fv :CtrlPRTS<cr>
 noremap <silent> <leader>nt :NERDTreeToggle<cr>
 noremap <silent> <leader>tl :TlistToggle<cr>
 noremap <silent> <leader>tb :TagbarToggle<cr>
+noremap <silent> <leader>ut :UndotreeToggle<cr>
+noremap <silent> <leader>hw :Histwin<cr>
 
 nmap <silent> <leader>z <plug>ZoomWin
 

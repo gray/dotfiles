@@ -202,6 +202,9 @@
 [submodule ".vim/bundle/xoria256"]
 	path = .vim/bundle/xoria256
 	url = git://github.com/vim-scripts/xoria256.vim.git
+[submodule ".vim/bundle/undotree"]
+	path = .vim/bundle/undotree
+	url = git://github.com/mbbill/undotree.git
 [submodule ".vim/bundle/zoomwin"]
 	path = .vim/bundle/zoomwin
 	url = git://github.com/vim-scripts/ZoomWin.git
