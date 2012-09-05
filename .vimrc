@@ -229,6 +229,7 @@ function! s:AdjustColorScheme ()
     endif
 
     " If the background color is dark, set it to black.
+    " TODO: also force the background of comments, strings, etc.
     if has('gui_running')
         " Calculate the perceived brightness.
         let [l:r, l:g, l:b] = map([1,3,5], 'str2nr(l:bg[v:val : 1+v:val], 16)')
@@ -274,11 +275,13 @@ endfunction
 
 function! s:AdjustSyntaxHighlighting ()
     highlight Search cterm=NONE ctermfg=yellow ctermbg=blue
-    highlight Search gui=NONE guifg=yellow guibg=blue
+        \ gui=NONE guifg=yellow guibg=blue
     highlight CursorLine term=reverse cterm=reverse gui=reverse
     highlight CursorColumn term=reverse cterm=reverse gui=reverse
-    highlight ColorColumn ctermbg=red ctermfg=white guibg=red guifg=white
-    highlight SpellBad ctermbg=red ctermfg=white guibg=red guifg=white
+    for l:group in ['ColorColumn', 'SpellBad', 'Todo']
+        execute 'highlight' l:group 'cterm=NONE ctermbg=red ctermfg=white'
+            \ 'gui=NONE guibg=red guifg=white'
+    endfor
 
     syntax keyword myTodo containedin=.*Comment,perlPOD contained
         \ BUG FIXME HACK NOTE README TBD TODO WARNING XXX
