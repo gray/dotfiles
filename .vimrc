@@ -365,7 +365,7 @@ let g:gist_post_private = 1
 let g:gist_detect_filetype = 1
 
 let g:ref_cache_dir = expand('~/.vim/tmp/cache', 1)
-let g:ref_perldoc_cmd = 'p5doc'
+let g:ref_perldoc_cmd = 'perlfind'
 
 
 " Mappings ----------------------------------------------------------------{{{1

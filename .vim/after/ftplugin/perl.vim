@@ -6,7 +6,7 @@ setlocal number
 
 setlocal iskeyword+=:
 
-setlocal keywordprg=p5doc
+setlocal keywordprg=perlfind
 if has('mac')
     " groff bug converts some characters to utf-8.
     let b:keywordprg = "PERLDOC='-n\"nroff -Tascii\"' " . &keywordprg
