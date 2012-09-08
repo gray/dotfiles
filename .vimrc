@@ -74,7 +74,7 @@ endif
 set nowrap            " Don't wrap long lines
 set linebreak         " Wrap lines at convenient points
 set list              " Visually display tabs and trailing spaces
-let &listchars="tab:\ubb\ub7,trail:\ub7,extends:\ubb,precedes:\uab"
+let &listchars = "tab:\ubb\ub7,trail:\ub7,extends:\ubb,precedes:\uab"
 
 set ttimeoutlen=50    " Reduce delay for key codes
 
@@ -285,7 +285,6 @@ function! s:AdjustSyntaxHighlighting ()
 
     syntax keyword myTodo containedin=.*Comment,perlPOD contained
         \ BUG FIXME HACK NOTE README TBD TODO WARNING XXX
-        \ BUG: FIXME: HACK: NOTE: README: TBD: TODO: WARNING: XXX:
     highlight default link myTodo Todo
 endfunction
 

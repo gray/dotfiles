@@ -4,8 +4,6 @@ compiler perl
 " Show line numbers
 setlocal number
 
-setlocal iskeyword+=:
-
 setlocal keywordprg=perlfind
 if has('mac')
     " groff bug converts some characters to utf-8.
