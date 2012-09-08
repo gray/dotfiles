@@ -40,6 +40,8 @@ ctrlp:
     http://www.vim.org/scripts/script.php?script_id=3736
 delimitMate:
     http://www.vim.org/scripts/script.php?script_id=2754
+dirdiff:
+    http://www.vim.org/scripts/script.php?script_id=102
 endwise:
     http://www.vim.org/scripts/script.php?script_id=2386
 file_line:

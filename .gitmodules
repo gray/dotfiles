@@ -34,6 +34,9 @@
 [submodule ".vim/bundle/delimitMate"]
 	path = .vim/bundle/delimitMate
 	url = git://github.com/Raimondi/delimitMate.git
+[submodule ".vim/bundle/dirdiff"]
+	path = .vim/bundle/dirdiff
+	url = git://github.com/vim-scripts/DirDiff.vim.git
 [submodule ".vim/bundle/endwise"]
 	path = .vim/bundle/endwise
 	url = git://github.com/tpope/vim-endwise.git
