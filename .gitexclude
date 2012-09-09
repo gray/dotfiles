@@ -1,0 +1,7 @@
+*.log
+*.log.*
+*.py[co]
+*.sw[op]
+.DS_Store
+._*
+doc/tags
