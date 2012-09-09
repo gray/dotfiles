@@ -320,18 +320,16 @@ let g:ctrlp_extensions = [ 'tag', 'buffertag', 'dir', 'line', 'rtscript' ]
 let g:NERDSpaceDelims = 1
 let g:NERDTreeShowHidden = 1
 
-let Tlist_Enable_Fold_Column = 0
-let Tlist_Exit_OnlyWindow = 1
-let Tlist_File_Fold_Auto_Close = 1
-let Tlist_GainFocus_On_ToggleOpen = 1
-let Tlist_Inc_Winwidth = 0
-let Tlist_Show_One_File = 1
-let Tlist_Auto_Highlight_Tag = 1
-let Tlist_Auto_Update = 1
-let Tlist_Highlight_Tag_On_BufEnter = 1
-let tlist_make_settings = 'make;t:targets;m:macros'
-let tlist_perl_settings = 'perl;p:packages;c:constants;l:labels;s:subroutines'
-let tlist_xs_settings = 'c;d:macro;g:enum;s:struct;u:union;t:typedef;' .
+let g:Tlist_Enable_Fold_Column = 0
+let g:Tlist_Exit_OnlyWindow = 1
+let g:Tlist_File_Fold_Auto_Close = 1
+let g:Tlist_GainFocus_On_ToggleOpen = 1
+let g:Tlist_Inc_Winwidth = 0
+let g:Tlist_Show_One_File = 1
+let g:tlist_make_settings = 'make;t:targets;m:macros'
+let g:tlist_perl_settings = 'perl;p:packages;c:constants;l:labels;' .
+    \ 's:subroutines'
+let g:tlist_xs_settings = 'c;d:macro;g:enum;s:struct;u:union;t:typedef;' .
     \ 'v:variable;f:function'
 
 let g:tagbar_left = 1
