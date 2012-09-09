@@ -509,10 +509,14 @@ if has('autocmd')
         \     endif |
         \ endif
 
-    " Set updatetime to 15 seconds in insert mode.
-    autocmd InsertEnter * let b:saved_updatetime = &l:updatetime |
-        \ setlocal updatetime=15000
-    autocmd InsertLeave * let &l:updatetime = b:saved_updatetime
+    " Disable insert mode when idle for 15 seconds.
+    autocmd InsertEnter *
+        \ let g:saved_updatetime = &updatetime | set updatetime=15000
+    autocmd InsertLeave *
+        \ if exists('g:saved_updatetime') |
+        \    let &updatetime = g:saved_updatetime | unlet g:saved_updatetime |
+        \ endif
+    autocmd BufLeave,CursorHoldI * stopinsert | doautocmd InsertLeave
 
     " Disable fold detection while in insert mode.
     autocmd InsertEnter *
@@ -528,9 +532,6 @@ if has('autocmd')
 
     " Automatically unset paste mode.
     autocmd InsertLeave * setlocal nopaste
-
-    " Turn off insert mode when idle.
-    autocmd CursorHoldI * stopinsert
 
     " Make visible only in insert mode.
     if exists('+colorcolumn')
