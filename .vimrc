@@ -366,6 +366,8 @@ let g:gist_detect_filetype = 1
 let g:ref_cache_dir = expand('~/.vim/tmp/cache', 1)
 let g:ref_perldoc_cmd = 'perlfind'
 
+let g:cpan_mod_cachef = expand('~/.vim/tmp/cache/cpan-modules.txt', 1)
+
 
 " Mappings ----------------------------------------------------------------{{{1
 
