@@ -4,22 +4,27 @@
 # user@host:/tmp
 # $
 
-timer_start () { : ${timer=$SECONDS}; }
+_prompt_timer_start () { : ${_prompt_timer=$SECONDS}; }
 
-timer_stop  () {
-    local _RUNTIME=$(($SECONDS - $timer))
-    unset timer
+_prompt_timer_stop () {
+    local runtime=$(($SECONDS - $_prompt_timer))
+    unset _prompt_timer
 
-    # Convert seconds to hms.
+    # Convert seconds to dhms.
+    local d=$(($runtime > 86400 ? ($runtime / 84600) : 0))
+    local h=$(($runtime > 3600 ? ($runtime / 3600 % 24) : 0))
+    local m=$(($runtime > 60 ? ($runtime / 60 % 60) : 0))
+    local s=$(($runtime % 60))
     _RUNTIME_FORMATTED=
-    [[ $_RUNTIME -gt 3600 ]] && _RUNTIME_FORMATTED+=$(($_RUNTIME / 3600))h
-    [[ $_RUNTIME -gt 60 ]]   && _RUNTIME_FORMATTED+=$(($_RUNTIME % 3600 / 60))m
-    [[ $_RUNTIME -gt 0 ]]    && _RUNTIME_FORMATTED+=$(($_RUNTIME % 60))s
+    for part in d h m s; do
+        eval val=\$$part
+        [[ $val -gt 0 ]] && _RUNTIME_FORMATTED+=$val$part
+    done
     : ${_RUNTIME_FORMATTED:=0s}
 }
 
-trap 'timer_start' DEBUG
-PROMPT_COMMAND='_exit_status_color; '$PROMPT_COMMAND' timer_stop;'
+trap '_prompt_timer_start' DEBUG
+PROMPT_COMMAND='_exit_status_color; '$PROMPT_COMMAND' _prompt_timer_stop;'
 
 _exit_status_color () {
     if [[ 0 -eq $? ]]; then
