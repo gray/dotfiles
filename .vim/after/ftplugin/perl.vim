@@ -4,6 +4,9 @@ compiler perl
 " Show line numbers
 setlocal number
 
+let &l:path = './lib,./blib/lib,./blib/arch,' . &l:path
+let $PERL5LIB = substitute(&l:path, ',', ':', 'g')
+
 setlocal keywordprg=perlfind
 if has('mac')
     " groff bug converts some characters to utf-8.
