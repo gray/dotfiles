@@ -4,10 +4,6 @@ presets:
     download: ~/Downloads/.
 
   torrents:
-    regexp:
-      reject:
-        - '(?x) [\W_] nuked (?:_|\b)'
-      from: title
     content_filter:
       require: [ '*.avi', '*.mkv', '*.mp4', '*.rar' ]
     torrent_scrub: on
@@ -33,21 +29,24 @@ presets:
     manipulate:
       # Remove description field to avoid false matches from series plugin.
       - description: { remove: yes }
+    regexp:
+      reject:
+        # Avoid re-encodes.
+        - '(?x) (?:_|\b) (?: afg | msd ) $': { from: title }
 
   tv-series:
     preset: tv
     series:
       settings:
         tv: &TV_SETTING
-          quality: dsr+ <=720p
+          quality: hdtv+ <=720p
           target: <720p
           timeframe: 2 hours
-          propers: 6 hours
+          propers: 12 hours
           specials: no
           path: ~/Media/TV/{{series_name}}/.
         animation:
           << : *TV_SETTING
-          quality: hdtv+ <=720p
           path: ~/Media/TV/Animation/{{series_name}}/.
         documentaries:
           << : *TV_SETTING
@@ -76,12 +75,14 @@ presets:
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
-        - '(?x) (?:_|\b) (?: pdtv | au | nz | ufc | sports | championships?
-                             | 24(?:h|-7) | bake | baking | world \W+ series)
+        - '(?x) (?:_|\b) (?: au | nz | uk | ufc | sports | championships?
+                             | 24(?:h|-7) | bake | baking | world \W+ series )
                 (?:_|\b)'
         - '(?x) (?:_|\b) (?: brit(?:ish | ain | annia) | england | australia
-                             | norwegian | kitchen | food | cook )'
-      from: title
+                             | kitchen | food | cook )'
+        - '(?x) (?:_|\b) (?: pdtv | norwegian | hanrel ) (?:_|\b)':
+            from: title
+      from: series_name
 
   movies:
     interval: 30 minutes
@@ -89,12 +90,12 @@ presets:
     regexp:
       reject:
         - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | live\W+at ) (?:_|\b)'
-        - ? '(?x) [\W_] (?: dubbed | pldub | cropped | (?:heb|kor|swe)sub )
+        - ? '(?x) [\W_] (?: dubbed | pldub | cropped | (?:heb|kor|swe)sub
+                            | rosubbed )
                   (?:_|\b)'
           : { from: [ title, description ] }
         # Avoid certain groups.
-        - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | afg
-                          | msd) $'
+        - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd) $'
       from: title
     content_size: { min: 300, max: 2500, strict: yes }
     imdb_lookup: yes
@@ -211,9 +212,6 @@ tasks:
     include: [ private/xspeeds_movies-rss.yml ]
     preset: [ private-torrents, movies ]
     rss: { other_fields: [ author ] }
-    regexp:
-      reject:
-        - '(?x) ^ mama  $': { from: [ author ] }
   ptp:
     priority: 32
     include: [ private/ptp-rss.yml ]
