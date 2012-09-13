@@ -160,7 +160,7 @@ set wildmode=list:longest,full  " Complete longest common string,
 set wildignore+=*~,*.swo,*.swp,*/.vim/tmp/*,tags
 set wildignore+=*.a,*.class,*.la,*.mo,*.o,*.obj,*.pyc,*.pyo,*.so
 set wildignore+=.DS_Store,*.gif,*.jpg,*.png
-set wildignore+=CVS,.bzr,.git,.hg,.svn,blib
+set wildignore+=**/CVS/*,**/.bzr/*,**/.git/*,**/.hg/*,**/.svn/*,blib
 
 set tags=tags;/  " Search for a ctags file
 set showfulltag
