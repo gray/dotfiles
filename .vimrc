@@ -563,7 +563,6 @@ if has('autocmd')
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
         \ setlocal nowritebackup nolist spell spellcapcheck= wrap textwidth=74 |
         \ if has('persistent_undo') | setlocal noundofile | endif |
-    autocmd FileType help setlocal wrap nonumber keywordprg=:help
     autocmd FileType html
         \ setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
