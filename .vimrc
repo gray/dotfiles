@@ -545,7 +545,7 @@ if has('autocmd')
     endif
 
     autocmd BufRead .vimrc setlocal foldmethod=marker
-    autocmd BufWritePost $MYVIMRC source $MYVIMRC | doautocmd ColorScheme
+    autocmd BufWritePost $MYVIMRC source $MYVIMRC
 
     autocmd BufNewFile,BufRead *.t compiler perlprove
 
@@ -612,6 +612,7 @@ else
     colorscheme ir_black
     highlight! link NonText SpecialKey
 endif
+doautocmd ColorScheme
 
 
 " GUI ---------------------------------------------------------------------{{{1
