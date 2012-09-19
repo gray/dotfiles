@@ -16,7 +16,7 @@ set viminfo+=<1000  " Save N lines for each register
 set viminfo+=h      " Disable hlsearch at startup
 set viminfo+=r/tmp  " Disable viminfo for tmp directories
 set viminfo+=r/private/var/tmp
-set viminfo+=r$TMPDIR
+let &viminfo .= ',r' . substitute(expand($TMPDIR), '/\+$', '', '')
 set viminfo+=n~/.vim/tmp/.viminfo  " Save the viminfo file elsewhere
 
 set cpoptions+=W    " Do not overwrite readonly files
