@@ -507,6 +507,15 @@ if has('autocmd')
         \     endif |
         \ endif
 
+    " Prevent the current line from shifting screen position when a hidden
+    " buffer is displayed again.
+    autocmd BufHidden *
+        \ if ! &diff | let b:saved_winview = winsaveview() | endif
+    autocmd BufWinEnter *
+        \ if exists('b:saved_winview') && ! &diff |
+        \     call winrestview(b:saved_winview) |
+        \ endif
+
     " Disable insert mode when idle for 15 seconds.
     autocmd InsertEnter *
         \ let g:saved_updatetime = &updatetime | set updatetime=15000
