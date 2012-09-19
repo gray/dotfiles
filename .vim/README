@@ -128,6 +128,8 @@ asciidoc:
     http://asciidoc.googlecode.com/hg/vim/syntax/asciidoc.vim
 csv:
     http://www.vim.org/scripts/script.php?script_id=2830
+git:
+    http://www.vim.org/scripts/script.php?script_id=1654
 go:
     https://github.com/jnwhiteh/vim-golang
 json:
