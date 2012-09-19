@@ -481,7 +481,7 @@ if has('autocmd')
 
     " Restore the cursor position.
     autocmd BufRead *
-        \ if line("'\"") <= line('$') && ! &diff |
+        \ if line("'\"") <= line('$') && ! &diff && ! exists('b:no_viminfo') |
         \     execute 'normal! g`"' | let b:restored_pos = 1 |
         \ endif
     " Open any containing folds on startup or when restoring cursor position.
@@ -572,6 +572,7 @@ if has('autocmd')
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
         \ setlocal nowritebackup nolist spell spellcapcheck= wrap textwidth=74 |
         \ if has('persistent_undo') | setlocal noundofile | endif |
+        \ let b:no_viminfo = 1
     autocmd FileType html
         \ setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
