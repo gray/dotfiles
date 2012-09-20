@@ -57,8 +57,9 @@ esac
     done
 }
 
-mcd () { mkdir -p "$1" && cd "$1"; }
-mtd () { local d=$(mktemp -d ${TMPDIR:-/tmp}/tmp.XXXXXXXXXX) && cd $d; }
+mkcd () { mkdir -p "$1" && cd "$1"; }
+mktd () { local d=$(mktemp -d ${TMPDIR:-/tmp}/tmp.XXXXXXXXXX) && cd $d; }
+mktouch () { mkdir -p "${1%/*}" && touch "$1"; }
 
 # Print active network interfaces.
 upifs () {
