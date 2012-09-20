@@ -509,9 +509,13 @@ if has('autocmd')
     " Prevent the current line from shifting screen position when a hidden
     " buffer is displayed again.
     autocmd BufHidden *
-        \ if ! &diff | let b:saved_winview = winsaveview() | endif
+        \ if ! &diff |
+        \     let b:saved_winview = winsaveview() |
+        \     let b:last_winsize = [winheight(0), winwidth(0)] |
+        \ endif
     autocmd BufWinEnter *
-        \ if exists('b:saved_winview') && ! &diff |
+        \ if exists('b:saved_winview') && ! &diff
+        \         && b:last_winsize == [winheight(0), winwidth(0)] |
         \     call winrestview(b:saved_winview) |
         \ endif
 
