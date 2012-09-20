@@ -246,8 +246,7 @@ function! s:AdjustColorScheme ()
             " group is set without first unsetting g:colors_name and setting
             " g:syntax_cmd to an invalid value.
             if exists('g:colors_name')
-                let l:colors_name = g:colors_name
-                unlet g:colors_name
+                let l:colors_name = g:colors_name | unlet g:colors_name
             endif
             if exists('g:syntax_cmd')
                 let l:syntax_cmd = g:syntax_cmd
@@ -256,8 +255,8 @@ function! s:AdjustColorScheme ()
 
             highlight Normal ctermbg=black
 
-            " Vim resets the background to light if a colorscheme sets the Normal
-            " group's ctermbg to a value greater than 8.
+            " Vim resets the background to light if a colorscheme sets the
+            " Normal group's ctermbg to a value greater than 8.
             if &t_Co == 256
                 set background=dark
             endif
@@ -553,11 +552,6 @@ if has('autocmd')
             \ if &l:cursorline | setlocal nocursorline nocursorcolumn | endif
     endif
 
-    autocmd BufRead .vimrc setlocal foldmethod=marker
-    autocmd BufWritePost $MYVIMRC source $MYVIMRC
-
-    autocmd BufNewFile,BufRead *.t compiler perlprove
-
     " Use syntax highlighting keywords for keyword completion.
     if exists('+omnifunc')
         autocmd Filetype *
@@ -566,6 +560,16 @@ if has('autocmd')
             \     setlocal omnifunc=syntaxcomplete#Complete |
             \ endif
     endif
+
+    " Attempt to set the compiler, if it's not already set.
+    autocmd Filetype *
+        \ if ! exists('b:current_compiler') |
+        \     try | execute 'compiler' &filetype | catch | endtry |
+        \ endif
+
+    autocmd BufRead .vimrc setlocal foldmethod=marker
+    autocmd BufWritePost $MYVIMRC source $MYVIMRC
+    autocmd BufNewFile,BufRead *.t compiler perlprove
 
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2

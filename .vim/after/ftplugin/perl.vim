@@ -1,4 +1,4 @@
-compiler perl
+compiler perlprove
 setlocal number
 setlocal equalprg=perltidy\ -q
 
