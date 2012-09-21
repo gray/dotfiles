@@ -551,7 +551,8 @@ if has('autocmd')
 
     " Make the cursor easier to find when idle.
     if exists('+cursorline')
-        autocmd CursorHold * setlocal cursorline cursorcolumn
+        autocmd CursorHold *
+            \ if empty(&buftype) | setlocal cursorline cursorcolumn | endif
         autocmd CursorMoved,InsertEnter *
             \ if &l:cursorline | setlocal nocursorline nocursorcolumn | endif
     endif
