@@ -596,7 +596,7 @@ if has('autocmd')
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite
-        \ setlocal readonly nolist wrap filetype=text
+        \ setlocal readonly nolist wrap filetype=text | let b:no_viminfo = 1
     autocmd FileType bdb1_hash
         \ execute 'silent %!perl -MDB_File -e ''tie \%db, DB_File => shift,'
         \    'O_RDONLY; while (($k, $v) = each \%db){ print "$k | $v\n" }'''
