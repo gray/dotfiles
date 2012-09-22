@@ -33,6 +33,16 @@ presets:
       reject:
         # Avoid re-encodes.
         - '(?x) (?:_|\b) (?: afg | msd ) $': { from: title }
+    # Run if filter before series filter (prevents extra timeframe waiting).
+    plugin_priority: { if: 130 }
+    if:
+      # Episode is usally a pilot or a preview- reject the latter.
+      - '[1, 0] == [series_season, series_episode]':
+          regexp:
+            reject:
+              - '(?x) (?:_|\b) (?: preview | sneak \W+  peak | trailer )
+                      (?:_|\b)'
+            from: title
 
   tv-series:
     preset: tv
@@ -58,8 +68,6 @@ presets:
           << : *TV_SETTING
           path: ~/Media/TV/Talk Shows/{{series_name}}/.
     include: [ private/series.yml ]
-    # Run if filter before series filter (prevents extra timeframe waiting).
-    plugin_priority: { if: 130 }
     if:
       # Reject season previews or recaps.
       - ? 'has_field("series_season") and has_field("series_episode")
@@ -187,13 +195,11 @@ tasks:
     rss: { other_fields: [ comments ] }
     regexp:
       reject:
-        - ? '(?x) \b (?: anime | celebrities | cooking | dance | dating
-              | fashion | food | gameshow | homeandgarden | lifestyle | music
-              | soap | sport ) \b'
+        - ? '(?x) \b (?: anime | celebrities | children | cooking | dance
+              | dating | fashion | food | gameshow | homeandgarden | lifestyle
+              | music | soap | sport ) \b'
           : { from: [ comments ] }
         - '(?x) ^ \W* reality \W* $': { from: [ comments ] }
-    # Run if filter before series filter.
-    plugin_priority: { if: 130 }
     if:
       # Accept only the current year, respecting dates near the boundary.
       - ? 'not str(year).isdigit() or int(year) not in
