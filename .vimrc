@@ -557,11 +557,13 @@ if has('autocmd')
             \ if &l:cursorline | setlocal nocursorline nocursorcolumn | endif
     endif
 
-    " Use syntax highlighting keywords for keyword completion.
+    " Fall back to syntax keyword completion.
     if exists('+omnifunc')
         autocmd Filetype *
-            \ if &omnifunc == ''
-            \         || (&filetype =~ '^python3\?$' && ! has(&filetype)) |
+            \ if ! empty(&omnifunc) && ! exists('*'.&omnifunc) |
+            \     silent! runtime autoload/<amatch>complete.vim |
+            \ endif |
+            \ if empty(&omnifunc) || ! exists('*'.&omnifunc) |
             \     setlocal omnifunc=syntaxcomplete#Complete |
             \ endif
     endif
