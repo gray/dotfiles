@@ -4,6 +4,7 @@
     excludesfile = ~/.gitexclude
     whitespace = fix,trailing-space,cr-at-eol
 [pack]
+    # Auto-detect the number of CPUs.
     threads = 0
 [diff]
     renames = copies
@@ -26,6 +27,8 @@
     updated = red bold
     changed = red
     untracked = magenta
+[rebase]
+    autosquash = true
 [alias]
     amend = commit --amend
     ammend = commit --amend
