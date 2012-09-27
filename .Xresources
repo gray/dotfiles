@@ -1,16 +1,23 @@
 ! Changes take effect after running: xrdb -merge ~/.Xresources
 
+#ifdef COLOR
+    *customization: -color
+#endif
+
 XTerm*loginShell: true
 
 XTerm*font: fixed
 XTerm*boldFont: fixed
 XTerm*utf8: 1
 
-XTerm*background: black
-XTerm*foreground: green
-XTerm*cursorColor: orange
-XTerm*pointerColor: orange
-XTerm*pointerColorBackground: black
+#ifdef COLOR
+    XTerm*termName: xterm-256color
+    XTerm*background: black
+    XTerm*foreground: green
+    XTerm*cursorColor: orange
+    XTerm*pointerColor: orange
+    XTerm*pointerColorBackground: black
+#endif
 
 XTerm*scrollBar: true
 XTerm*scrollKey: true
