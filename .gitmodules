@@ -13,9 +13,6 @@
 [submodule ".vim/bundle/arduino"]
 	path = .vim/bundle/arduino
 	url = git://github.com/vim-scripts/Arduino-syntax-file.git
-[submodule ".vim/bundle/bufkill"]
-	path = .vim/bundle/bufkill
-	url = git://github.com/vim-scripts/bufkill.vim.git
 [submodule ".vim/bundle/camelcasemotion"]
 	path = .vim/bundle/camelcasemotion
 	url = git://github.com/vim-scripts/camelcasemotion.git
