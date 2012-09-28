@@ -30,6 +30,21 @@
 [rebase]
     autosquash = true
 [alias]
+    aliases = !git config --get-regexp '^alias\\..*' | cut -c 7- | sed 's/ / = /' | sort
+    st = status
+    br = branch
+    ci = commit
+    co = checkout
+
+    s = status -sb
+    diffs = diff --stat
+
+    l = log --oneline --decorate
+    ll = log @{upstream}.. --oneline --decorate
+    llog = log @{upstream}.. --decorate
+
+    unstage = reset HEAD
+    amen = commit --amend -C HEAD
     amend = commit --amend
     ammend = commit --amend
     patch = add --patch
