@@ -63,7 +63,7 @@ endif
 
 if has('multi_byte')
     set encoding=utf-8
-    if &termencoding == ''
+    if empty(&termencoding)
         set termencoding=utf-8
     endif
     if &termencoding == 'utf-8'
@@ -224,7 +224,7 @@ endfunction
 
 function! s:AdjustColorScheme ()
     let l:bg = synIDattr(hlID('Normal'), 'bg#')
-    if l:bg == '' || l:bg == -1
+    if empty(l:bg) || l:bg == -1
         return
     endif
 
@@ -615,6 +615,9 @@ if has('autocmd')
     autocmd FileType sqlite
         \ execute 'silent %!sqlite3' shellescape(expand('<afile>')) '.dump'
     autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite setlocal nomodifiable
+
+    " Preview window for ref plugin.
+    autocmd FileType ref nmap <silent> <buffer> <bs> <Plug>(ref-back)
 
     augroup end
 endif
