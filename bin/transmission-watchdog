@@ -396,7 +396,8 @@ for line in $(remote --torrent all --info); do
                     -name *.[Jj][Pp][Ee][Gg] -o -name *.[Pp][Nn][Gg] -o \
                     -name *.[Gg][Ii][Ff] -o                             \
                     -name [Ss][Aa][Mm][Pp][Ll][Ee].??? -o               \
-                    -name *[/.\ -][Ss][Aa][Mm][Pp][Ll][Ee].???          \
+                    -name *[/.\ -][Ss][Aa][Mm][Pp][Ll][Ee].??? -o       \
+                    -name *\([Ss][Aa][Mm][Pp][Ll][Ee]\).???             \
                 \) \) \) -exec rm -rf {} + 2>/dev/null
         fi
 
@@ -406,12 +407,18 @@ for line in $(remote --torrent all --info); do
             count=$((count+1)) && [ $count -gt 1 ] && break
         done
         if [ $count -eq 1 ]; then
-            lc_name=$(echo $name | tr '[:upper:]' '[:lower:]' \
-                | tr -Cd '[:alnum:]' )
-            lc_file=$(echo ${file##*/} | tr '[:upper:]' '[:lower:]' )
-            lc_file=$(echo ${lc_file%.*} | tr -Cd '[:alnum:]' )
-            if [ "$lc_name" = "$lc_file" ] && [ ! -f "$dir/$file" ]; then
-                mv -f "$file" "$dir"
+            file_base=${file##*/}
+            file_base=${file_base%.*}
+            if [ ${#name} -gt ${#file_base} ] && [ ! -f "$dir/$name" ]; then
+                mv -f "$file" "$dir/$name.${file##*.}"
+            else
+                lc_name=$(echo $name | tr '[:upper:]' '[:lower:]' \
+                    | tr -Cd '[:alnum:]' )
+                lc_file=$(echo $file_base | tr '[:upper:]' '[:lower:]' \
+                    | tr -Cd '[:alnum:]' )
+                if [ "$lc_name" = "$lc_file" ] && [ ! -f "$dir/$file" ]; then
+                    mv -f "$file" "$dir"
+                fi
             fi
         fi
     fi
