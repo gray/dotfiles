@@ -31,8 +31,8 @@ presets:
       - description: { remove: yes }
     regexp:
       reject:
-        # Avoid re-encodes.
-        - '(?x) (?:_|\b) (?: afg | msd ) $': { from: title }
+        # Avoid re-encoders and poor encoders.
+        - '(?x) (?:_|\b) (?: afg | msd | \{c[_ ]p\} ) $': { from: title }
     # Run if filter before series filter (prevents extra timeframe waiting).
     plugin_priority: { if: 130 }
     if:
@@ -187,11 +187,6 @@ tasks:
       - year: { from: title, extract: '^[^[]+\[ (\d{4}) \]' }
       # Use the scene release name.
       - title: { extract: '.*\[ (.+?) \] *$' }
-      # Series guessing does inadequate name normalization:
-      - title: { replace: { regexp: '[\\''"]+', format: '' } }
-      - title: { replace: { regexp: '\W+', format: ' ' } }
-      # Normalize '&', '&amp;' and 'and'.
-      - title: { replace: { regexp: '\s*&(?:amp;)?\s*', format: ' and ' } }
     rss: { other_fields: [ comments ] }
     regexp:
       reject:
@@ -205,10 +200,6 @@ tasks:
       - ? 'not str(year).isdigit() or int(year) not in
             [(now + timedelta(n)).year for n in (0, -60, 60)]'
         :  reject
-  torrentday_tv_premieres:
-    priority: 23
-    include: [ private/torrentday_tv-rss.yml ]
-    preset: [ private-torrents, tv-premieres ]
 
   ########
   # Movies
