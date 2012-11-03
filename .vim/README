@@ -137,7 +137,7 @@ markdown:
 nginx:
     http://www.vim.org/scripts/script.php?script_id=1886
 perl:
-    https://github.com/petdance/vim-perl
+    https://github.com/vim-perl/vim-perl
 puppet:
     https://github.com/puppetlabs/puppet-syntax-vim
 python:

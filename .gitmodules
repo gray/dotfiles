@@ -114,7 +114,7 @@
 	url = git://github.com/vim-scripts/peaksea.git
 [submodule ".vim/bundle/perl"]
 	path = .vim/bundle/perl
-	url = git://github.com/petdance/vim-perl.git
+	url = git://github.com/vim-perl/vim-perl.git
 [submodule ".vim/bundle/perlomni"]
 	path = .vim/bundle/perlomni
 	url = git://github.com/c9s/perlomni.vim.git
