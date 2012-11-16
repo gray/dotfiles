@@ -87,7 +87,7 @@ for my $entry ($feed->entries) {
 sleep 0.25;
 goto FEED if $reader->more($feed);
 
-$reader->mark_read_entry(\@unwanted_entries);
+$reader->mark_read_entry(\@unwanted_entries) or die $reader->error;
 
 $db{_last_time} = time;
 
@@ -114,11 +114,12 @@ sub read_conf {
                 blacklist => [
                     sub {
                         return 1 if $dist->dist =~ m[
-                            ^ (?: acme | dist-zilla | mojo[^-]* ) -
+                            ^ (?:acme | dist-zilla | mojo[^-]*) -
                         ]ix;
+                        # Prolific purveyors of piffleware.
                         return 1 if $_[0]->link->href =~ m[
-                            /~ (?: avenj | cjcollier | manwar | reneeb
-                                   | sharyanto | tobyink | zoffix
+                            /~ (?:avenj | cjcollier | manwar | reneeb
+                                  | rsavage | sharyanto | tobyink | zoffix
                                )
                         ]x;
                     },
@@ -156,7 +157,9 @@ sub read_conf {
                 return $name;
             },
             blacklist => [
-                qr/ (?:\b|_) (?:rails | active\W?record) (?:\b|_) /ix,
+                qr/ (?:\b|_) (?:
+                    rails | sinatra | active\W?record
+                ) (?:\b|_) /ix,
             ],
         },
 
