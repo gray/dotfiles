@@ -1,0 +1,37 @@
+my $conf = {
+    hash_separator => ' => ',
+    deparse        => 1,
+    show_readonly  => 1,
+    print_escapes  => 1,
+    caller_info    => 1,
+    class          => {
+        parents      => 0,
+        show_methods => 'none',
+    },
+
+    filters => {
+        -external       => [qw( DB DateTime )],
+        'HTTP::Request' => sub {
+            my ($req, $p) = @_;
+            $p->{class}{expand} = 'all';
+            return;
+        },
+        'HTTP::Response' => sub {
+            my ($res, $p) = @_;
+            return if exists $res->{decoded_content};
+            $p->{class}{expand} = 'all';
+
+            my $clone = $res->clone;
+            my $decoded_content = $clone->decoded_content;
+            if ($decoded_content ne $clone->content) {
+                $clone->{decoded_content} = $decoded_content;
+                $clone->content('Content is encoded- see decoded_content');
+                return p($clone, %$p);
+            }
+            return;
+        },
+    },
+    datetime => {
+        show_class_name => 1,
+    },
+};

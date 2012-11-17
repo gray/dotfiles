@@ -12,7 +12,7 @@ autocmd BufNewFile,BufRead *.epub setfiletype epub
 autocmd BufNewFile,BufRead hg-editor-*.txt setfiletype hgcommit
 autocmd BufNewFile,BufRead *.json setfiletype javascript
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
-autocmd BufNewFile,BufRead *.psgi setfiletype perl
+autocmd BufNewFile,BufRead *.psgi,~/.dataprinter setfiletype perl
 autocmd BufNewFile,BufRead *.scala setfiletype scala
 autocmd BufNewFile,BufRead .bash_* call SetFileTypeSH('bash')
 autocmd BufNewFile,BufRead bash-fc-\d\+ call SetFileTypeSH('bash')
