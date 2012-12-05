@@ -162,10 +162,14 @@ darkspectrum:
     http://www.vim.org/scripts/script.php?script_id=2215
 gentooish:
     http://www.vim.org/scripts/script.php?script_id=2474
+hickop:
+    http://www.vim.org/scripts/script.php?script_id=4113
 ir_black:
     https://github.com/twerth/dotfiles/raw/master/etc/vim/colors/ir_black.vim
 jellybeans:
     http://www.vim.org/scripts/script.php?script_id=2555
+kolor:
+    http://www.vim.org/scripts/script.php?script_id=4339
 lettuce:
     http://www.vim.org/scripts/script.php?script_id=1975
 liquidcarbon:
@@ -194,3 +198,5 @@ wombat256:
     http://www.vim.org/scripts/script.php?script_id=2465
 xoria256:
     http://www.vim.org/scripts/script.php?script_id=2140
+xterm16:
+    http://www.vim.org/scripts/script.php?script_id=795

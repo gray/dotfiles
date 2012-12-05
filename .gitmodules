@@ -58,6 +58,9 @@
 [submodule ".vim/bundle/golang"]
 	path = .vim/bundle/golang
 	url = git://github.com/jnwhiteh/vim-golang.git
+[submodule ".vim/bundle/hickop"]
+	path = .vim/bundle/hickop
+	url = git://github.com/hickop/vim-hickop-colors.git
 [submodule ".vim/bundle/histwin"]
 	path = .vim/bundle/histwin
 	url = git://github.com/chrisbra/histwin.vim.git
@@ -67,6 +70,9 @@
 [submodule ".vim/bundle/jellybeans"]
 	path = .vim/bundle/jellybeans
 	url = git://github.com/nanotech/jellybeans.vim.git
+[submodule ".vim/bundle/kolor"]
+	path = .vim/bundle/kolor
+	url = git://github.com/zeis/kolor.git
 [submodule ".vim/bundle/largefile"]
 	path = .vim/bundle/largefile
 	url = git://github.com/vim-scripts/LargeFile.git
