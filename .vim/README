@@ -90,8 +90,6 @@ supertab:
     http://www.vim.org/scripts/script.php?script_id=1643
 surround:
     http://www.vim.org/scripts/script.php?script_id=1697
-syntastic:
-    http://www.vim.org/scripts/script.php?script_id=2736
 tabular:
     https://github.com/godlygeek/tabular
 tagbar:
