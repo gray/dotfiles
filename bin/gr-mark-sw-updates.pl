@@ -2,6 +2,7 @@
 use 5.012;
 use warnings;
 
+use Config::Tiny;
 use CPAN::DistnameInfo;
 use Cwd qw(realpath);
 use DB_File;
@@ -12,13 +13,19 @@ use WebService::Google::Reader;
 
 use constant VERBOSE => not $ENV{CRON};
 
+my $creds = Config::Tiny->read("$ENV{HOME}/.google_reader")
+    or die Config::Tiny->errstr;
+my $username = $creds->{_}{username} // die 'Missing username';
+my $password = $creds->{_}{password} // die 'Missing password';
+
 my $dir  = catpath((splitpath(realpath __FILE__))[ 0, 1 ]);
 my $file = catfile($dir, '.unwanted-modules.bdb');
 my $db   = tie my %db, DB_File => $file;
 
 my $reader = WebService::Google::Reader->new(
-    username => ($ENV{GOOGLE_USERNAME} || die "Missing GOOGLE_USERNAME"),
-    password => ($ENV{GOOGLE_PASSWORD} || die "Missing GOOGLE_PASSWORD"),
+    username => $username,
+    password => $password,
+    https    => 1,
 );
 
 my $conf = read_conf();
@@ -118,8 +125,8 @@ sub read_conf {
                         ]ix;
                         # Prolific purveyors of piffleware.
                         return 1 if $_[0]->link->href =~ m[
-                            /~ (?:avenj | cjcollier | manwar | reneeb
-                                  | rsavage | sharyanto | tobyink | zoffix
+                            /~ (?: manwar | perlook | reneeb | rsavage
+                                    | szabgab | sharyanto | tobyink | zoffix
                                )
                         ]x;
                     },
@@ -138,12 +145,14 @@ sub read_conf {
             },
             blacklist => [
                 qr/ (?:\b|_) (?:django | flask | plone | zope) (?:\b|_) /ix,
+                qr/ ^nknu /ix,  # spammer
                 sub {
                     my $s = $_[0]->summary;
                     return 1 unless $s;
                     return 1 if 'unknown' eq lc $s;
                     return 1 if $s =~ /\b [nt]est /ix;
-                    return 1 if $s =~ /\b print /ix and $s =~ /\b list /ix;
+                    return 1 if $s =~ /\b print /ix
+                        and $s =~ /\b (?: list | array ) /ix;
                 },
             ],
         },
