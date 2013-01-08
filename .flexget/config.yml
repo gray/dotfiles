@@ -103,7 +103,10 @@ presets:
                   (?:_|\b)'
           : { from: [ title, description ] }
         # Avoid certain groups.
-        - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd) $'
+        - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
+                          | thc) $'
+        # Flexget doesn't recognize "line" as an audio quality.
+        - '(?x) [\W_] (?: line ) (?:_|\b)'
       from: title
     content_size: { min: 300, max: 2500, strict: yes }
     imdb_lookup: yes
@@ -164,7 +167,7 @@ tasks:
     priority: 5
     interval: 15 minutes
     rss:
-      url: http://thebox.bz/rss.php?feed=dl&cat[]=14&cat[]=18&cat[]=31&cat[]=8
+      url: http://thebox.bz/rss.php?feed=dl&cat[]=14&cat[]=18&cat[]=31&cat[]=8&cat[]=25
       silent: yes
     preset: [ private-torrents, tv-series ]
     disable_plugin: [ torrent_alive ]
@@ -180,7 +183,7 @@ tasks:
   # TV series premieres
   #####################
   btn_premieres:
-    priority: 22
+    priority: 20
     include: [ private/btn-rss.yml ]
     preset: [ private-torrents, tv-premieres ]
     manipulate:
@@ -209,10 +212,17 @@ tasks:
     include: [ private/xspeeds_movies-rss.yml ]
     preset: [ private-torrents, movies ]
     rss: { other_fields: [ author ] }
+    # Only accept scene torrents here- members often mislabel.
+    regexp:
+      reject_excluding:
+        - '(?x) ^ XSbot $': { from: [ author ] }
   ptp:
     priority: 32
     include: [ private/ptp-rss.yml ]
     preset: [ private-torrents, movies ]
+    regexp:
+      reject:
+        - '/ Extras\b' : { from: [ title ] }
   ilt_movies:
     priority: 33
     include: [ private/ilt_movies-rss.yml ]
