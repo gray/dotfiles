@@ -36,6 +36,8 @@ alias perldoc=perlfind
 # groff bug converts some characters to utf-8.
 alias man='LANG=C man'
 
+alias sqlite=sqlite3
+
 case $OSTYPE in
     darwin*)
         alias gvim=mvim
