@@ -67,7 +67,7 @@ if has('multi_byte')
         set termencoding=utf-8
     endif
     if &termencoding == 'utf-8'
-        let &showbreak = nr2char(8618) . ' '
+        let &showbreak = "\u21aa "
     endif
 endif
 
@@ -361,6 +361,11 @@ let g:ref_cache_dir = expand('~/.vim/tmp/cache', 1)
 let g:ref_perldoc_cmd = 'perlfind'
 
 let g:cpan_mod_cachef = expand('~/.vim/tmp/cache/cpan-modules.txt', 1)
+
+let g:airline_left_sep = "\u25b6"
+let g:airline_right_sep = "\u25c0"
+let g:airline_branch_prefix = "\u2387 "
+let g:airline_section_z = '%l/%L : %c (%p%%)'
 
 
 " Mappings ----------------------------------------------------------------{{{1

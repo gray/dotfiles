@@ -13,7 +13,7 @@ update plugins:
 
     cd $REPO && git submodule -q foreach git pull -q --rebase origin master
     # crontab entry
-    @weekly cd $REPO && git submodule -q foreach git pull -q --rebase origin master | grep -qv '^Current branch .* is up to date.$' && git status -s .vim/bundle
+    @weekly cd $REPO && git submodule -q foreach git pull -q --rebase origin master && git submodule summary
 
 remove plugin:
 
@@ -32,6 +32,8 @@ ack:
     http://www.vim.org/scripts/script.php?script_id=2572
 afterimage:
     http://www.vim.org/scripts/script.php?script_id=1617
+airline:
+    https://github.com/bling/vim-airline
 camelcasemotion:
     http://www.vim.org/scripts/script.php?script_id=1905
 characterize:
