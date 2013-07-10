@@ -1,3 +1,4 @@
+# warnings off
 presets:
   global:
     cookies: ~/.flexget/private/cookies.sqlite
@@ -32,15 +33,18 @@ presets:
     regexp:
       reject:
         # Avoid re-encoders and poor encoders.
-        - '(?x) (?:_|\b) (?: afg | msd | \{c[_ ]p\} ) $': { from: title }
+        - '(?x) (?:_|\b) (?: afg | msd | (\{?)c[_ ]p\1 | pimp4003 ) $':
+            from: title
     # Run if filter before series filter (prevents extra timeframe waiting).
     plugin_priority: { if: 130 }
     if:
-      # Episode is usally a pilot or a preview- reject the latter.
+      # Episode 0 is often not a pilot.
       - '[1, 0] == [series_season, series_episode]':
           regexp:
             reject:
-              - '(?x) (?:_|\b) (?: preview | sneak \W+  peak | trailer )
+              - '(?x) (?:_|\b) (?: preview | sneak \W+  peek | trailer
+                                   | behind \W+ the \W+ scenes |
+                                   | first \W+ look | making \W+ of )
                       (?:_|\b)'
             from: title
 
@@ -56,16 +60,16 @@ presets:
           specials: no
           path: ~/Media/TV/{{series_name}}/.
         animation:
-          << : *TV_SETTING
+          <<: *TV_SETTING
           path: ~/Media/TV/Animation/{{series_name}}/.
         documentaries:
-          << : *TV_SETTING
+          <<: *TV_SETTING
           path: ~/Media/TV/Documentaries/{{series_name}}/.
         foreign:
-          << : *TV_SETTING
+          <<: *TV_SETTING
           path: ~/Media/TV/Foreign/{{series_name}}/.
         talk_shows:
-          << : *TV_SETTING
+          <<: *TV_SETTING
           path: ~/Media/TV/Talk Shows/{{series_name}}/.
     include: [ private/series.yml ]
     if:
@@ -78,8 +82,9 @@ presets:
   tv-premieres:
     preset: tv
     series_premiere:
-      << : *TV_SETTING
+      <<: *TV_SETTING
       allow_seasonless: yes
+      timeframe: 6 hours
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
@@ -104,7 +109,7 @@ presets:
           : { from: [ title, description ] }
         # Avoid certain groups.
         - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
-                          | thc) $'
+                          | nnd | thc | ssdd | crys ) $'
         # Flexget doesn't recognize "line" as an audio quality.
         - '(?x) [\W_] (?: line ) (?:_|\b)'
       from: title
@@ -154,10 +159,19 @@ tasks:
     manipulate:
       # Use the scene release name.
       - title: { extract: '.*\[ (.+?) \] *$' }
+    disable_plugin: [ torrent_alive ]
+    # Site doesn't distinguish between dvd and dvd screeners.
+    regexp:
+      reject:
+        - '(?x) \b dvdrip \b': { from: title }
   xspeeds_tv:
     priority: 3
     include: [ private/xspeeds_tv-rss.yml ]
     preset: [ private-torrents, tv-series ]
+    # Only accept scene torrents here- members have no quality standards.
+    regexp:
+      reject_excluding:
+        - '(?x) ^ XSbot $': { from: author }
   torrentday_tv:
     priority: 4
     include: [ private/torrentday_tv-rss.yml ]
@@ -169,6 +183,7 @@ tasks:
     rss:
       url: http://thebox.bz/rss.php?feed=dl&cat[]=14&cat[]=18&cat[]=31&cat[]=8&cat[]=25
       silent: yes
+      all_entries: no
     preset: [ private-torrents, tv-series ]
     disable_plugin: [ torrent_alive ]
     if: [ "str(now.year) + ')' not in title": reject ]
@@ -193,16 +208,31 @@ tasks:
     rss: { other_fields: [ comments ] }
     regexp:
       reject:
+        # Site doesn't distinguish between dvd and dvd screeners.
+        - '(?x) \b dvdrip \b': { from: title }
+        - '(?x) [\W_] kor $': { from: title }
         - ? '(?x) \b (?: anime | celebrities | children | cooking | dance
               | dating | fashion | food | gameshow | homeandgarden | lifestyle
               | music | soap | sport ) \b'
-          : { from: [ comments ] }
-        - '(?x) ^ \W* reality \W* $': { from: [ comments ] }
+          : { from: comments }
+        - '(?x) ^ \W* (?: reality | sports ) \W* $': { from: comments }
     if:
       # Accept only the current year, respecting dates near the boundary.
       - ? 'not str(year).isdigit() or int(year) not in
             [(now + timedelta(n)).year for n in (0, -60, 60)]'
         :  reject
+  xspeeds_tv_premieres:
+    manual: yes
+    include: [ private/xspeeds_tv-rss.yml ]
+    preset: [ private-torrents, tv-premieres ]
+    # Only accept scene torrents here- members have no quality standards.
+    regexp:
+      reject_excluding:
+        - '(?x) ^ XSbot $': { from: author }
+  torrentday_tv_premieres:
+    manual: yes
+    include: [ private/torrentday_tv-rss.yml ]
+    preset: [ private-torrents, tv-premieres ]
 
   ########
   # Movies
@@ -215,18 +245,14 @@ tasks:
     # Only accept scene torrents here- members often mislabel.
     regexp:
       reject_excluding:
-        - '(?x) ^ XSbot $': { from: [ author ] }
+        - '(?x) ^ XSbot $': { from: author }
   ptp:
     priority: 32
     include: [ private/ptp-rss.yml ]
     preset: [ private-torrents, movies ]
     regexp:
       reject:
-        - '/ Extras\b' : { from: [ title ] }
-  ilt_movies:
-    priority: 33
-    include: [ private/ilt_movies-rss.yml ]
-    preset: [ private-torrents, movies ]
+        - '/ Extras\b' : { from: title }
   torrentday_movies:
     priority: 34
     include: [ private/torrentday_movies-rss.yml ]
@@ -235,8 +261,14 @@ tasks:
   avistaz:
     priority: 35
     sequence:
-      - rss: { url: 'http://feeds.feedburner.com/eutorrentsbt', silent: yes }
-      - rss: { url: 'http://feeds.feedburner.com/btavistaz',    silent: yes }
+      - rss:
+          url: 'http://feeds.feedburner.com/eutorrentsbt'
+          silent: yes
+          all_entries: no
+      - rss:
+          url: 'http://feeds.feedburner.com/btavistaz'
+          silent: yes
+          all_entries: no
     preset: [ private-torrents, movies ]
     urlrewrite:
       site:
@@ -247,5 +279,7 @@ tasks:
         - '(?x) \b english \b': { from: [ title, description ] }
       reject:
         - ? '(?x) \b (?: dubbed  | episodes? | broadcast \W+ network
-                         | tv \W+ program | air \W+ (?:date | time) ) \b'
+                         | tv \W+ program | air \W+ (?:date | time)
+                         | no \W+ english \W+ subs
+                     ) \b'
           : { from: [ title, description ] }
