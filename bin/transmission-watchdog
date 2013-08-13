@@ -210,8 +210,8 @@ do
     fi
 done
 
-has_cmd unrar    && HAS_UNRAR=1    || HAS_UNRAR=0
-has_cmd cksfv    && HAS_CKSFV=1    || HAS_CKSFV=0
+has_cmd unrar && HAS_UNRAR=1 || HAS_UNRAR=0
+has_cmd cksfv && HAS_CKSFV=1 || HAS_CKSFV=0
 
 for line in $(remote --torrent all --info); do
     val=${line#*: }
@@ -235,10 +235,12 @@ for line in $(remote --torrent all --info); do
     # Verify directory is valid and in expected location.
     real_dir "$dir" && dir=$_real_dir || dir=
 
-    if [ 'unregistered torrent' = "${tracker_error-}" ]; then
-        log "Stopped unregistered torrent: $name"
-        state=Finished; tracker_error=
-    fi
+    case ${tracker_error-} in
+        [Uu]'nregistered torrent' | \
+        [Tt]'orrent is not authorized for use on this tracker')
+            log "Stopped unregistered torrent: $name"
+            state=Finished; tracker_error=
+    esac
 
     # Data was likely prematurely removed; remove torrent when finished.
     if [ -z "$dir" ] || [ ! -e "$dir/$name" ]; then
@@ -368,7 +370,7 @@ for line in $(remote --torrent all --info); do
     if [ -d "$dir/$name" ]; then
         ! find "$dir/$name" -type f \(                               \
             -name *.message -o -name *.localized -o -name *.part -o  \
-            -name *.url -o -name *.[Dd][Ii][Zz] \)                   \
+            -name *.url -o -name *.[Dd][Ii][Zz] -o -name *.sfv \)    \
             -exec rm -f {} + 2>/dev/null
 
         # Only keep subtitles for foreign videos.
