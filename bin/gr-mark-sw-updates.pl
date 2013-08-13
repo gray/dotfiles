@@ -2,6 +2,7 @@
 use 5.012;
 use warnings;
 
+use experimental 'smartmatch';
 use Config::Tiny;
 use CPAN::DistnameInfo;
 use Cwd qw(realpath);
@@ -13,7 +14,7 @@ use WebService::Google::Reader;
 
 use constant VERBOSE => not $ENV{CRON};
 
-my $creds = Config::Tiny->read("$ENV{HOME}/.google_reader")
+my $creds = Config::Tiny->read("$ENV{HOME}/.inoreader")
     or die Config::Tiny->errstr;
 my $username = $creds->{_}{username} // die 'Missing username';
 my $password = $creds->{_}{password} // die 'Missing password';
@@ -23,6 +24,7 @@ my $file = catfile($dir, '.unwanted-modules.bdb');
 my $db   = tie my %db, DB_File => $file;
 
 my $reader = WebService::Google::Reader->new(
+    host     => 'www.inoreader.com',
     username => $username,
     password => $password,
     https    => 1,
@@ -41,7 +43,7 @@ my (%unread, @unwanted_entries);
 
 FEED:
 for my $entry ($feed->entries) {
-    my $source  = substr $entry->source->id, 32;
+    my $source  = substr $entry->source->get_attr('gr:stream-id'), 5;
     my $conf    = $conf->{$source}
         or warn "Unexpected feed: $source\n" and next;
     my $lang    = $conf->{lang} // next;
