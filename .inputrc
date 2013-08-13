@@ -48,7 +48,7 @@ $if mode=vi
     set keymap vi-command
 
     set keymap vi-insert
-    "jj": vi-movement-mode
+
 $else
     # Bash mode
 $endif
