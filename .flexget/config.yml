@@ -176,17 +176,6 @@ tasks:
     priority: 4
     include: [ private/torrentday_tv-rss.yml ]
     preset: [ private-torrents, tv-series ]
-  thebox:
-    # Ratio-based tracker; easy to maintain. UK content.
-    priority: 5
-    interval: 15 minutes
-    rss:
-      url: http://thebox.bz/rss.php?feed=dl&cat[]=14&cat[]=18&cat[]=31&cat[]=8&cat[]=25
-      silent: yes
-      all_entries: no
-    preset: [ private-torrents, tv-series ]
-    disable_plugin: [ torrent_alive ]
-    if: [ "str(now.year) + ')' not in title": reject ]
   bitmetv:
     # Ratio-based tracker; hard to maintain.
     priority: 7
