@@ -132,8 +132,8 @@ git:
     http://www.vim.org/scripts/script.php?script_id=1654
 go:
     https://github.com/jnwhiteh/vim-golang
-json:
-    http://www.vim.org/scripts/script.php?script_id=1945
+javascript:
+    https://github.com/pangloss/vim-javascript
 markdown:
     https://github.com/tpope/vim-markdown
 nginx:
@@ -144,6 +144,8 @@ puppet:
     https://github.com/puppetlabs/puppet-syntax-vim
 python:
     http://www.vim.org/scripts/script.php?script_id=790
+ruby:
+    https://github.com/vim-ruby/vim-ruby
 scala:
     http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
 srt:
