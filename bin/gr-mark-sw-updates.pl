@@ -123,7 +123,7 @@ sub read_conf {
                 blacklist => [
                     sub {
                         return 1 if $dist->dist =~ m[
-                            ^ (?:acme | dist-zilla | mojo[^-]*) -
+                            ^ (?:acme | dist-zilla | mojo[^-]* | task-belike) -
                         ]ix;
                         # Prolific purveyors of piffleware.
                         return 1 if $_[0]->link->href =~ m[
