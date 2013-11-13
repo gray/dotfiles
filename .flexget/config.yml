@@ -6,7 +6,8 @@ presets:
 
   torrents:
     content_filter:
-      require: [ '*.avi', '*.mkv', '*.mp4', '*.rar' ]
+      # require: [ '*.avi', '*.mkv', '*.mp4', '*.rar' ]
+      require: [ '*.avi', '*.mkv', '*.mp4' ]
     torrent_scrub: on
     torrent_alive: { min_seeds: 5, reject_for: 10 minutes }
     exec:
@@ -91,7 +92,7 @@ presets:
         - '(?x) (?:_|\b) (?: au | nz | uk | ufc | sports | championships?
                              | 24(?:h|-7) | bake | baking | world \W+ series )
                 (?:_|\b)'
-        - '(?x) (?:_|\b) (?: brit(?:ish | ain | annia) | england | australia
+        - '(?x) (?:_|\b) (?: brit(?:ish | ain | annic?a) | england | australia
                              | kitchen | food | cook )'
         - '(?x) (?:_|\b) (?: pdtv | norwegian | hanrel ) (?:_|\b)':
             from: title
@@ -169,6 +170,7 @@ tasks:
     include: [ private/xspeeds_tv-rss.yml ]
     preset: [ private-torrents, tv-series ]
     # Only accept scene torrents here- members have no quality standards.
+    rss: { other_fields: [ author ] }
     regexp:
       reject_excluding:
         - '(?x) ^ XSbot $': { from: author }
@@ -215,6 +217,7 @@ tasks:
     include: [ private/xspeeds_tv-rss.yml ]
     preset: [ private-torrents, tv-premieres ]
     # Only accept scene torrents here- members have no quality standards.
+    rss: { other_fields: [ author ] }
     regexp:
       reject_excluding:
         - '(?x) ^ XSbot $': { from: author }
@@ -230,8 +233,8 @@ tasks:
     priority: 31
     include: [ private/xspeeds_movies-rss.yml ]
     preset: [ private-torrents, movies ]
-    rss: { other_fields: [ author ] }
     # Only accept scene torrents here- members often mislabel.
+    rss: { other_fields: [ author ] }
     regexp:
       reject_excluding:
         - '(?x) ^ XSbot $': { from: author }
