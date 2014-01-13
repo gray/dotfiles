@@ -4,13 +4,14 @@ alias h=history
 
 alias ls="ls $LS_OPTIONS -F"
 alias la="ls $LS_OPTIONS -FA"
-alias l.="ls $LS_OPTIONS -Fd $* .*"
 alias ll="ls $LS_OPTIONS -Flh"
 alias lla="ls $LS_OPTIONS -FlhA"
-alias ll.="ls $LS_OPTIONS -Fdl $* .*"
 alias llc="ls $LS_OPTIONS -Flhtrc"
 alias llca="ls $LS_OPTIONS -FlhtrcA"
-alias llc.="ls $LS_OPTIONS -FlhtrcdA $* .*"
+alias llt="ls $LS_OPTIONS -Flhtr"
+alias llta="ls $LS_OPTIONS -FlhtrA"
+alias lls="ls $LS_OPTIONS -FlhSr"
+alias llsa="ls $LS_OPTIONS -FlhSrA"
 
 # Don't try to connect to the X server- shortens startup time.
 alias vim='vim -X'
