@@ -72,7 +72,7 @@
 	url = git://github.com/nanotech/jellybeans.vim.git
 [submodule ".vim/bundle/kolor"]
 	path = .vim/bundle/kolor
-	url = git://github.com/zeis/kolor.git
+	url = git://github.com/zeis/vim-kolor.git
 [submodule ".vim/bundle/largefile"]
 	path = .vim/bundle/largefile
 	url = git://github.com/vim-scripts/LargeFile.git
