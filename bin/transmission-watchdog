@@ -374,7 +374,7 @@ for line in $(remote --torrent all --info); do
             -exec rm -f {} + 2>/dev/null
 
         # Only keep subtitles for foreign videos.
-        is_video_dir=0
+        is_video_dir=
         case $dir/ in
             "$WATCH_DIR"/TV/Foreign/* | "$WATCH_DIR"/Movies/Foreign/*)
                 is_video_dir=1 ;;
@@ -397,7 +397,7 @@ for line in $(remote --torrent all --info); do
                     -name *.[Tt][Xx][Tt] -o -name *.[Nn][Ff][Oo] -o     \
                     -name *.[Hh][Tt][Mm][Ll] -o -name *.[Jj][Pp][Gg] -o \
                     -name *.[Jj][Pp][Ee][Gg] -o -name *.[Pp][Nn][Gg] -o \
-                    -name *.[Gg][Ii][Ff] -o                             \
+                    -name *.[Gg][Ii][Ff] -o -name *.[Rr][Tt][Ff] -o     \
                     -name [Ss][Aa][Mm][Pp][Ll][Ee].??? -o               \
                     -name *[/.\ -][Ss][Aa][Mm][Pp][Ll][Ee].??? -o       \
                     -name *\([Ss][Aa][Mm][Pp][Ll][Ee]\).???             \
