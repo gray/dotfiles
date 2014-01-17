@@ -310,6 +310,10 @@ command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 
 let g:SuperTabDefaultCompletionType = 'context'
 
+if executable('ag')
+    let g:ackprg = 'ag --nogroup --nocolor --column'
+endif
+
 let g:ctrlp_map = '<leader>ff'
 let g:ctrlp_cache_dir = '~/.vim/tmp/cache/ctrlp'
 let g:ctrlp_clear_cache_on_exit = 0
