@@ -44,6 +44,8 @@ dirdiff:
     http://www.vim.org/scripts/script.php?script_id=102
 endwise:
     http://www.vim.org/scripts/script.php?script_id=2386
+eunuch:
+    http://www.vim.org/scripts/script.php?script_id=4300
 file_line:
     http://www.vim.org/scripts/script.php?script_id=2184
 fugitive:
