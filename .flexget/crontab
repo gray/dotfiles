@@ -1,7 +1,0 @@
-PATH=./bin:/opt/local/bin:/usr/local/bin:/usr/bin:/bin
-
-1-59/5 * * * * nice -n 20 flexget --cron
-1-59/2 * * * * nice -n 20 transmission-watchdog
-
-# Lockfile is ignored only after 10 hours.
-@reboot rm -f $HOME/.flexget/.config-lock

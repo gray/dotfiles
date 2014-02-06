@@ -1,13 +1,13 @@
 # warnings off
-presets:
+templates:
   global:
     cookies: ~/.flexget/private/cookies.sqlite
     download: ~/Downloads/.
 
   torrents:
     content_filter:
-      # require: [ '*.avi', '*.mkv', '*.mp4', '*.rar' ]
-      require: [ '*.avi', '*.mkv', '*.mp4' ]
+      require: [ '*.avi', '*.mkv', '*.mp4', '*.rar' ]
+      reject: [ '*.m2ts' ]
     torrent_scrub: on
     torrent_alive: { min_seeds: 5, reject_for: 10 minutes }
     exec:
@@ -22,12 +22,12 @@ presets:
           nice -n 20 transmission-watchdog
 
   private-torrents:
-    preset: torrents
+    template: torrents
     private_torrents: yes
 
   tv:
     interval: 5 minutes
-    content_size: { min: 25, strict: yes }
+    content_size: { min: 25 }
     manipulate:
       # Remove description field to avoid false matches from series plugin.
       - description: { remove: yes }
@@ -36,8 +36,6 @@ presets:
         # Avoid re-encoders and poor encoders.
         - '(?x) (?:_|\b) (?: afg | msd | (\{?)c[_ ]p\1 | pimp4003 ) $':
             from: title
-    # Run if filter before series filter (prevents extra timeframe waiting).
-    plugin_priority: { if: 130 }
     if:
       # Episode 0 is often not a pilot.
       - '[1, 0] == [series_season, series_episode]':
@@ -50,7 +48,7 @@ presets:
             from: title
 
   tv-series:
-    preset: tv
+    template: tv
     series:
       settings:
         tv: &TV_SETTING
@@ -81,7 +79,7 @@ presets:
 
   # Grab the first episode of any new series.
   tv-premieres:
-    preset: tv
+    template: tv
     series_premiere:
       <<: *TV_SETTING
       allow_seasonless: yes
@@ -89,18 +87,20 @@ presets:
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
-        - '(?x) (?:_|\b) (?: au | nz | uk | ufc | sports | championships?
-                             | 24(?:h|-7) | bake | baking | world \W+ series )
+        - '(?x) (?:_|\b) (?: au | nz | pl | uk | n[fh]l | ufc | sports
+                             | championships? | 24(?:h|-7) | bak(e|ing)
+                             | world \W+ series )
                 (?:_|\b)'
+        - '(?x) chefs?'
         - '(?x) (?:_|\b) (?: brit(?:ish | ain | annic?a) | england | australia
-                             | kitchen | food | cook )'
+                             | kitchen | food | cook | tattoo )'
         - '(?x) (?:_|\b) (?: pdtv | norwegian | hanrel ) (?:_|\b)':
             from: title
       from: series_name
 
   movies:
     interval: 30 minutes
-    quality: dvdrip+ <720p
+    quality: dvdrip+ <=720p
     regexp:
       reject:
         - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | live\W+at ) (?:_|\b)'
@@ -114,24 +114,24 @@ presets:
         # Flexget doesn't recognize "line" as an audio quality.
         - '(?x) [\W_] (?: line ) (?:_|\b)'
       from: title
-    content_size: { min: 300, max: 2500, strict: yes }
+    content_size: { min: 300, max: 2500 }
     imdb_lookup: yes
+    imdb_required: yes
     seen_movies: strict
     if:
-      - not has_field('imdb_id'): reject
       - 'imdb_year < now.year - 6': reject
-      - ? "sorted(imdb_genres) in [['music'], ['biography', 'music'],
+      - ? "sorted(imdb_genres or []) in [['music'], ['biography', 'music'],
             ['documentary', 'music'], ['biography', 'documentary', 'music']]"
         : reject
-      - "'musical' in imdb_genres": reject
+      - "'musical' in (imdb_genres or [])": reject
       # Probably a standup comedy.
-      - "'comedy' in imdb_genres and 1 == len(imdb_actors)": reject
+      - "'comedy' in (imdb_genres or []) and 1 == len(imdb_actors or [])": reject
       - "'english' == (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/. }
           imdb:
             min_score: 6.2
             min_votes: 500
-      - "'documentary' in imdb_genres":
+      - "'documentary' in (imdb_genres or [])":
           set: { path: ~/Media/Movies/Documentaries/. }
       - "'english' != (imdb_languages or ['english'])[0]":
           set:
@@ -154,9 +154,9 @@ tasks:
   # TV series
   ###########
   btn:
-    priority: 2
+    priority: 1
     include: [ private/btn-rss.yml ]
-    preset: [ private-torrents, tv-series ]
+    template: [ private-torrents, tv-series ]
     manipulate:
       # Use the scene release name.
       - title: { extract: '.*\[ (.+?) \] *$' }
@@ -166,24 +166,23 @@ tasks:
       reject:
         - '(?x) \b dvdrip \b': { from: title }
   xspeeds_tv:
-    priority: 3
+    priority: 2
     include: [ private/xspeeds_tv-rss.yml ]
-    preset: [ private-torrents, tv-series ]
+    template: [ private-torrents, tv-series ]
     # Only accept scene torrents here- members have no quality standards.
-    rss: { other_fields: [ author ] }
     regexp:
       reject_excluding:
         - '(?x) ^ XSbot $': { from: author }
   torrentday_tv:
-    priority: 4
+    priority: 3
     include: [ private/torrentday_tv-rss.yml ]
-    preset: [ private-torrents, tv-series ]
+    template: [ private-torrents, tv-series ]
   bitmetv:
     # Ratio-based tracker; hard to maintain.
-    priority: 7
+    priority: 4
     delay: 10 minutes
     include: [ private/bitmetv-rss.yml ]
-    preset: [ private-torrents, tv-series ]
+    template: [ private-torrents, tv-series ]
 
   #####################
   # TV series premieres
@@ -191,12 +190,11 @@ tasks:
   btn_premieres:
     priority: 20
     include: [ private/btn-rss.yml ]
-    preset: [ private-torrents, tv-premieres ]
+    template: [ private-torrents, tv-premieres ]
     manipulate:
       - year: { from: title, extract: '^[^[]+\[ (\d{4}) \]' }
       # Use the scene release name.
       - title: { extract: '.*\[ (.+?) \] *$' }
-    rss: { other_fields: [ comments ] }
     regexp:
       reject:
         # Site doesn't distinguish between dvd and dvd screeners.
@@ -213,18 +211,18 @@ tasks:
             [(now + timedelta(n)).year for n in (0, -60, 60)]'
         :  reject
   xspeeds_tv_premieres:
-    manual: yes
+    priority: 21
     include: [ private/xspeeds_tv-rss.yml ]
-    preset: [ private-torrents, tv-premieres ]
+    template: [ private-torrents, tv-premieres ]
     # Only accept scene torrents here- members have no quality standards.
-    rss: { other_fields: [ author ] }
     regexp:
       reject_excluding:
         - '(?x) ^ XSbot $': { from: author }
   torrentday_tv_premieres:
     manual: yes
+    priority: 22
     include: [ private/torrentday_tv-rss.yml ]
-    preset: [ private-torrents, tv-premieres ]
+    template: [ private-torrents, tv-premieres ]
 
   ########
   # Movies
@@ -232,26 +230,25 @@ tasks:
   xspeeds_movies:
     priority: 31
     include: [ private/xspeeds_movies-rss.yml ]
-    preset: [ private-torrents, movies ]
+    template: [ private-torrents, movies ]
     # Only accept scene torrents here- members often mislabel.
-    rss: { other_fields: [ author ] }
     regexp:
       reject_excluding:
         - '(?x) ^ XSbot $': { from: author }
-  ptp:
+  torrentday_movies:
     priority: 32
+    include: [ private/torrentday_movies-rss.yml ]
+    template: [ private-torrents, movies ]
+  ptp:
+    priority: 33
     include: [ private/ptp-rss.yml ]
-    preset: [ private-torrents, movies ]
+    template: [ private-torrents, movies ]
     regexp:
       reject:
         - '/ Extras\b' : { from: title }
-  torrentday_movies:
-    priority: 34
-    include: [ private/torrentday_movies-rss.yml ]
-    preset: [ private-torrents, movies ]
   # Foreign: AsiaTorrents.com and EUTorrents.com
   avistaz:
-    priority: 35
+    priority: 34
     sequence:
       - rss:
           url: 'http://feeds.feedburner.com/eutorrentsbt'
@@ -261,7 +258,7 @@ tasks:
           url: 'http://feeds.feedburner.com/btavistaz'
           silent: yes
           all_entries: no
-    preset: [ private-torrents, movies ]
+    template: [ private-torrents, movies ]
     urlrewrite:
       site:
         regexp: '(?x) ^ http:// (?P<host>[^/]+) .*? &id= (?P<id>[^&]+)'
