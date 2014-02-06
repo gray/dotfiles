@@ -6,6 +6,7 @@ PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
 PATH=$PATH:$DEFAULT_PATH
 export PATH
 
+ulimit -n 8192
 umask 0022
 
 # Prevent C-s from accidentally freezing the terminal.
