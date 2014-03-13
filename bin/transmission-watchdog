@@ -110,7 +110,7 @@ remote () {
     # TODO: add retry and kill logic
     exec 3>&1 4>&2
     if ! remote_error=$(
-        { timeout 30 transmission-remote -N "$NETRC" "$@" 2>&4 1>&3; } 4>&1
+        { timeout 30 transmission-remote 127.0.0.1 -N "$NETRC" "$@" 2>&4 1>&3; } 4>&1
     ); then
         case $remote_error in
             *"Couldn't connect to server")
