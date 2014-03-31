@@ -660,9 +660,16 @@ if has('gui_running')
     set guioptions-=m  " Hide menubar
 
     if has('gui_macvim')
-        set guifont=Monaco:h10.00
         set noantialias
         set transparency=10
+
+        let s:width = system("osascript -e 'tell application \"Finder\" to get"
+            \ . " bounds of window of desktop' | cut -d ' ' -f 4")
+        if 800 < s:width
+            set guifont=Monaco:h13.00
+        else
+            set guifont=Monaco:h10.00
+        endif
     elseif has('gui_gtk')
         set guifont=Monaco\ 9
     endif
