@@ -252,7 +252,12 @@ for line in $(remote --torrent all --info); do
     fi
 
     case $dir/ in
-        "$ZOMBIE_DIR"/*) continue ;;
+        "$ZOMBIE_DIR"/*)
+            if [ Finished = "$state" ]; then
+                remote --torrent "$hash" --remove-and-delete >/dev/null
+                log "Removed zombie torrent and data: $name"
+            fi
+            continue ;;
         "$WATCH_DIR"/*) ;;
         *) continue
     esac
