@@ -265,8 +265,8 @@ for line in $(remote --torrent all --info); do
     # Make this is a zombie torrent. Keep the torrent alive and pretend to
     # be seeding it to earn tracker credit. Hide the torrent data after all
     # the media files have been viewed and truncated.
-    if [ 0 = "${up_limit%% *}" ] &&
-        [ -z "$(find $dir/$name -type f -size +0 2>/dev/null)" ]
+    if [ 0 = "${up_limit%% *}" ] \
+        && [ -z "$(find $dir/$name -type f -size +0 2>/dev/null)" ]
     then
         ! find "$dir/$name" -type f -name '*.unrarred' -exec rm -f {} + \
             2>/dev/null
@@ -417,22 +417,19 @@ for line in $(remote --torrent all --info); do
         # Move data out of extraneous container directory.
         count=0
         for file in $(find "$dir/$name" -type f); do
+            [ .DS_Store = "${file##*/}" ] && continue
             count=$((count+1)) && [ $count -gt 1 ] && break
         done
         if [ $count -eq 1 ]; then
             file_base=${file##*/}
             file_base=${file_base%.*}
-            if [ ${#name} -gt ${#file_base} ] && [ ! -f "$dir/$name" ]; then
-                mv -f "$file" "$dir/$name.${file##*.}"
+            file_ext=${file##*.}
+            if [ ${#name} -gt ${#file_base} ]; then
+                new_file="$dir/$name.$file_ext"
             else
-                lc_name=$(echo $name | tr '[:upper:]' '[:lower:]' \
-                    | tr -Cd '[:alnum:]' )
-                lc_file=$(echo $file_base | tr '[:upper:]' '[:lower:]' \
-                    | tr -Cd '[:alnum:]' )
-                if [ "$lc_name" = "$lc_file" ] && [ ! -f "$dir/$file" ]; then
-                    mv -f "$file" "$dir"
-                fi
+                new_file="$dir/$file_base.$file_ext"
             fi
+            [ ! -f "$new_file" ] && mv -f "$file" "$new_file"
         fi
     fi
 
