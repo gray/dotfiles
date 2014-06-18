@@ -351,6 +351,12 @@ let g:tagbar_type_xs = {
     \ }
 
 let g:netrw_dirhistmax = 0
+" The default is <cfile>, but that truncates URLs with query strings.
+let g:netrw_gx = '<cWORD>'
+if has('macunix')
+    " Open in the background.
+    let g:netrw_browsex_viewer = 'open -g'
+endif
 
 let g:LargeFile = 50
 
@@ -663,6 +669,7 @@ if has('gui_running')
         set noantialias
         set transparency=10
 
+        " Use a larger font size for higher resolution screens.
         let s:width = system("osascript -e 'tell application \"Finder\" to get"
             \ . " bounds of window of desktop' | cut -d ' ' -f 4")
         if 800 < s:width
