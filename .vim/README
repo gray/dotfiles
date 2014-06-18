@@ -72,8 +72,8 @@ nerd commenter:
     http://www.vim.org/scripts/script.php?script_id=1218
 nerd tree:
     http://www.vim.org/scripts/script.php?script_id=1658
-pathogen:
-    http://www.vim.org/scripts/script.php?script_id=2332
+netrw:
+    https://github.com/genoma/vim-netrw
 perlomni:
     http://www.vim.org/scripts/script.php?script_id=2852
 perlprove:

@@ -232,3 +232,6 @@
 [submodule ".vim/bundle/eunuch"]
 	path = .vim/bundle/eunuch
 	url = git://github.com/tpope/vim-eunuch.git
+[submodule ".vim/bundle/netrw"]
+	path = .vim/bundle/netrw
+	url = git://github.com/genoma/vim-netrw.git
