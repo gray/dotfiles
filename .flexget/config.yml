@@ -3,6 +3,7 @@ templates:
   global:
     cookies: ~/.flexget/private/cookies.sqlite
     download: ~/Downloads/.
+    no_entries_ok: yes
 
   torrents:
     content_filter:
@@ -35,6 +36,8 @@ templates:
       reject:
         # Avoid re-encoders and poor encoders.
         - '(?x) (?:_|\b) (?: afg | msd | (\{?)c[_ ]p\1 | pimp4003 ) $':
+            from: title
+        - '(?x) \b subbed \b':
             from: title
     if:
       # Episode 0 is often not a pilot.
@@ -89,11 +92,11 @@ templates:
       reject:
         - '(?x) (?:_|\b) (?: au | nz | pl | uk | n[fh]l | ufc | sports
                              | championships? | 24(?:h|-7) | bak(e|ing)
-                             | world \W+ series )
+                             | world\W+series | live\W+at )
                 (?:_|\b)'
         - '(?x) chefs?'
-        - '(?x) (?:_|\b) (?: brit(?:ish | ain | annic?a) | england | australia
-                             | kitchen | food | cook | tattoo )'
+        - '(?x) (?:_|\b) (?: brit(?:s | ish | ain | annic?a)? | england
+                             | australia | kitchen | food | cook | tattoo )'
         - '(?x) (?:_|\b) (?: pdtv | norwegian | hanrel ) (?:_|\b)':
             from: title
       from: series_name
@@ -103,14 +106,16 @@ templates:
     quality: dvdrip+ <=720p
     regexp:
       reject:
-        - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | live\W+at ) (?:_|\b)'
+        - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | live\W+at
+                          | fan[\W_]edit )
+                  (?:_|\b)'
         - ? '(?x) [\W_] (?: dubbed | pldub | cropped | (?:heb|kor|swe)sub
                             | rosubbed )
                   (?:_|\b)'
           : { from: [ title, description ] }
         # Avoid certain groups.
         - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
-                          | nnd | thc | ssdd | crys ) $'
+                          | nnd | thc | ssdd | crys | nogroup | evo ) $'
         # Flexget doesn't recognize "line" as an audio quality.
         - '(?x) [\W_] (?: line ) (?:_|\b)'
       from: title
@@ -131,6 +136,8 @@ templates:
           imdb:
             min_score: 6.2
             min_votes: 500
+      - '1 < len(imdb_languages or [])':
+          set: { path: ~/Media/Movies/Foreign/. }
       - "'documentary' in (imdb_genres or [])":
           set: { path: ~/Media/Movies/Documentaries/. }
       - "'english' != (imdb_languages or ['english'])[0]":
@@ -211,6 +218,7 @@ tasks:
             [(now + timedelta(n)).year for n in (0, -60, 60)]'
         :  reject
   xspeeds_tv_premieres:
+    manual: yes
     priority: 21
     include: [ private/xspeeds_tv-rss.yml ]
     template: [ private-torrents, tv-premieres ]
@@ -269,6 +277,6 @@ tasks:
       reject:
         - ? '(?x) \b (?: dubbed  | episodes? | broadcast \W+ network
                          | tv \W+ program | air \W+ (?:date | time)
-                         | no \W+ english \W+ subs
+                         | no \W+ english \W+ sub(?:title)s?
                      ) \b'
           : { from: [ title, description ] }
