@@ -32,7 +32,7 @@ alias wget='wget --continue --no-check-certificate'
 # Get external IP address.
 alias xip='curl -o - -s icanhazip.com || curl -o - -s ifconfig.me/ip'
 
-alias perldoc=perlfind
+alias perldoc=cpandoc
 
 # groff bug converts some characters to utf-8.
 alias man='LANG=C man'
