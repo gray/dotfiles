@@ -44,11 +44,11 @@ templates:
       - '[1, 0] == [series_season, series_episode]':
           regexp:
             reject:
-              - '(?x) (?:_|\b) (?: preview | sneak \W+  peek | trailer
-                                   | behind \W+ the \W+ scenes |
+              - ? '(?x) (?:_|\b) (?: preview | sneak \W+  peek | trailer
+                                   | behind \W+ the \W+ scenes
                                    | first \W+ look | making \W+ of )
-                      (?:_|\b)'
-            from: title
+                        (?:_|\b)'
+                : { from: title }
 
   tv-series:
     template: tv
