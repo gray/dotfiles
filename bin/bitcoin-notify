@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# Display a growl notification for bitcoin txs.
+# In ~/.bitcoin/bitcoin.conf, add:
+#   bitcoinwalletnotify=setlock /tmp/bitcoin-notify.lock bitcoin-notify %s
+
+set -o nounset
+
+TX_ID=$1
+[ -z $TX_ID ] && exit
+
+STATE_FILE=${TMPDIR:-/tmp}/bitcoin-notify.cache
+# Prevent duplicate tx notifications.
+if grep -s $TX_ID $STATE_FILE >/dev/null 2>&1; then
+    exit
+fi
+
+tx=$(bitcoin-cli gettransaction $TX_ID)
+case $tx in
+    *'"confirmations" : 0'*) exit
+esac
+
+# Cache the txs for an hour- walletnotify is usually called 3 times per tx-
+# once when 0 confirmations, once for when 1 confirmation and once around 3 or
+# 4 confirmations.
+now=$(date +%s)
+# stat isn't portable
+mod_time=$(stat -f "%m" $STATE_FILE 2>/dev/null)
+if [ -s $STATE_FILE ] && [ 3600 -gt $(($now - $mod_time)) ]; then
+    echo $TX_ID >> $STATE_FILE
+else
+    echo $TX_ID > $STATE_FILE
+fi
+
+printf -v amount "%.8f" $(echo $tx | jq .amount)
+[ "$amount" ] || exit
+
+outputs=$(echo $tx | jq '.details | length')
+[ "$outputs" ] || exit
+
+message="Amount: $amount"
+if [ 1 -eq $outputs ]; then
+    address=$(echo $tx | jq -r '.details[0].address')
+    message="$message"$'\n'"Address: ${address:0:17}..."
+else
+    average=$(echo "scale=8; $amount / $outputs" | bc)
+    # Ignore dust.
+    [ 5460 -gt ${average/./} ] && exit
+    message="$message"$'\n'"Outputs: $outputs"$'\n'"Average: $average"
+fi
+
+balance=$(bitcoin-cli getbalance)
+message="$message"$'\n'"Balance: $balance"
+
+# growlnotify -s -m "$message" --url http://blockchain.info/tx/$TX_ID 'Bitcoin TX'
+growlnotify -s -m "$message" --url http://btc.blockr.io/tx/info/$TX_ID 'Bitcoin TX'
