@@ -55,9 +55,6 @@
 [submodule ".vim/bundle/gitv"]
 	path = .vim/bundle/gitv
 	url = git://github.com/gregsexton/gitv.git
-[submodule ".vim/bundle/golang"]
-	path = .vim/bundle/golang
-	url = git://github.com/jnwhiteh/vim-golang.git
 [submodule ".vim/bundle/hickop"]
 	path = .vim/bundle/hickop
 	url = git://github.com/hickop/vim-hickop-colors.git
@@ -235,3 +232,6 @@
 [submodule ".vim/bundle/netrw"]
 	path = .vim/bundle/netrw
 	url = git://github.com/genoma/vim-netrw.git
+[submodule ".vim/bundle/go"]
+	path = .vim/bundle/go
+	url = git://github.com/fatih/vim-go.git

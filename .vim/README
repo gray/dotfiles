@@ -11,7 +11,7 @@ add new plugin:
 
 update plugins:
 
-    git submodule -q foreach git pull -q -r -s recursive -X theirs origin master
+    git submodule -q foreach git pull -q -r -s theirs origin master
 
 remove plugin:
 
@@ -131,7 +131,7 @@ csv:
 git:
     http://www.vim.org/scripts/script.php?script_id=1654
 go:
-    https://github.com/jnwhiteh/vim-golang
+    https://github.com/fatih/vim-go
 javascript:
     https://github.com/pangloss/vim-javascript
 markdown:
