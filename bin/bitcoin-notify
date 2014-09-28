@@ -40,16 +40,19 @@ outputs=$(echo $tx | jq '.details | length')
 
 message="Amount: $amount"
 if [ 1 -eq $outputs ]; then
-    # Ignore dust.
-    [ 5460 -gt ${amount//[-.]/} ] && exit
     address=$(echo $tx | jq -r '.details[0].address')
     message="$message"$'\n'"Address: ${address:0:17}..."
 else
     average=$(echo "$amount $outputs" | awk '{printf "%.8f", $1 / $2}')
-    # Ignore dust.
-    [ 5460 -gt ${average//[-.]/} ] && exit
     message="$message / $outputs"$'\n'"Average: $average"
+
+    # The maximum amount by absolute value.
+    printf -v amount "%.8f" \
+        $(echo $tx | jq '.details | max_by(.amount | length) | .amount')
 fi
+
+# Ignore dust.
+[ 5460 -gt ${amount//[-.]/} ] && exit
 
 balance=$(bitcoin-cli getbalance)
 message="$message"$'\n'"Balance: $balance"
