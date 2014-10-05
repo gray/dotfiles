@@ -16,9 +16,8 @@ if grep -s $TX_ID $STATE_FILE >/dev/null 2>&1; then
 fi
 
 tx=$(bitcoin-cli gettransaction $TX_ID)
-case $tx in
-    *'"confirmations" : 0'*) exit
-esac
+confirmations=$(echo $tx | jq '.confirmations')
+[ 0 -lt "$confirmations" ] || exit
 
 # Cache the txs for an hour- walletnotify is usually called 3 times per tx-
 # once when 0 confirmations, once for when 1 confirmation and once around 3 or
@@ -33,10 +32,10 @@ else
 fi
 
 printf -v amount "%.8f" $(echo $tx | jq .amount)
-[ "$amount" ] || exit
+[ 0 -eq ${amount//[-.]/} ] && exit
 
 outputs=$(echo $tx | jq '.details | length')
-[ "$outputs" ] || exit
+[ 0 -lt "$outputs" ] || exit
 
 message="Amount: $amount"
 if [ 1 -eq $outputs ]; then
