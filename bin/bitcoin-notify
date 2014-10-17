@@ -4,6 +4,7 @@
 # In ~/.bitcoin/bitcoin.conf, add:
 #   bitcoinwalletnotify=setlock /tmp/bitcoin-notify.lock bitcoin-notify %s
 
+set -o errexit
 set -o nounset
 
 TX_ID=$1
@@ -15,16 +16,16 @@ if grep -s $TX_ID $STATE_FILE >/dev/null 2>&1; then
     exit
 fi
 
-tx=$(bitcoin-cli gettransaction $TX_ID)
+tx=$(bitcoin-cli gettransaction $TX_ID 2>/dev/null)
 confirmations=$(echo $tx | jq '.confirmations')
-[ 0 -lt "$confirmations" ] || exit
+[ 0 -lt ${confirmations:-0} ] || exit
 
 # Cache the txs for an hour- walletnotify is usually called 3 times per tx-
 # once when 0 confirmations, once for when 1 confirmation and once around 3 or
 # 4 confirmations.
 now=$(date +%s)
 # stat isn't portable
-mod_time=$(stat -f "%m" $STATE_FILE 2>/dev/null)
+mod_time=$(stat -f "%m" $STATE_FILE 2>/dev/null) || true
 if [ -s $STATE_FILE ] && [ 3600 -gt $(($now - $mod_time)) ]; then
     echo $TX_ID >> $STATE_FILE
 else
