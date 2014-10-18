@@ -42,6 +42,8 @@ delimitMate:
     http://www.vim.org/scripts/script.php?script_id=2754
 dirdiff:
     http://www.vim.org/scripts/script.php?script_id=102
+dispatch:
+    http://www.vim.org/scripts/script.php?script_id=4504
 endwise:
     http://www.vim.org/scripts/script.php?script_id=2386
 eunuch:
@@ -148,6 +150,8 @@ scala:
     http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
 srt:
     http://www.linuxpages.org/srt.vim_en.php
+swift:
+    https://github.com/Keithbsmiley/swift.vim
 swig:
     http://www.vim.org/scripts/script.php?script_id=1615
 tmux:
