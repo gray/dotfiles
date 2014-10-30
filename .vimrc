@@ -244,7 +244,7 @@ function! s:AdjustColorScheme ()
             \ + range(88, 99) + range(124, 134) + range(160, 165)
             \ + [196, 197] + range(232, 244)
         if index(l:dark_range, str2nr(l:bg)) >= 0
-            " Vim resets the colors to default if the cterbg for the Normal
+            " Vim resets the colors to default if the ctermbg for the Normal
             " group is set without first unsetting g:colors_name and setting
             " g:syntax_cmd to an invalid value.
             if exists('g:colors_name')
