@@ -115,7 +115,8 @@ templates:
           : { from: [ title, description ] }
         # Avoid certain groups.
         - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
-                          | nnd | thc | ssdd | crys | nogroup | evo ) $'
+                          | nnd | thc | ssdd | crys | nogroup | evo
+                          | playxd) $'
         # Flexget doesn't recognize "line" as an audio quality.
         - '(?x) [\W_] (?: line ) (?:_|\b)'
       from: title
