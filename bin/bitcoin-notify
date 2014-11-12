@@ -39,9 +39,12 @@ outputs=$(echo $tx | jq '.details | length')
 [ 0 -lt "$outputs" ] || exit
 
 message="Amount: $amount"
+url=http://btc.blockr.io/tx/info/$TX_ID
+
 if [ 1 -eq $outputs ]; then
     address=$(echo $tx | jq -r '.details[0].address')
     message="$message"$'\n'"Address: ${address:0:17}..."
+    url=http://btc.blockr.io/address/info/$address
 else
     average=$(echo "$amount $outputs" | awk '{printf "%.8f", $1 / $2}')
     message="$message / $outputs"$'\n'"Average: $average"
@@ -57,5 +60,4 @@ fi
 balance=$(bitcoin-cli getbalance)
 message="$message"$'\n'"Balance: $balance"
 
-# growlnotify -s -m "$message" --url http://blockchain.info/tx/$TX_ID 'Bitcoin TX'
-growlnotify -s -m "$message" --url http://btc.blockr.io/tx/info/$TX_ID 'Bitcoin TX'
+growlnotify -s -m "$message" --url $url 'Bitcoin TX'
