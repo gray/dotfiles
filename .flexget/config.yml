@@ -29,9 +29,6 @@ templates:
   tv:
     interval: 5 minutes
     content_size: { min: 25 }
-    manipulate:
-      # Remove description field to avoid false matches from series plugin.
-      - description: { remove: yes }
     regexp:
       reject:
         # Avoid re-encoders and poor encoders.
