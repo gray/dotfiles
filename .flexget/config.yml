@@ -163,8 +163,13 @@ tasks:
     include: [ private/btn-rss.yml ]
     template: [ private-torrents, tv-series ]
     manipulate:
-      # Use the scene release name.
-      - title: { extract: '.*\[ (.+?) \] *$' }
+      # Remove some btn fields to avoid confusing the series parser.
+      # Don't rely solely on the scene release name because it doesn't always
+      # include episode info (esp. documentaries).
+      - title:
+          replace:
+            regexp: '(?x) ^ ([^\[]+) .* \[\ ([^\]]+) \ \] \ *$'
+            format: '[ \1] \2'
     disable_plugin: [ torrent_alive ]
     # Site doesn't distinguish between dvd and dvd screeners.
     regexp:
