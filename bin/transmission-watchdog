@@ -53,6 +53,7 @@ fi
 if has_cmd growlnotify; then
     growl () {
         growlnotify -t "$PROG" $GROWL_ARGS -m "$@" >/dev/null 2>&1
+        return 0
     }
 else
     growl () { :; }
@@ -60,11 +61,12 @@ fi
 log () {
     printf "[%s] %s\n" "$(date +%F\ %T)" "$@" >>"$LOG"
     [ -t 0 ] && printf "%s\n" "$@"
-    growl "$@"
+    return 0
 }
 err () {
     printf "[%s] %s\n" "$(date +%F\ %T)" "$@" >>"$LOG" 2>&1
     [ -t 1 ] && printf "%s\n" "$@" >&2
+    # Make error notifications sticky.
     SAVED_GROWL_ARGS=$GROWL_ARGS; GROWL_ARGS="$GROWL_ARGS -s"
     growl "$@"
     GROWL_ARGS=$SAVED_GROWL_ARGS
@@ -177,6 +179,7 @@ do
     done
 
     log "Added torrent: $name"
+    growl "Added torrent: $name"
 
     force_public=0
     for line in $(remote --torrent "$hash" --info-trackers); do
