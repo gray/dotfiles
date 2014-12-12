@@ -4,6 +4,7 @@ templates:
     cookies: ~/.flexget/private/cookies.sqlite
     download: ~/Downloads/.
     no_entries_ok: yes
+    verify_ssl_certificates: no
 
   torrents:
     content_filter:
@@ -170,7 +171,6 @@ tasks:
           replace:
             regexp: '(?x) ^ ([^\[]+) .* \[\ ([^\]]+) \ \] \ *$'
             format: '[ \1] \2'
-    disable_plugin: [ torrent_alive ]
     # Site doesn't distinguish between dvd and dvd screeners.
     regexp:
       reject:
@@ -187,6 +187,9 @@ tasks:
     priority: 3
     include: [ private/torrentday_tv-rss.yml ]
     template: [ private-torrents, tv-series ]
+    manipulate:
+      - title:
+          replace: { regexp: '\b\W*no\s*rar\W*$', format: '' }
   bitmetv:
     # Ratio-based tracker; hard to maintain.
     priority: 4
@@ -234,6 +237,9 @@ tasks:
     priority: 22
     include: [ private/torrentday_tv-rss.yml ]
     template: [ private-torrents, tv-premieres ]
+    manipulate:
+      - title:
+          replace: { regexp: '\b\W*no\s*rar\W*$', format: '' }
 
   ########
   # Movies
@@ -250,6 +256,9 @@ tasks:
     priority: 32
     include: [ private/torrentday_movies-rss.yml ]
     template: [ private-torrents, movies ]
+    manipulate:
+      - title:
+          replace: { regexp: '\b\W*no\s*rar\W*$', format: '' }
   ptp:
     priority: 33
     include: [ private/ptp-rss.yml ]
