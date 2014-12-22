@@ -134,7 +134,8 @@ for file in $(
     find "$WATCH_DIR" -type d \( -path "$WATCH_DIR/TV" -o                \
         -path "$WATCH_DIR/TV/*" -o -path "$WATCH_DIR/Movies" -o          \
         -path "$WATCH_DIR/Movies/*" -o -path "$WATCH_DIR/*" -prune \) -o \
-        \( -type f -name '*.torrent' \! -size 0 \) -print 2>/dev/null
+        \( -type f -name '*.[Tt][Oo][Rr][Rr][Ee][Nn][Tt]' \! -size 0 \)  \
+        -print 2>/dev/null
 )
 do
     dir=${file%/*}
@@ -295,7 +296,7 @@ for line in $(remote --torrent all --info); do
     # file per torrent location will not suffice; each RAR archive requires
     # its own lock file.
     if [ 1 = $HAS_UNRAR ]; then
-        for file in $(find "$dir/$name" -type f -name *.rar 2>/dev/null); do
+        for file in $(find "$dir/$name" -type f -name *.[Rr][Aa][Rr] 2>/dev/null); do
             has_rar=1
             rar_dir=${file%/*}
             rar_file=${file##*/}
