@@ -192,10 +192,10 @@ do
             tracker.publicbt.*         | \
             inferno.demonoid.*         | \
             *.prq.to                   | \
-            *.h33t.com                 | \
             *.1337x.org                | \
             www.mvgroup.org)
                 force_public=1 ;;
+            *.ccc.de                   | \
             *.hexagon.cc               | \
             *.thepiratebay.org         | \
             *.onion                    | \
@@ -209,9 +209,11 @@ do
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
         # Add some public trackers.
-        for tracker in openbittorrent.com publicbt.com ccc.de istole.it; do
+        for tracker in tracker.openbittorrent.com:80 tracker.publicbt.com:80 \
+            tracker.istole.it:80 open.demonii.com:1337 tracker.btzoo.eu:80; do
+
             remote --torrent "$hash" --tracker-add \
-                udp://tracker.${tracker}:80/announce >/dev/null
+                udp://${tracker}/announce >/dev/null
         done
     fi
 done
