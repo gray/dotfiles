@@ -125,10 +125,11 @@ templates:
     seen_movies: strict
     if:
       - 'imdb_year < now.year - 6': reject
-      - ? "sorted(imdb_genres or []) in [['music'], ['biography', 'music'],
-            ['documentary', 'music'], ['biography', 'documentary', 'music']]"
-        : reject
       - "'musical' in (imdb_genres or [])": reject
+      - "['music'] == (imdb_genres or [])": reject
+      - ? "'music' in (imdb_genres or []) and
+            any([i in (imdb_genres or []) for i in ('biography', 'documentary')])"
+        : reject
       # Probably a standup comedy.
       - "'comedy' in (imdb_genres or []) and 1 == len(imdb_actors or [])": reject
       - "'english' == (imdb_languages or ['english'])[0]":
