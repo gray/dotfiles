@@ -150,12 +150,11 @@ templates:
             accept_languages: [
               cantonese, chinese, danish, dutch, french, german, icelandic,
               italian, norwegian, japanese, korean, mandarin, portuguese,
-              spanish, swedish ]
-          regexp:
-            reject_excluding:
-              - '(?x) ^ (?: action | adventure | comedy | crime | mystery
-                            | sci-fi | thriller | war ) $'
-            from: imdb_genres
+              spanish, swedish
+            ]
+            accept_genres: [
+              action, adventure, comedy, crime, mystery, sci-fi, thriller, war
+            ]
 
 tasks:
   ###########
