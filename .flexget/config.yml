@@ -32,9 +32,9 @@ templates:
     content_size: { min: 25 }
     regexp:
       reject:
-        # Avoid re-encoders and poor encoders.
+        # Avoid certain groups (re-encoders and poor encoders).
         - ? '(?x) [\W_] (?: afg | msd | (\{?)c[_ ]p\1 | pimp4003
-                          | nogr(?:ou)?p ) $'
+                          | nogr(?:ou)?p ) [\W_]* $'
           : { from: title }
         - '(?x) \b subbed \b':
             from: title
@@ -115,7 +115,7 @@ templates:
         # Avoid certain groups.
         - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
                           | nnd | thc | ssdd | crys | nogr(?:ou)?p | evo
-                          | playxd) $'
+                          | playxd) [\W_]* $'
         # Flexget doesn't recognize "line" as an audio quality.
         - '(?x) [\W_] (?: line ) (?:_|\b)'
       from: title
@@ -171,7 +171,7 @@ tasks:
       - title:
           replace:
             regexp: '(?x) ^ ([^\[]+) .* \[\ ([^\]]+) \ \] \ *$'
-            format: '[ \1] \2'
+            format: '\1[ \2 ]'
     # Site doesn't distinguish between dvd and dvd screeners.
     regexp:
       reject:
@@ -288,7 +288,7 @@ tasks:
       reject_excluding:
         - '(?x) \b english \b': { from: [ title, description ] }
       reject:
-        - ? '(?x) \b (?: dubbed  | episodes? | broadcast \W+ network
+        - ? '(?x) \b (?: dubbed | episodes? | broadcast \W+ network
                          | tv \W+ program | air \W+ (?:date | time)
                          | no \W+ english \W+ sub(?:title)s?
                      ) \b'
