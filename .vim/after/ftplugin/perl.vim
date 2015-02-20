@@ -4,7 +4,7 @@ setlocal equalprg=perltidy\ -q
 let &l:path = './lib,./blib/lib,./blib/arch,' . &l:path
 let $PERL5LIB = substitute(&l:path, ',', ':', 'g')
 
-setlocal keywordprg=perlfind
+setlocal keywordprg=cpandoc
 if has('mac')
     " groff bug converts some characters to utf-8.
     let b:keywordprg = "PERLDOC='-n\"nroff -Tascii\"' " . &keywordprg
