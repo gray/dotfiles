@@ -8,17 +8,18 @@ set -o errexit
 set -o nounset
 
 TX_ID=$1
-[ -z $TX_ID ] && exit
+[ -z $TX_ID ] && exit 0
 
 STATE_FILE=${TMPDIR:-/tmp}/bitcoin-notify.cache
 # Prevent duplicate tx notifications.
 if grep -s $TX_ID $STATE_FILE >/dev/null 2>&1; then
-    exit
+    exit 0
 fi
 
 tx=$(bitcoin-cli gettransaction $TX_ID 2>/dev/null)
 confirmations=$(echo $tx | jq '.confirmations')
-[ 0 -lt ${confirmations:-0} ] || exit
+[ 0 -lt ${confirmations:-0} ] || exit 0
+[ 10 -gt ${confirmations:-0} ] || exit 0
 
 # Cache the txs for an hour- walletnotify is usually called 3 times per tx-
 # once when 0 confirmations, once for when 1 confirmation and once around 3 or
@@ -33,10 +34,10 @@ else
 fi
 
 printf -v amount "%.8f" $(echo $tx | jq .amount)
-[ 0 -eq ${amount//[-.]/} ] && exit
+[ 0 -eq ${amount//[-.]/} ] && exit 0
 
 outputs=$(echo $tx | jq '.details | length')
-[ 0 -lt "$outputs" ] || exit
+[ 0 -lt "$outputs" ] || exit 0
 
 message="Amount: $amount"
 url=http://btc.blockr.io/tx/info/$TX_ID
@@ -54,8 +55,8 @@ else
         $(echo $tx | jq '.details | max_by(.amount | length) | .amount')
 fi
 
-# Ignore dust.
-[ 5460 -gt ${amount//[-.]/} ] && exit
+# Ignore small amounts.
+[ 50000 -gt ${amount//[-.]/} ] && exit 0
 
 balance=$(bitcoin-cli getbalance)
 message="$message"$'\n'"Balance: $balance"
