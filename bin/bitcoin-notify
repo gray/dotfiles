@@ -33,13 +33,16 @@ else
     echo $TX_ID > $STATE_FILE
 fi
 
-printf -v amount "%.8f" $(echo $tx | jq .amount)
-[ 0 -eq ${amount//[-.]/} ] && exit 0
+printf -v btc "%.8f" $(echo $tx | jq .amount)
+sat=${btc//./}
+[ 0 -eq ${sat//^[-]/} ] && exit 0
+# Ignore small received amounts.
+[ 0 -lt $sat ] && [ 50000 -gt $sat ] && exit 0
 
 outputs=$(echo $tx | jq '.details | length')
 [ 0 -lt "$outputs" ] || exit 0
 
-message="Amount: $amount"
+message="BTC: $btc"
 url=http://btc.blockr.io/tx/info/$TX_ID
 
 if [ 1 -eq $outputs ]; then
@@ -47,16 +50,9 @@ if [ 1 -eq $outputs ]; then
     message="$message"$'\n'"Address: ${address:0:17}..."
     url=http://btc.blockr.io/address/info/$address
 else
-    average=$(echo "$amount $outputs" | awk '{printf "%.8f", $1 / $2}')
+    average=$(echo "$btc $outputs" | awk '{printf "%.8f", $1 / $2}')
     message="$message / $outputs"$'\n'"Average: $average"
-
-    # The maximum amount by absolute value.
-    printf -v amount "%.8f" \
-        $(echo $tx | jq '.details | max_by(.amount | length) | .amount')
 fi
-
-# Ignore small amounts.
-[ 50000 -gt ${amount//[-.]/} ] && exit 0
 
 balance=$(bitcoin-cli getbalance)
 message="$message"$'\n'"Balance: $balance"
