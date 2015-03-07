@@ -74,10 +74,12 @@ templates:
           path: ~/Media/TV/Talk Shows/{{series_name}}/.
     include: [ private/series.yml ]
     if:
-      # Reject season previews or recaps.
-      - ? 'has_field("series_season") and has_field("series_episode")
-             and 1 < series_season and 0 == series_episode'
-        : reject
+      # Reject season previews or recaps. Accept specials.
+      - '"ep" == series_id_type and 0 == series_episode':
+          regexp:
+            reject_excluding:
+              # The series plugin doesn't mark episodes as specials.
+              - '(?x) [\W_] special [\W_]': { from: title }
 
   # Grab the first episode of any new series.
   tv-premieres:
@@ -114,8 +116,8 @@ templates:
           : { from: [ title, description ] }
         # Avoid certain groups.
         - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
-                          | nnd | thc | ssdd | crys | nogr(?:ou)?p | evo
-                          | playxd) [\W_]* $'
+                          | nnd | thc | ssdd | crys | nogr(?:ou)?p | evo | ift
+                          | playxd | aqos ) [\W_]* $'
         # Flexget doesn't recognize "line" as an audio quality.
         - '(?x) [\W_] (?: line ) (?:_|\b)'
       from: title
@@ -156,6 +158,8 @@ templates:
               action, adventure, comedy, crime, mystery, sci-fi, thriller, war
             ]
 
+secrets: private/secrets.yml
+
 tasks:
   ###########
   # TV series
@@ -190,7 +194,7 @@ tasks:
     template: [ private-torrents, tv-series ]
     manipulate:
       - title:
-          replace: { regexp: '\b\W*no\s*rar\W*$', format: '' }
+          replace: { regexp: '\b\W*no\s*rars?\W*$', format: '' }
   bitmetv:
     # Ratio-based tracker; hard to maintain.
     priority: 4
@@ -240,7 +244,7 @@ tasks:
     template: [ private-torrents, tv-premieres ]
     manipulate:
       - title:
-          replace: { regexp: '\b\W*no\s*rar\W*$', format: '' }
+          replace: { regexp: '\b\W*no\s*rars?\W*$', format: '' }
 
   ########
   # Movies
@@ -259,7 +263,7 @@ tasks:
     template: [ private-torrents, movies ]
     manipulate:
       - title:
-          replace: { regexp: '\b\W*no\s*rar\W*$', format: '' }
+          replace: { regexp: '\b\W*no\s*rars?\W*$', format: '' }
   ptp:
     priority: 33
     include: [ private/ptp-rss.yml ]
