@@ -277,16 +277,25 @@ endfunction
 function! s:AdjustSyntaxHighlighting ()
     highlight Search cterm=NONE ctermfg=yellow ctermbg=blue
         \ gui=NONE guifg=yellow guibg=blue
+
     highlight CursorLine term=reverse cterm=reverse gui=reverse
     highlight CursorColumn term=reverse cterm=reverse gui=reverse
+
     for l:group in ['ColorColumn', 'SpellBad', 'Todo']
         execute 'highlight' l:group 'cterm=NONE ctermbg=red ctermfg=white'
             \ 'gui=NONE guibg=red guifg=white'
     endfor
-
     syntax keyword myTodo containedin=.*Comment,perlPOD contained
         \ BUG FIXME HACK NOTE README TBD TODO WARNING XXX
     highlight default link myTodo Todo
+
+    syntax match nonAscii '[^\t -~]'
+    highlight nonAscii term=reverse cterm=reverse gui=reverse
+
+    highlight DiffAdd cterm=NONE ctermbg=green ctermfg=white
+    highlight DiffChange cterm=bold ctermbg=cyan ctermfg=black
+    highlight DiffDelete cterm=bold ctermbg=red ctermfg=white
+    highlight DiffText cterm=bold ctermbg=NONE ctermfg=black
 endfunction
 
 
