@@ -87,11 +87,12 @@ templates:
     series_premiere:
       <<: *TV_SETTING
       allow_seasonless: yes
+      quality: webrip+ <=720p
       timeframe: 6 hours
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
-        - '(?x) (?:_|\b) (?: au | nz | pl | uk | n[fh]l | ufc | sports
+        - '(?x) (?:_|\b) (?: au | nz | pl | uk | n[fh]l | ufc | wwe | sports
                              | championships? | 24(?:h|-7) | bak(e|ing)
                              | world\W+series | live\W+at )
                 (?:_|\b)'
@@ -111,15 +112,15 @@ templates:
                           | fan[\W_]edit )
                   (?:_|\b)'
         - ? '(?x) [\W_] (?: dubbed | pldub | cropped | (?:heb|kor|swe)sub
-                            | rosubbed )
+                            | ro[ds]ubbed )
                   (?:_|\b)'
           : { from: [ title, description ] }
         # Avoid certain groups.
         - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
                           | nnd | thc | ssdd | crys | nogr(?:ou)?p | evo | ift
-                          | playxd | aqos ) [\W_]* $'
-        # Flexget doesn't recognize "line" as an audio quality.
-        - '(?x) [\W_] (?: line ) (?:_|\b)'
+                          | play[sx]d | aqos ) [\W_]* $'
+        # Flexget doesn't recognize cam or line audio as qualities.
+        - '(?x) [\W_] (?: cam[\W_]*audio | line(?:[\W_]*audio)? ) (?:_|\b)'
       from: title
     content_size: { min: 300, max: 2500 }
     imdb_lookup: yes
@@ -157,8 +158,6 @@ templates:
             accept_genres: [
               action, adventure, comedy, crime, mystery, sci-fi, thriller, war
             ]
-
-secrets: private/secrets.yml
 
 tasks:
   ###########
