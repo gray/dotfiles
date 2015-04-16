@@ -211,8 +211,9 @@ do
             --seedratio "$PUBLIC_RATIO" >/dev/null
         # Add some public trackers.
         for tracker in tracker.openbittorrent.com:80 tracker.publicbt.com:80 \
-            tracker.istole.it:80 open.demonii.com:1337 tracker.btzoo.eu:80; do
-
+            tracker.istole.it:80 open.demonii.com:1337 tracker.btzoo.eu:80   \
+            tracker.coppersurfer.tk:6969 tracker.leechers-paradise.org:6969;
+        do
             remote --torrent "$hash" --tracker-add \
                 udp://${tracker}/announce >/dev/null
         done
@@ -285,8 +286,7 @@ for line in $(remote --torrent all --info); do
     then
         ! find "$dir/$name" -type f -name '*.unrarred' -exec rm -f {} + \
             2>/dev/null
-        remote --torrent "$hash" --move "$ZOMBIE_DIR/${dir##$WATCH_DIR/}" \
-            >/dev/null
+        remote --torrent "$hash" --move "$ZOMBIE_DIR" >/dev/null
         log "Moving data for zombified torrent: $name"
     fi
 
