@@ -12,6 +12,8 @@ add new plugin:
 update plugins:
 
     git submodule -q foreach git pull -q -r -s theirs origin master
+    # or add this to crontab:
+    @weekly cd dev/dotfiles && git submodule -q foreach git pull -q -r -s theirs origin master && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
 
 remove plugin:
 
