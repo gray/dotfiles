@@ -13,8 +13,8 @@ alias llta="ls $LS_OPTIONS -FlhtrA"
 alias lls="ls $LS_OPTIONS -FlhSr"
 alias llsa="ls $LS_OPTIONS -FlhSrA"
 
-# Don't try to connect to the X server- shortens startup time.
-alias vim='vim -X'
+alias grep='grep --color=auto --devices=skip --binary-files=without-match'
+
 alias vi=vim
 
 # Use human-readable unit sizes, in base 2.
@@ -41,6 +41,8 @@ alias sqlite=sqlite3
 
 case $OSTYPE in
     darwin*)
+        # Don't try to connect to the X server- shortens startup time.
+        alias vim='vim -X'
         alias gvim=mvim
         ;;
     *)
