@@ -1,5 +1,32 @@
+if [[ 1 = "$SHLVL" ]]; then
+    DEFAULT_PATH=$PATH
+    PATH=$HOME/bin:$HOME/local/bin
+    PATH=$PATH:$HOME/local/perlbrew/perls/latest/bin
+    PATH=$PATH:$HOME/local/go/bin
+    PATH=$PATH:/opt/local/bin:/opt/local/sbin
+    PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
+    PATH=$PATH:$DEFAULT_PATH
+    export PATH
+fi
+
+ulimit -n 8192
+umask 0022
+
+case $OSTYPE in
+    darwin*)
+        # XCode 4 no longer supports PPC.
+        export ARCHFLAGS='-arch i386 -arch x86_64'
+
+        # Prevent tar from copying resource forks.
+        export COPY_EXTENDED_ATTRIBUTES_DISABLE=1
+        export COPYFILE_DISABLE=1
+esac
+
 # Allow only interactive shells.
 [[ -z $PS1 ]] && return
+
+# Prevent C-s from accidentally freezing the terminal.
+[[ -t 0 ]] && stty ixany
 
 shopt -s no_empty_cmd_completion
 shopt -s checkwinsize  # Update windows size after each command.
@@ -71,10 +98,13 @@ else
     export LSCOLORS=gxfxcxdxbxegedabagacad
 fi
 
+export PERL5LIB=$HOME/local/perl5
+export PERLBREW_ROOT=$HOME/local/perlbrew
+export PERL_CPANM_OPT='-q'
 # groff bug converts some characters to utf-8.
 export PERLDOC='-n"nroff -Tascii"'
 
-export PERL_CPANM_OPT='-q'
+export GOPATH=$HOME/local/go
 
 for f in            \
     ~/.bash_prompt  \
