@@ -15,6 +15,8 @@ alias llsa="ls $LS_OPTIONS -FlhSrA"
 
 alias grep='grep --color=auto --devices=skip --binary-files=without-match'
 
+# Don't try to connect to the X server- shortens startup time.
+alias vim='vim -X'
 alias vi=vim
 
 # Use human-readable unit sizes, in base 2.
@@ -29,6 +31,9 @@ alias bc='bc -lq'
 
 alias wget='wget --continue --no-check-certificate'
 
+# Download magnet links as torrent files.
+alias magnet='aria2c -q --bt-metadata-only --bt-save-metadata'
+
 # Get external IP address.
 alias xip='curl -o - -s icanhazip.com || curl -o - -s ifconfig.me/ip'
 
@@ -41,8 +46,6 @@ alias sqlite=sqlite3
 
 case $OSTYPE in
     darwin*)
-        # Don't try to connect to the X server- shortens startup time.
-        alias vim='vim -X'
         alias gvim=mvim
         ;;
     *)
