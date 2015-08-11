@@ -45,7 +45,8 @@ PS1='\[${ANSI_RESET}\]'
 # Set the terminal title.
 PS1=$PS1'\[\e]0;\w\a\]'
 
-PS1=$PS1'\n\t | ${_RUNTIME_FORMATTED} | (${SHLVL}) | %\j | !\!'
+# TODO: if $SHLVL > 1, highlight it in a different color.
+PS1=$PS1'\n\t | ${_RUNTIME_FORMATTED} | ('$((${SHLVL}-1))') | %\j | !\!'
 PS1=$PS1'\n\u@'${_HOST_FORMATTED}':\[${ANSI_CYAN}\]\w\[${ANSI_RESET}\]'
 PS1=$PS1'\n\[${_EXIT_STATUS_FORMATTED}\]\$\[${ANSI_RESET}\] '
 export PS1
