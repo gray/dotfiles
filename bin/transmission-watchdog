@@ -190,7 +190,6 @@ do
         case $id in '' | *[!0-9]*) continue; esac
         case $tracker in
             tracker.openbittorrent.com | \
-            tracker.publicbt.*         | \
             inferno.demonoid.*         | \
             *.prq.to                   | \
             *.1337x.org                | \
@@ -210,8 +209,8 @@ do
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
         # Add some public trackers.
-        for tracker in tracker.openbittorrent.com:80 tracker.publicbt.com:80 \
-            tracker.istole.it:80 open.demonii.com:1337 tracker.btzoo.eu:80   \
+        for tracker in tracker.openbittorrent.com:80                       \
+            tracker.istole.it:80 open.demonii.com:1337 tracker.btzoo.eu:80 \
             tracker.coppersurfer.tk:6969 tracker.leechers-paradise.org:6969;
         do
             remote --torrent "$hash" --tracker-add \
@@ -395,8 +394,9 @@ for line in $(remote --torrent all --info); do
     if [ -d "$dir/$name" ]; then
         ! find "$dir/$name" -type f \(                               \
             -name *.message -o -name *.localized -o -name *.part -o  \
-            -name *.url -o -name *.[Dd][Ii][Zz] -o -name *.sfv \)    \
-            -exec rm -f {} + 2>/dev/null
+            -name *.url -o -name *.[Dd][Ii][Zz] -o -name *.sfv -o    \
+            -name '*.[Tt][Oo][Rr][Rr][Ee][Nn][Tt]'                   \
+        \) -exec rm -f {} + 2>/dev/null
 
         # Only keep subtitles for foreign videos.
         is_video_dir=
