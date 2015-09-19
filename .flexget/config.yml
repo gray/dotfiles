@@ -1,4 +1,7 @@
 # warnings off
+
+secrets: private/secrets.yml
+
 templates:
   global:
     cookies: ~/.flexget/private/cookies.sqlite
@@ -267,3 +270,35 @@ tasks:
     regexp:
       reject:
         - '/ Extras\b' : { from: title }
+
+  #########
+  # Youtube
+  #########
+  '{{secrets.youtube.1.task}}':
+    rss:
+      url: https://www.youtube.com/feeds/videos.xml?channel_id={{secrets.youtube.1.channel_id}}
+      silent: yes
+      all_entries: no
+    accept_all: yes
+    disable: [ urlrewriting, download ]
+    set: { path: '{{secrets.youtube.1.path}}' }
+    exec:
+      on_output:
+        for_accepted: |
+          growlnotify -s -m '' --url '{{url}}' '{{title}}' >/dev/null 2>&1
+          youtube-dl --restrict-filenames \
+            -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' >/dev/null 2>&1
+
+  '{{secrets.youtube.2.task}}':
+    rss:
+      url: https://www.youtube.com/feeds/videos.xml?playlist_id={{secrets.youtube.2.playlist_id}}
+      silent: yes
+      all_entries: no
+    accept_all: yes
+    disable: [ urlrewriting, download ]
+    set: { path: '{{secrets.youtube.2.path}}' }
+    exec:
+      on_output:
+        for_accepted: |
+          youtube-dl -f 18 --restrict-filenames --exec 'tag -a red {}' \
+            -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' >/dev/null 2>&1
