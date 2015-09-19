@@ -133,6 +133,7 @@ templates:
       - ? "'music' in (imdb_genres or []) and
             any([i in (imdb_genres or []) for i in ('biography', 'documentary')])"
         : reject
+      - "['documentary', 'sport'] == (imdb_genres or [])": reject
       # Probably a standup comedy.
       - "'comedy' in (imdb_genres or []) and 1 == len(imdb_actors or [])": reject
       - "'english' == (imdb_languages or ['english'])[0]":
@@ -151,13 +152,15 @@ templates:
             min_score: 6.8
             min_votes: 100
             accept_languages: [
-              cantonese, chinese, danish, dutch, french, german, icelandic,
-              italian, norwegian, japanese, korean, mandarin, portuguese,
-              spanish, swedish
+              cantonese, chinese, danish, dutch, french, german, hebrew,
+              icelandic, italian, norwegian, japanese, korean, mandarin,
+              portuguese, spanish, swedish
             ]
             accept_genres: [
               action, adventure, comedy, crime, mystery, sci-fi, thriller, war
             ]
+          content_filter:
+            reject: [ '*.subs.rar-missing' ]
 
 tasks:
   ###########
