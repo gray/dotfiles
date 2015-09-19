@@ -197,12 +197,6 @@ tasks:
     manipulate:
       - title:
           replace: { regexp: '\b\W*no\s*rars?\W*$', format: '' }
-  bitmetv:
-    # Ratio-based tracker; hard to maintain.
-    priority: 4
-    delay: 10 minutes
-    include: [ private/bitmetv-rss.yml ]
-    template: [ private-torrents, tv-series ]
 
   #####################
   # TV series premieres
@@ -273,29 +267,3 @@ tasks:
     regexp:
       reject:
         - '/ Extras\b' : { from: title }
-  # Foreign: AsiaTorrents.com and EUTorrents.com
-  avistaz:
-    priority: 34
-    sequence:
-      - rss:
-          url: 'http://feeds.feedburner.com/eutorrentsbt'
-          silent: yes
-          all_entries: no
-      - rss:
-          url: 'http://feeds.feedburner.com/btavistaz'
-          silent: yes
-          all_entries: no
-    template: [ private-torrents, movies ]
-    urlrewrite:
-      site:
-        regexp: '(?x) ^ http:// (?P<host>[^/]+) .*? &id= (?P<id>[^&]+)'
-        format: 'http://\g<host>/download.php?id=\g<id>&f=\g<id>.torrent'
-    regexp:
-      reject_excluding:
-        - '(?x) \b english \b': { from: [ title, description ] }
-      reject:
-        - ? '(?x) \b (?: dubbed | episodes? | broadcast \W+ network
-                         | tv \W+ program | air \W+ (?:date | time)
-                         | no \W+ english \W+ sub(?:title)s?
-                     ) \b'
-          : { from: [ title, description ] }
