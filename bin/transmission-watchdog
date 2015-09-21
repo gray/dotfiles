@@ -383,11 +383,11 @@ for line in $(remote --torrent all --info); do
     case $OSTYPE in darwin*)
         # 10.9 allows multiple tags; don't clear other tags when adding.
         if has_cmd tag; then :
-            ! find "$dir/$name" -exec tag --add red {} + 2>/dev/null
+            ! tag --descend --add red "$dir/$name" 2>/dev/null
         else
             ! xattr -r -wx com.apple.FinderInfo                                  \
                 0000000000000000000C00000000000000000000000000000000000000000000 \
-                "$dir/$name" 
+                "$dir/$name"
         fi
     esac
 
