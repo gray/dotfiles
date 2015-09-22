@@ -32,7 +32,13 @@ PUBLIC_UP_RATE=2
 PUBLIC_RATIO=0
 
 set -o errexit
+set -o errtrace
 set -o nounset
+set -o pipefail
+# set -o xtrace
+
+error_handler() { echo "Error at line $1, exited with status $2" ; }
+trap 'error_handler $LINENO $?' ERR
 
 has_cmd () { command -v "$@" >/dev/null 2>&1; }
 
