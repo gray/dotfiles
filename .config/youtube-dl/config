@@ -1,0 +1,2 @@
+--restrict-filenames
+--exec 'tag --add red {}'

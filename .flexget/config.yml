@@ -286,9 +286,8 @@ tasks:
       on_output:
         for_accepted: |
           growlnotify -s -m '' --url '{{url}}' '{{title}}' >/dev/null 2>&1
-          youtube-dl --restrict-filenames \
-            -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' >/dev/null 2>&1
-
+          youtube-dl -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' \
+            >/dev/null 2>&1
   '{{secrets.youtube.2.task}}':
     rss:
       url: https://www.youtube.com/feeds/videos.xml?playlist_id={{secrets.youtube.2.playlist_id}}
@@ -300,5 +299,5 @@ tasks:
     exec:
       on_output:
         for_accepted: |
-          youtube-dl -f 18 --restrict-filenames --exec 'tag -a red {}' \
+          youtube-dl -f 18  \
             -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' >/dev/null 2>&1
