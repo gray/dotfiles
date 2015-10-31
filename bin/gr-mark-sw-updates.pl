@@ -16,6 +16,8 @@ use constant VERBOSE => not $ENV{CRON};
 
 my $creds = Config::Tiny->read("$ENV{HOME}/.inoreader")
     or die Config::Tiny->errstr;
+my $appid    = $creds->{_}{appid}    // die 'Missing appid';
+my $appkey   = $creds->{_}{appkey}   // die 'Missing appkey';
 my $username = $creds->{_}{username} // die 'Missing username';
 my $password = $creds->{_}{password} // die 'Missing password';
 
@@ -27,6 +29,8 @@ my $reader = WebService::Google::Reader->new(
     host     => 'www.inoreader.com',
     username => $username,
     password => $password,
+    appid    => $appid,
+    appkey   => $appkey,
     https    => 1,
 );
 
@@ -123,13 +127,22 @@ sub read_conf {
                 blacklist => [
                     sub {
                         return 1 if $dist->dist =~ m[
-                            ^ (?:acme | dist-zilla | mojo[^-]* | task-belike) -
+                            ^ (?:
+                                acme | dist-zilla | mojo[^-]* | task-belike
+                                | win32 | catmandu | panda | bundle
+                            ) (?:-|$)
                         ]ix;
                         # Prolific purveyors of piffleware.
                         return 1 if $_[0]->link->href =~ m[
-                            /~ (?: manwar | perlook | reneeb | rsavage
-                                    | szabgab | sharyanto | tobyink | zoffix
+                            /~ (?:
+                                avenj | awncorp | bayashi | csson | dannyt
+                                | dfarrell | getty | idoperel | ina | ingy
+                                | ironcamel | jhthorsen | jpr | manwar
+                                | mhcrnl | perlancar | reneeb | rsavage
+                                | sharyanto | sillymoos | skim | szabgab
+                                | tobyink | zdm | zoffix
                                )
+                            /
                         ]x;
                     },
                     sub { 'released' ne $dist->maturity },
@@ -197,8 +210,6 @@ sub read_conf {
         # These feeds only contain new packages, so no filtering is needed.
         map({ $_ => {} } qw(
             http://dirk.eddelbuettel.com/cranberries/cran/new/index.rss
-            http://feed43.com/golang_libraries.xml
-            http://feed43.com/golang_bindings.xml
         )),
     };
 }
@@ -230,13 +241,13 @@ sub is_perl_dist_installed {
 
     # Fetch the file that maps packages to distributions.
     my $file = '02packages.details.txt.gz';
-    my $url = "http://search.cpan.org/CPAN/modules/$file";
+    my $url = "http://www.cpan.org/modules/$file";
     $file = catfile(tmpdir, $file);
     if (not -r $file or 1 < -M _) {
         my $ua = $reader->ua->clone;
         $ua->default_header(accept_encoding => undef);
         my $res = $ua->mirror($url, $file);
-        die "Failed to mirror $file; " if $res->is_error;
+        die "Failed to mirror $file: ", $res->status_line if $res->is_error;
     }
     open my $fh, '<:gzip', $file or die "$file: $!";
 
