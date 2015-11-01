@@ -454,9 +454,11 @@ inoremap <c-b> <left>
 
 " Redraw screen, toggle search highlighting, sync syntax, toggle list.
 nnoremap <silent> <c-l> <esc>:setlocal invhlsearch invlist
-    \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart<cr><c-l>
+    \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart
+    \ <cr>:setlocal cursorcolumn! cursorline!<cr><c-l>
 inoremap <silent> <c-l> <esc>:setlocal invhlsearch invlist
-    \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart<cr><c-l>a
+    \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart
+    \ <cr>:setlocal cursorcolumn! cursorline!<cr><c-l>a
 
 " Return to visual mode after indenting.
 vnoremap < <gv
@@ -576,14 +578,6 @@ if has('autocmd')
         autocmd InsertEnter * setlocal colorcolumn=80
         autocmd InsertLeave * setlocal colorcolumn=
     end
-
-    " Make the cursor easier to find when idle.
-    if exists('+cursorline')
-        autocmd CursorHold *
-            \ if empty(&buftype) | setlocal cursorline cursorcolumn | endif
-        autocmd CursorMoved,InsertEnter *
-            \ if &l:cursorline | setlocal nocursorline nocursorcolumn | endif
-    endif
 
     " Fall back to syntax keyword completion.
     if exists('+omnifunc')
