@@ -39,8 +39,6 @@ templates:
         - ? '(?x) [\W_] (?: afg | msd | (\{?)c[_ ]p\1 | pimp4003
                           | nogr(?:ou)?p ) [\W_]* $'
           : { from: title }
-        - '(?x) \b subbed \b':
-            from: title
     if:
       # Episode 0 is often not a pilot.
       - '[1, 0] == [series_season, series_episode]':
@@ -51,10 +49,16 @@ templates:
                                    | first \W+ look | making \W+ of )
                         (?:_|\b)'
                 : { from: title }
-
       # Flexget doesn't reject really old episodes for date-based series,
       # so reject them here.
       - '"date" == series_id_type and 120 <= (now - series_date).days': reject
+      # Require subs for foreign series, avoid them otherwise.
+      - 'path.startswith("~/Media/TV/Foreign/")':
+          regexp:
+            reject_excluding: [ '(?x) \b sub(?:s|bed) \b': { from: title } ]
+      - 'not path.startswith("~/Media/TV/Foreign/")':
+          regexp:
+            reject: [ '(?x) \b sub(?:s|bed) \b': { from: title } ]
 
   tv-series:
     template: tv
