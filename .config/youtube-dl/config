@@ -1,2 +1,6 @@
 --restrict-filenames
 --exec 'tag --add red {}'
+--sub-lang en
+--convert-subtitles srt
+--write-sub
+--embed-sub
