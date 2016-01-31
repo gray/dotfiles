@@ -133,17 +133,15 @@ sub read_conf {
                             ) (?:-|$)
                         ]ix;
                         # Prolific purveyors of piffleware.
-                        return 1 if $_[0]->link->href =~ m[
-                            /~ (?:
-                                avenj | awncorp | bayashi | csson | dannyt
-                                | dfarrell | getty | idoperel | ina | ingy
-                                | ironcamel | jhthorsen | jpr | manwar
-                                | mhcrnl | perlancar | reneeb | rsavage
-                                | sharyanto | sillymoos | skim | szabgab
-                                | tobyink | zdm | zoffix
-                               )
-                            /
-                        ]x;
+                        my %blacklist = map { $_ => 1 } qw(
+                            avenj awncorp bayashi binary csson curtis dannyt
+                            dfarrell getty idoperel ina ingy ironcamel
+                            jhthorsen jpr manwar melezhik mhcrnl perlancar
+                            psixdists reneeb rsavage sharyanto sillymoos skim
+                            szabgab tobyink turnerjw zdm zoffix
+                        );
+                        my ($user) = $_[0]->link->href =~ m[/~([^/]+)/];
+                        return 1 if $blacklist{$user};
                     },
                     sub { 'released' ne $dist->maturity },
                 ],
