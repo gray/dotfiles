@@ -33,7 +33,7 @@ ack:
 afterimage:
     http://www.vim.org/scripts/script.php?script_id=1617
 airline:
-    https://github.com/bling/vim-airline
+    https://github.com/vim-airline/vim-airline
 camelcasemotion:
     http://www.vim.org/scripts/script.php?script_id=1905
 characterize:
