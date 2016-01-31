@@ -1,3 +1,4 @@
+--external-downloader aria2c
 --restrict-filenames
 --exec 'tag --add red {}'
 --sub-lang en
