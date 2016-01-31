@@ -173,6 +173,14 @@ templates:
           content_filter:
             reject: [ '*.subs.rar-missing' ]
 
+  streams:
+    exec:
+      on_output:
+        for_accepted: |
+          growlnotify -t 'Flexget' \
+            -m 'Added stream: {{ title | re_replace("['']", "") }}' \
+            >/dev/null 2>&1
+
 tasks:
   ###########
   # TV series
@@ -279,34 +287,69 @@ tasks:
       reject:
         - '/ Extras\b' : { from: title }
 
-  #########
-  # Youtube
-  #########
-  '{{secrets.youtube.1.task}}':
+  ##########
+  # Streams
+  ##########
+  '{{secrets.streams.1.task}}':
     rss:
-      url: https://www.youtube.com/feeds/videos.xml?channel_id={{secrets.youtube.1.channel_id}}
+      url: '{{secrets.streams.1.url}}'
       silent: yes
       all_entries: no
+    template: [ streams ]
     accept_all: yes
     disable: [ urlrewriting, download ]
-    set: { path: '{{secrets.youtube.1.path}}' }
+    set: { path: '{{secrets.streams.1.path}}' }
     exec:
       on_output:
         for_accepted: |
-          growlnotify -s -m '' --url '{{secrets.youtube.1.url}}' '{{title}}' \
-            >/dev/null 2>&1
+          {{secrets.streams.1.exec}}
           youtube-dl -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' \
             >/dev/null 2>&1
-  '{{secrets.youtube.2.task}}':
+  '{{secrets.streams.2.task}}':
+    interval: 1 hour
     rss:
-      url: https://www.youtube.com/feeds/videos.xml?playlist_id={{secrets.youtube.2.playlist_id}}
+      url: '{{secrets.streams.2.url}}'
       silent: yes
       all_entries: no
-    accept_all: yes
+    template: [ streams ]
+    regexp:
+      accept: [ '{{ secrets.streams.2.regexp }}': { from: title } ]
     disable: [ urlrewriting, download ]
-    set: { path: '{{secrets.youtube.2.path}}' }
+    set: { path: '{{secrets.streams.2.path}}' }
     exec:
       on_output:
         for_accepted: |
-          youtube-dl -f 18 \
-            -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' >/dev/null 2>&1
+          youtube-dl -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' \
+            -f 'best[width<900]' >/dev/null 2>&1
+  '{{secrets.streams.3.task}}':
+    interval: 1 hour
+    html:
+      url: '{{secrets.streams.3.url}}'
+      links_re: [ '{{secrets.streams.3.links_re}}' ]
+    template: [ streams ]
+    accept_all: yes
+    disable: [ urlrewriting, download ]
+    set: { path: '{{secrets.streams.3.path}}' }
+    exec:
+      on_output:
+        for_accepted: |
+          youtube-dl -f '{{secrets.streams.3.format}}' \
+            -o '{{path}}/{{now|formatdate("%Y%m%d")}}-%(title)s.%(ext)s' \
+            '{{url}}' >/dev/null 2>&1
+  '{{secrets.streams.4.task}}':
+    interval: 1 hour
+    # Filter out duplicate urls
+    inputs:
+      - html:
+          url: '{{secrets.streams.4.url}}'
+          links_re: [ '{{secrets.streams.4.links_re}}' ]
+    template: [ streams ]
+    accept_all: yes
+    disable: [ urlrewriting, download ]
+    set: { path: '{{secrets.streams.4.path}}' }
+    exec:
+      on_output:
+        for_accepted: |
+          youtube-dl -f 'best[width<900]' \
+            -o '{{path}}/{{now|formatdate("%Y%m%d")}}-%(title)s.%(ext)s' \
+            '{{url}}' >/dev/null 2>&1
