@@ -7,6 +7,7 @@ use Config::Tiny;
 use CPAN::DistnameInfo;
 use Cwd qw(realpath);
 use DB_File;
+use DBM_Filter;
 use File::Find;
 use File::Spec::Functions qw(catfile catpath splitpath tmpdir);
 use PerlIO::gzip;
@@ -24,6 +25,7 @@ my $password = $creds->{_}{password} // die 'Missing password';
 my $dir  = catpath((splitpath(realpath __FILE__))[ 0, 1 ]);
 my $file = catfile($dir, '.unwanted-modules.bdb');
 my $db   = tie my %db, DB_File => $file;
+$db->Filter_Push('utf8');
 
 my $reader = WebService::Google::Reader->new(
     host     => 'www.inoreader.com',
