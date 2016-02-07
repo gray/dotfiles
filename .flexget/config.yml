@@ -17,13 +17,6 @@ templates:
     torrent_alive: { min_seeds: 5, reject_for: 10 minutes }
     exec:
       on_output:
-        # for_accepted:
-        #   - |
-        #     growlnotify -t 'FlexGet: torrent from {{task}}' -m \
-        #       '{{ title | re_replace("['']", "") }}' >/dev/null 2>&1
-        #   - |
-        #     tmux display-message 'FlexGet: {{task}}: {{ \
-        #       title | re_replace("['']", "") }}' >/dev/null 2>&1
         phase: |
           # This is also run from cron every few minutes.
           nice -n 20 transmission-watchdog
@@ -175,6 +168,17 @@ templates:
           content_filter:
             reject: [ '*.subs.rar-missing' ]
 
+  streams:
+    disable: download
+    exec:
+      on_output:
+        for_accepted:
+          - |
+            growlnotify -t 'Flexget' \
+              -m 'Added {{task}} stream: {{ title | re_replace("['']", "") }}' \
+              >/dev/null 2>&1
+
+
 tasks:
   ###########
   # TV series
@@ -285,12 +289,12 @@ tasks:
   # Streams
   ##########
   '{{secrets.streams.1.task}}':
+    template: streams
     rss:
       url: '{{secrets.streams.1.url}}'
       silent: yes
       all_entries: no
     accept_all: yes
-    disable: [ urlrewriting, download ]
     set: { path: '{{secrets.streams.1.path}}' }
     exec:
       fail_entries: yes
@@ -303,64 +307,52 @@ tasks:
               >/dev/null 2>&1
   '{{secrets.streams.2.task}}':
     interval: 1 hour
+    template: streams
     rss:
       url: '{{secrets.streams.2.url}}'
       silent: yes
       all_entries: no
     regexp:
       accept: [ '{{ secrets.streams.2.regexp }}': { from: title } ]
-    disable: [ urlrewriting, download ]
     set: { path: '{{secrets.streams.2.path}}' }
     exec:
       fail_entries: yes
       on_output:
         for_accepted:
           - |
-            growlnotify -t 'Flexget' \
-              -m 'Added stream: {{ title | re_replace("['']", "") }}' \
-              >/dev/null 2>&1
-          - |
-            youtube-dl -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' \
-              -f 'bestvideo[width<900]+bestaudio/best[width<900]' >/dev/null 2>&1
+            youtube-dl -f 'mp4[width<900]+bestaudio/mp4[width<900]' \
+              -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' >/dev/null 2>&1
   '{{secrets.streams.3.task}}':
     interval: 1 hour
+    template: streams
     html:
       url: '{{secrets.streams.3.url}}'
       links_re: [ '{{secrets.streams.3.links_re}}' ]
     accept_all: yes
-    disable: [ urlrewriting, download ]
     set: { path: '{{secrets.streams.3.path}}' }
     exec:
       fail_entries: yes
       on_output:
         for_accepted:
           - |
-            growlnotify -t 'Flexget' \
-              -m 'Added stream: {{ title | re_replace("['']", "") }}' \
-              >/dev/null 2>&1
-          - |
-            youtube-dl -f '{{secrets.streams.3.format}}' \
+            youtube-dl -f 'mp4[width<900]+bestaudio/mp4[width<900]' \
               -o '{{path}}/{{now|formatdate("%Y%m%d")}}-%(title)s.%(ext)s' \
               '{{url}}' >/dev/null 2>&1
   '{{secrets.streams.4.task}}':
     interval: 1 hour
+    template: streams
     # Filter out duplicate urls
     inputs:
       - html:
           url: '{{secrets.streams.4.url}}'
           links_re: [ '{{secrets.streams.4.links_re}}' ]
     accept_all: yes
-    disable: [ urlrewriting, download ]
     set: { path: '{{secrets.streams.4.path}}' }
     exec:
       fail_entries: yes
       on_output:
         for_accepted:
           - |
-            growlnotify -t 'Flexget' \
-              -m 'Added stream: {{ title | re_replace("['']", "") }}' \
-              >/dev/null 2>&1
-          - |
-            youtube-dl -f 'bestvideo[width<900]+bestaudio/best[width<900]' \
+            youtube-dl -f 'mp4[width<900]+bestaudio/mp4[width<900]' \
               -o '{{path}}/{{now|formatdate("%Y%m%d")}}-%(title)s.%(ext)s' \
               '{{url}}' >/dev/null 2>&1
