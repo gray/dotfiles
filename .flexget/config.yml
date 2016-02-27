@@ -320,7 +320,7 @@ tasks:
       on_output:
         for_accepted:
           - |
-            youtube-dl -f 'mp4[width<900]+bestaudio/mp4[width<900]' \
+            youtube-dl -f 'bestvideo[ext=mp4][width<900]+bestaudio/best[ext=mp4][width<900]' \
               -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' >/dev/null 2>&1
   '{{secrets.streams.3.task}}':
     interval: 1 hour
@@ -335,7 +335,7 @@ tasks:
       on_output:
         for_accepted:
           - |
-            youtube-dl -f 'mp4[width<900]+bestaudio/mp4[width<900]' \
+            youtube-dl -f 'bestvideo[ext=mp4][width<900]+bestaudio/best[ext=mp4][width<900]' \
               -o '{{path}}/{{now|formatdate("%Y%m%d")}}-%(title)s.%(ext)s' \
               '{{url}}' >/dev/null 2>&1
   '{{secrets.streams.4.task}}':
@@ -353,6 +353,6 @@ tasks:
       on_output:
         for_accepted:
           - |
-            youtube-dl -f 'mp4[width<900]+bestaudio/mp4[width<900]' \
+            youtube-dl -f 'bestvideo[ext=mp4][width<900]+bestaudio/best[ext=mp4][width<900]' \
               -o '{{path}}/{{now|formatdate("%Y%m%d")}}-%(title)s.%(ext)s' \
               '{{url}}' >/dev/null 2>&1
