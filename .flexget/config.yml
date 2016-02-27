@@ -290,10 +290,7 @@ tasks:
   ##########
   '{{secrets.streams.1.task}}':
     template: streams
-    rss:
-      url: '{{secrets.streams.1.url}}'
-      silent: yes
-      all_entries: no
+    rss: { url: '{{secrets.streams.1.url}}', silent: yes, all_entries: no }
     accept_all: yes
     set: { path: '{{secrets.streams.1.path}}' }
     exec:
@@ -308,10 +305,9 @@ tasks:
   '{{secrets.streams.2.task}}':
     interval: 1 hour
     template: streams
-    rss:
-      url: '{{secrets.streams.2.url}}'
-      silent: yes
-      all_entries: no
+    inputs:
+      - rss: { url: '{{secrets.streams.2.url1}}', silent: yes, all_entries: no }
+      - rss: { url: '{{secrets.streams.2.url2}}', silent: yes, all_entries: no }
     regexp:
       accept: [ '{{ secrets.streams.2.regexp }}': { from: title } ]
     set: { path: '{{secrets.streams.2.path}}' }
