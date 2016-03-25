@@ -311,6 +311,7 @@ for line in $(remote --torrent all --info); do
             2>/dev/null
         remote --torrent "$hash" --move "$ZOMBIE_DIR" >/dev/null
         log "Moving data for zombified torrent: $name"
+        continue
     fi
 
     last_dir=; last_file_base=; has_rar=0
@@ -362,6 +363,12 @@ for line in $(remote --torrent all --info); do
                 ! hilite "$rar_dir/$path"
             done
         done
+
+        # Can't just move the torrent data, because there may be non-rar
+        # data, such as subtitle files.
+        # if [ 1 = $has_rar ]; then
+        #     remote --torrent "$hash" --move "$SEED_DIR" >/dev/null
+        # fi
     fi
 
     [ Finished = "$state" ] || continue
