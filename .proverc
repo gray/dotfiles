@@ -1,4 +1,6 @@
 --blib
---lib
 --comments
+--failures
+--lib
+--trap
 -Pretty
