@@ -1,0 +1,23 @@
+script_line1 = use 5.022
+script_line2 = use strict
+script_line2 = use warnings
+
+[Autocomplete::Commands]
+[Autocomplete::Functions]
+[Autocomplete::Globals]
+[Autocomplete::Lexicals]
+[Autocomplete::Methods]
+[Autocomplete::Packages]
+[Colors]
+[DataDumper]
+[Editor]
+editor = vim
+[FancyPrompt]
+[Hints]
+[Interrupt]
+[LexicalPersistence]
+[Packages]
+[ReadLine]
+[ResultCache]
+[Timer]
+mintime = 0.25
