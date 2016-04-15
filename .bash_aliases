@@ -37,12 +37,19 @@ alias magnet='aria2c -q --bt-metadata-only --bt-save-metadata'
 # Get external IP address.
 alias xip='curl -o - -s icanhazip.com || curl -o - -s ifconfig.me/ip'
 
-alias perldoc=cpandoc
-
 # groff bug converts some characters to utf-8.
 alias man='LANG=C man'
 
 alias sqlite=sqlite3
+
+perldoc () {
+    if hash cpandoc 2>/dev/null; then
+        cpandoc "$@"
+    else
+        echo 'Install Pod::Cpandoc'
+        command perldoc "$@"
+    fi
+}
 
 case $OSTYPE in
     darwin*)
