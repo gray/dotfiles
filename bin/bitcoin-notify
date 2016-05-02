@@ -35,7 +35,8 @@ fi
 
 printf -v btc "%.8f" $(echo $tx | jq .amount)
 sat=${btc//./}
-[ 0 -eq ${sat//^[-]/} ] && exit 0
+# Ignore transactions from self to self (ex. combining dust inputs)
+# [ 0 -eq ${sat//^[-]/} ] && exit 0
 # Ignore small received amounts.
 [ 0 -lt $sat ] && [ 50000 -gt $sat ] && exit 0
 
