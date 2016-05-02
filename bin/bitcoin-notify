@@ -38,9 +38,9 @@ sat=${btc//./}
 # Ignore transactions from self to self (ex. combining dust inputs)
 # [ 0 -eq ${sat//^[-]/} ] && exit 0
 # Ignore small received amounts.
-[ 0 -lt $sat ] && [ 50000 -gt $sat ] && exit 0
+[ 0 -lt $sat ] && [ 100000 -gt $sat ] && exit 0
 
-outputs=$(echo $tx | jq '.details | length')
+outputs=$(echo $tx | jq '.details | map(select(.category=="receive")) | length')
 [ 0 -lt "$outputs" ] || exit 0
 
 message="BTC: $btc"
