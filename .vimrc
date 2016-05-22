@@ -380,9 +380,10 @@ let g:airline_symbols.branch = "\u2387 "
 let g:airline_left_sep = "\u25b6"
 let g:airline_right_sep = "\u25c0"
 let g:airline_section_z = '%l/%L : %c (%p%%)'
-let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_min_count = 2
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#wordcount#enabled = 0
 
 
 " Mappings ----------------------------------------------------------------{{{1
