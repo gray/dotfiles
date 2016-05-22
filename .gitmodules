@@ -238,3 +238,6 @@
 [submodule ".vim/bundle/dispatch"]
 	path = .vim/bundle/dispatch
 	url = git://github.com/tpope/vim-dispatch
+[submodule ".vim/bundle/asterisk"]
+	path = .vim/bundle/asterisk
+	url = git://github.com/haya14busa/vim-asterisk

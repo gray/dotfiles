@@ -198,16 +198,6 @@ let g:is_posix = 1
 
 " Functions ---------------------------------------------------------------{{{1
 
-" Search with * or # for current visual selection.
-function! s:VisualSearch (cmd)
-    let [l:saved_reg, l:saved_reg_type] = [getreg('"'), getregtype('"')]
-    normal! vgv""y
-    let @/ = '\V' . substitute(escape(@", '\'), '\n', '\\n', 'g')
-    execute 'normal' a:cmd
-    redraw
-    call setreg('"', l:saved_reg, l:saved_reg_type)
-endfunction
-
 " Calling a function from a ranged-command triggers a bug that resets the
 " cursor position to 1,1 before the function is called. To avoid this, pass in
 " the line numbers as arguments instead of using a range.
@@ -424,12 +414,14 @@ inoremap <c-@> <c-g>u<c-@>
 inoremap <c-a> <c-g>u<c-a>
 inoremap <c-w> <c-g>u<c-w>
 
-" Position cursor in the center of the window and open any containing folds.
-for s:cmd in ['G', 'n', 'N', 'gn', 'gN', '*', '#', 'g*', 'g#', 'g;', 'g,']
-    execute 'nnoremap' s:cmd s:cmd . 'zvzz'
-endfor
-xnoremap <silent> * :call <sid>VisualSearch('n')<cr>gn
-xnoremap <silent> # :call <sid>VisualSearch('N')<cr>gN
+map *   <Plug>(asterisk-*)
+map #   <Plug>(asterisk-#)
+map g*  <Plug>(asterisk-g*)
+map g#  <Plug>(asterisk-g#)
+map z*  <Plug>(asterisk-z*)
+map gz* <Plug>(asterisk-gz*)
+map z#  <Plug>(asterisk-z#)
+map gz# <Plug>(asterisk-gz#)
 
 " Make it easier to navigate displayed lines when lines wrap.
 inoremap <down> <c-o>gj

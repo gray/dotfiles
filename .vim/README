@@ -34,6 +34,8 @@ afterimage:
     http://www.vim.org/scripts/script.php?script_id=1617
 airline:
     https://github.com/vim-airline/vim-airline
+asterisk:
+    https://github.com/haya14busa/vim-asterisk
 camelcasemotion:
     http://www.vim.org/scripts/script.php?script_id=1905
 characterize:
