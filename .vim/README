@@ -90,6 +90,8 @@ repeat:
     http://www.vim.org/scripts/script.php?script_id=2136
 replace with register:
     http://www.vim.org/scripts/script.php?script_id=2703
+scratch:
+    http://www.vim.org/scripts/script.php?script_id=664
 splitjoin:
     http://www.vim.org/scripts/script.php?script_id=3613
 supertab:
@@ -148,6 +150,8 @@ python:
     http://www.vim.org/scripts/script.php?script_id=790
 ruby:
     https://github.com/vim-ruby/vim-ruby
+rust:
+    https://github.com/rust-lang/rust.vim
 scala:
     http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
 srt:
@@ -208,3 +212,5 @@ xoria256:
     http://www.vim.org/scripts/script.php?script_id=2140
 xterm16:
     http://www.vim.org/scripts/script.php?script_id=795
+yowish:
+    http://www.vim.org/scripts/script.php?script_id=5083

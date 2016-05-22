@@ -24,7 +24,7 @@
 	url = git://github.com/chrisbra/csv.vim.git
 [submodule ".vim/bundle/ctrlp"]
 	path = .vim/bundle/ctrlp
-	url = git://github.com/ctrlpvim/ctrlp.vim
+	url = git://github.com/ctrlpvim/ctrlp.vim.git
 [submodule ".vim/bundle/darkspectrum"]
 	path = .vim/bundle/darkspectrum
 	url = git://github.com/vim-scripts/darkspectrum.git
@@ -234,10 +234,19 @@
 	url = git://github.com/fatih/vim-go.git
 [submodule ".vim/bundle/swift"]
 	path = .vim/bundle/swift
-	url = git://github.com/keith/swift.vim
+	url = git://github.com/keith/swift.vim.git
 [submodule ".vim/bundle/dispatch"]
 	path = .vim/bundle/dispatch
-	url = git://github.com/tpope/vim-dispatch
+	url = git://github.com/tpope/vim-dispatch.git
 [submodule ".vim/bundle/asterisk"]
 	path = .vim/bundle/asterisk
-	url = git://github.com/haya14busa/vim-asterisk
+	url = git://github.com/haya14busa/vim-asterisk.git
+[submodule ".vim/bundle/rust"]
+	path = .vim/bundle/rust
+	url = git://github.com/rust-lang/rust.vim.git
+[submodule ".vim/bundle/scratch"]
+	path = .vim/bundle/scratch
+	url = git://github.com/yegappan/scratch.git
+[submodule ".vim/bundle/yowish"]
+	path = .vim/bundle/yowish
+	url = git://github.com/kabbamine/yowish.vim.git
