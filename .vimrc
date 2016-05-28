@@ -397,10 +397,6 @@ inoremap jj <esc>
 " Use ,, to work around , as leader.
 noremap ,, ,
 
-nnoremap <f1> :set invpaste paste?<cr>
-inoremap <f1> <c-o>:set invpaste paste?<cr>
-set pastetoggle=<f1>
-
 " Save current buffer with root permissions.
 cnoremap <silent> w!! :SudoWrite<cr>
 
