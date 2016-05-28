@@ -102,6 +102,7 @@ set whichwrap+=h,l,<,>,[,]      " h l <Left> <Right> can also change lines
 set virtualedit=block           " Select a rectangle in visual mode
 set scrolloff=2      " Lines visible above/below cursor when scrolling
 set sidescrolloff=2  " Lines visible left/right of cursor when scrolling
+set sidescroll=1     " Smoother scrolling when reaching end of screen
 set nostartofline    " Keep the cursor in the same column
 
 
