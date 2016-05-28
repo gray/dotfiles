@@ -250,3 +250,6 @@
 [submodule ".vim/bundle/yowish"]
 	path = .vim/bundle/yowish
 	url = git://github.com/kabbamine/yowish.vim.git
+[submodule ".vim/bundle/fastfold"]
+	path = .vim/bundle/fastfold
+	url = git://github.com/Konfekt/FastFold.git

@@ -548,18 +548,6 @@ if has('autocmd')
         \ endif
     autocmd BufLeave,CursorHoldI * stopinsert | doautocmd InsertLeave
 
-    " Disable fold detection while in insert mode.
-    autocmd InsertEnter *
-        \ if ! exists('w:saved_foldmethod') |
-        \     let w:saved_foldmethod = &foldmethod |
-        \     setlocal foldmethod=manual |
-        \ endif
-    autocmd InsertLeave,WinLeave *
-        \ if exists('w:saved_foldmethod') |
-        \     let &l:foldmethod = w:saved_foldmethod |
-        \     unlet w:saved_foldmethod |
-        \ endif
-
     " Automatically unset paste mode.
     autocmd InsertLeave * setlocal nopaste
 
