@@ -171,8 +171,8 @@ set showfulltag
 set hidden                    " Allow edit buffers to be hidden
 set switchbuf=useopen,usetab  " Jump to first open window or tab with buffer
 
-if empty($SSH_CLIENT)
-    set clipboard+=unnamed    " Use system clipboard
+if has('clipboard') && empty($SSH_CLIENT)
+    set clipboard^=unnamed    " Use system clipboard
 endif
 
 set mouse=a            " Enable the mouse for all modes
