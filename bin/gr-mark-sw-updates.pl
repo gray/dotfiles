@@ -130,17 +130,20 @@ sub read_conf {
                     sub {
                         return 1 if $dist->dist =~ m[
                             ^ (?:
-                                acme | dist-zilla | mojo[^-]* | task-belike
-                                | win32 | catmandu | panda | bundle
+                                acme | dist-zilla | mojo[^-]* | bundle | win32
+                                | task-(?:belike | kensho) | catmandu | panda
                             ) (?:-|$)
                         ]ix;
                         # Prolific purveyors of piffleware.
                         my %blacklist = map { $_ => 1 } qw(
-                            avenj awncorp bayashi binary csson curtis dannyt
-                            dfarrell getty idoperel ina ingy ironcamel
-                            jhthorsen jpr manwar melezhik mhcrnl perlancar
-                            psixdists reneeb rsavage sharyanto sillymoos skim
-                            szabgab tobyink turnerjw zdm zoffix
+                            aspose aubertg avenj awncorp bayashi binary
+                            corliss csson curtis dannyt dfarrell diederich
+                            geotiger getty idoperel hanenkamp ina ingy
+                            ironcamel jgni jhthorsen jpr jvbsoft kaavannan
+                            madskill manwar melezhik mhcrnl pekingsam
+                            perlancar psixdists reedfish reneeb rsavage
+                            sharyanto sillymoos skim spebern szabgab tapper
+                            tobyink turnerjw zdm zoffix
                         );
                         my ($user) = $_[0]->link->href =~ m[/~([^/]+)/];
                         return 1 if $blacklist{$user};
