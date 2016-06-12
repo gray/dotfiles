@@ -18,8 +18,8 @@ update plugins:
 remove plugin:
 
     cd $REPO
-    # rm reference from .git/config and .gitmodules
     git rm --cached .vim/bundle/$PLUGIN_DIR
+    # rm reference from .git/config and .gitmodules
 
 installed plugins
 =================
@@ -78,8 +78,6 @@ nerd commenter:
     http://www.vim.org/scripts/script.php?script_id=1218
 nerd tree:
     http://www.vim.org/scripts/script.php?script_id=1658
-netrw:
-    https://github.com/genoma/vim-netrw
 perlomni:
     http://www.vim.org/scripts/script.php?script_id=2852
 perlprove:
