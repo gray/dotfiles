@@ -18,8 +18,10 @@ update plugins:
 remove plugin:
 
     cd $REPO
-    git rm --cached .vim/bundle/$PLUGIN_DIR
-    # rm reference from .git/config and .gitmodules
+    PLUGIN=ack  # example
+    git submodule deinit -f .vim/bundle/$PLUGIN
+    git rm -f .vim/bundle/$PLUGIN
+    rm -rf .git/modules/.vim/bundle/$PLUGIN
 
 installed plugins
 =================
