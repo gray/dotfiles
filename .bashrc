@@ -1,13 +1,16 @@
-if [[ 1 = "$SHLVL" ]]; then
-    DEFAULT_PATH=$PATH
-    PATH=$HOME/bin:$HOME/local/bin
-    PATH=$PATH:$HOME/local/perlbrew/perls/latest/bin
-    PATH=$PATH:$HOME/local/go/bin
-    PATH=$PATH:/opt/local/bin:/opt/local/sbin
-    PATH=$PATH:/usr/local/bin:/usr/local/sbin:/bin
-    PATH=$PATH:$DEFAULT_PATH
-    export PATH
-fi
+function path_prepend () {
+    local i p
+    for ((i=$#; i>0; i--)); do
+        p=${!i}
+        if [ -d "$p" ] && [[ ":$PATH:" != *":$p:"* ]]; then
+            PATH="$p${PATH:+":$PATH"}"
+        fi
+    done
+}
+
+path_prepend $HOME/bin $HOME/local/bin \
+    $HOME/local/perlbrew/perls/latest/bin $HOME/local/go/bin \
+    /opt/local/bin /opt/local/sbin /usr/local/bin /usr/local/sbin /bin
 
 ulimit -n 8192
 umask 0022
