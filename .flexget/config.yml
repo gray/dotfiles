@@ -31,8 +31,8 @@ templates:
     regexp:
       reject:
         # Avoid certain groups (re-encoders and poor encoders).
-        - ? '(?x) [\W_] (?: afg | msd | (\{?)c[_ ]p\1 | pimp4003
-                          | nogr(?:ou)?p ) [\W_]* $'
+        - ? '(?x) [\W_] (?: afg | jah | msd | sva | viethd | pimp4003
+                          | (\{?)c[_ ]p\1 | kcrt | nogr(?:ou)?p ) [\W_]* $'
           : { from: title }
     if:
       # Episode 0 is often not a pilot.
@@ -124,7 +124,7 @@ templates:
         # Avoid certain groups.
         - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
                           | nnd | thc | ssdd | crys | nogr(?:ou)?p | evo | ift
-                          | play[sx]d | aqos ) [\W_]* $'
+                          | play[sx]d | aqos | santi ) [\W_]* $'
         # Flexget doesn't recognize cam or line audio as qualities.
         - '(?x) [\W_] (?: cam[\W_]*audio | line(?:[\W_]*audio)? ) (?:_|\b)'
       from: title
@@ -171,13 +171,7 @@ templates:
   streams:
     disable: download
     exec:
-      on_output:
-        for_accepted:
-          - |
-            growlnotify -t 'Flexget' \
-              -m 'Added {{task}} stream: {{ title | re_replace("['']", "") }}' \
-              >/dev/null 2>&1
-
+      fail_entries: yes
 
 tasks:
   ###########
@@ -188,13 +182,8 @@ tasks:
     include: [ private/btn-rss.yml ]
     template: [ private-torrents, tv-series ]
     manipulate:
-      # Remove some btn fields to avoid confusing the series parser.
-      # Don't rely solely on the scene release name because it doesn't always
-      # include episode info (esp. documentaries).
-      - title:
-          replace:
-            regexp: '(?x) ^ ([^\[]+) .* \[\ ([^\]]+) \ \] \ *$'
-            format: '\1[ \2 ]'
+      # Use the scene release name.
+      - title: { extract: '.*  \[ (.+?) \] *$' }
     # Site doesn't distinguish between dvd and dvd screeners.
     regexp:
       reject:
@@ -206,7 +195,7 @@ tasks:
     # Only accept scene torrents here- members have no quality standards.
     regexp:
       reject_excluding:
-        - '(?x) ^ XSbot $': { from: author }
+        - '^XSbot': { from: author }
   torrentday_tv:
     priority: 3
     include: [ private/torrentday_tv-rss.yml ]
@@ -225,7 +214,7 @@ tasks:
     manipulate:
       - year: { from: title, extract: '^[^[]+\[ (\d{4}) \]' }
       # Use the scene release name.
-      - title: { extract: '.*\[ (.+?) \] *$' }
+      - title: { extract: '.*  \[ (.+?) \] *$' }
     regexp:
       reject:
         # Site doesn't distinguish between dvd and dvd screeners.
@@ -294,13 +283,20 @@ tasks:
     accept_all: yes
     set: { path: '{{secrets.streams.1.path}}' }
     exec:
-      fail_entries: yes
       on_output:
         for_accepted:
           - '{{secrets.streams.1.cmd1}}'
           - '{{secrets.streams.1.cmd2}}'
           - |
+            growlnotify -t 'Flexget' \
+              -m 'Added {{task}} stream: {{title | re_replace("['']", "")}}' \
+              >/dev/null 2>&1 \
+            && \
             youtube-dl -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' \
+              >/dev/null 2>&1 \
+            && \
+            growlnotify -t 'Flexget' \
+              -m 'Completed {{task}} stream: {{title | re_replace("['']", "")}}' \
               >/dev/null 2>&1
   '{{secrets.streams.2.task}}':
     interval: 1 hour
@@ -309,46 +305,19 @@ tasks:
       - rss: { url: '{{secrets.streams.2.url1}}', silent: yes, all_entries: no }
       - rss: { url: '{{secrets.streams.2.url2}}', silent: yes, all_entries: no }
     regexp:
-      accept: [ '{{ secrets.streams.2.regexp }}': { from: title } ]
+      accept: [ '{{secrets.streams.2.regexp}}': { from: title } ]
     set: { path: '{{secrets.streams.2.path}}' }
     exec:
-      fail_entries: yes
       on_output:
         for_accepted:
           - |
+            growlnotify -t 'Flexget' \
+              -m 'Added {{task}} stream: {{title | re_replace("['']", "")}}' \
+              >/dev/null 2>&1 \
+            && \
             youtube-dl -f 'bestvideo[ext=mp4][width<900]+bestaudio/best[ext=mp4][width<900]' \
-              -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' >/dev/null 2>&1
-  '{{secrets.streams.3.task}}':
-    interval: 1 hour
-    template: streams
-    html:
-      url: '{{secrets.streams.3.url}}'
-      links_re: [ '{{secrets.streams.3.links_re}}' ]
-    accept_all: yes
-    set: { path: '{{secrets.streams.3.path}}' }
-    exec:
-      fail_entries: yes
-      on_output:
-        for_accepted:
-          - |
-            youtube-dl -f 'bestvideo[ext=mp4][width<900]+bestaudio/best[ext=mp4][width<900]' \
-              -o '{{path}}/{{now|formatdate("%Y%m%d")}}-%(title)s.%(ext)s' \
-              '{{url}}' >/dev/null 2>&1
-  '{{secrets.streams.4.task}}':
-    interval: 1 hour
-    template: streams
-    # Filter out duplicate urls
-    inputs:
-      - html:
-          url: '{{secrets.streams.4.url}}'
-          links_re: [ '{{secrets.streams.4.links_re}}' ]
-    accept_all: yes
-    set: { path: '{{secrets.streams.4.path}}' }
-    exec:
-      fail_entries: yes
-      on_output:
-        for_accepted:
-          - |
-            youtube-dl -f 'bestvideo[ext=mp4][width<900]+bestaudio/best[ext=mp4][width<900]' \
-              -o '{{path}}/{{now|formatdate("%Y%m%d")}}-%(title)s.%(ext)s' \
-              '{{url}}' >/dev/null 2>&1
+              -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' >/dev/null 2>&1 \
+            && \
+            growlnotify -t 'Flexget' \
+              -m 'Completed {{task}} stream: {{title | re_replace("['']", "")}}' \
+              >/dev/null 2>&1
