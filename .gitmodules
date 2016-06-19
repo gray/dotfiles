@@ -181,9 +181,6 @@
 [submodule ".vim/bundle/unimpaired"]
 	path = .vim/bundle/unimpaired
 	url = git://github.com/tpope/vim-unimpaired.git
-[submodule ".vim/bundle/utl"]
-	path = .vim/bundle/utl
-	url = git://github.com/vim-scripts/utl.vim.git
 [submodule ".vim/bundle/vcscommand"]
 	path = .vim/bundle/vcscommand
 	url = git://github.com/vim-scripts/vcscommand.vim.git
