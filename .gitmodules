@@ -174,7 +174,7 @@
 	url = git://github.com/vim-scripts/taglist.vim.git
 [submodule ".vim/bundle/tmux"]
 	path = .vim/bundle/tmux
-	url = git://github.com/tejr/vim-tmux.git
+	url = git://github.com/keith/tmux.vim.git
 [submodule ".vim/bundle/tomorrow"]
 	path = .vim/bundle/tomorrow
 	url = git://github.com/chriskempson/vim-tomorrow-theme.git

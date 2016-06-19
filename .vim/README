@@ -163,7 +163,7 @@ swift:
 swig:
     http://www.vim.org/scripts/script.php?script_id=1615
 tmux:
-    https://github.com/tejr/vim-tmux
+    https://github.com/keith/tmux.vim
 yaml:
     http://vim.googlecode.com/hg/runtime/syntax/yaml.vim
 
