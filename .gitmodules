@@ -247,3 +247,6 @@
 [submodule ".vim/bundle/fastfold"]
 	path = .vim/bundle/fastfold
 	url = git://github.com/Konfekt/FastFold.git
+[submodule ".vim/bundle/open-browser"]
+	path = .vim/bundle/open-browser
+	url = git://github.com/tyru/open-browser.vim.git

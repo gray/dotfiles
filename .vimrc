@@ -351,12 +351,12 @@ let g:tagbar_type_xs = {
     \ 'scope2kind' : { 'enum' : 'g', 'struct' : 's', 'union' : 'u' },
     \ }
 
-let g:netrw_dirhistmax = 0
-" The default is <cfile>, but that truncates URLs with query strings.
-let g:netrw_gx = '<cWORD>'
+let g:netrw_nogx = 1
 if has('macunix')
-    " Open in the background.
-    let g:netrw_browsex_viewer = 'open -g'
+    let g:openbrowser_browser_commands = [{
+        \ 'name': "open",
+        \ 'args': ['{browser}', '-g', '{uri}']
+        \ }]
 endif
 
 let g:LargeFile = 50
@@ -478,6 +478,9 @@ nmap <silent> <leader>z <plug>ZoomWin
 
 noremap <silent> <leader>ss :SplitjoinSplit<cr>
 noremap <silent> <leader>sj :SplitjoinJoin<cr>
+
+nmap gx <Plug>(openbrowser-smart-search)
+vmap gx <Plug>(openbrowser-smart-search)
 
 
 " Autocommands ------------------------------------------------------------{{{1
