@@ -1,8 +1,13 @@
+maintenance
+===========
+
+clean up stale undo files:
+    perl -MPath::Tiny -E 'for (path("~/.vim/tmp/undo")->children(qr/^%/)) { $_->remove if ! path($_->basename =~ tr[%][/]r)->exists }'
+
 submodule management
 ====================
 
 add new plugin:
-
     cd $REPO
     # example
     git submodule add git://github.com/mileszs/ack.vim.git .vim/bundle/ack
@@ -10,18 +15,17 @@ add new plugin:
     git commit -m "..." .gitmodules .vim/bundle/ack
 
 update plugins:
-
     git submodule -q foreach git pull -q -r -s theirs origin master
     # or add this to crontab:
-    @weekly cd dev/dotfiles && git submodule -q foreach git pull -q -r -s theirs origin master && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
+    @weekly cd $REPO && git submodule -q foreach git pull -q -r -s theirs origin master && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
 
 remove plugin:
-
     cd $REPO
     PLUGIN=ack  # example
     git submodule deinit -f .vim/bundle/$PLUGIN
     git rm -f .vim/bundle/$PLUGIN
     rm -rf .git/modules/.vim/bundle/$PLUGIN
+
 
 installed plugins
 =================
@@ -121,6 +125,7 @@ visualrepeat:
 zoomwin:
     http://www.vim.org/scripts/script.php?script_id=508
 
+
 installed filetypes
 ===================
 
@@ -168,6 +173,7 @@ tmux:
     https://github.com/keith/tmux.vim
 yaml:
     http://vim.googlecode.com/hg/runtime/syntax/yaml.vim
+
 
 installed colors
 ================
