@@ -5,19 +5,20 @@ script_line2 = use warnings
 [Autocomplete::Commands]
 [Autocomplete::Functions]
 [Autocomplete::Globals]
+[Autocomplete::Keywords]
 [Autocomplete::Lexicals]
 [Autocomplete::Methods]
 [Autocomplete::Packages]
 [Colors]
-[DataDumper]
 [Editor]
-editor = vim
+    editor = vim
 [FancyPrompt]
 [Hints]
 [Interrupt]
 [LexicalPersistence]
 [Packages]
 [ReadLine]
+    history_file = ~/.reply_history
 [ResultCache]
 [Timer]
-mintime = 0.25
+    mintime = 0.25
