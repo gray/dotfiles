@@ -30,8 +30,8 @@ set backupdir=~/.vim/tmp/
 set backupskip+=/private/tmp/*
 
 if has('persistent_undo')
-    set undofile
     set undodir=~/.vim/tmp/undo/
+    set undofile
 endif
 
 
@@ -497,7 +497,7 @@ if has('autocmd')
 
     " Disable undo files for tmp directories.
     if has('persistent_undo') |
-        autocmd BufReadPre /tmp/*,/private/tmp/*,$TMPDIR/*
+        autocmd BufNewFile,BufRead /tmp/*,/private/tmp/*,$TMPDIR/*
             \ setlocal noundofile |
     endif
 
