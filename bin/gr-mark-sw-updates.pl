@@ -45,7 +45,7 @@ my $feed = $reader->tag(Modules =>
 );
 die $reader->error unless $feed;
 
-my (%unread, @unwanted_entries);
+my (%unread, %unseen, @unwanted_entries);
 
 FEED:
 for my $entry ($feed->entries) {
@@ -60,12 +60,13 @@ for my $entry ($feed->entries) {
     my $desc    = $entry->content // '';
        $desc  &&= $desc->body;
 
-    if ($name ~~ %{$unread{$lang}}) {
-        push @unwanted_entries, delete $unread{$lang}{$name};
+    my $sw = "$lang|$name";
+    if ($unread{$sw}) {
+        push @unwanted_entries, delete $unread{$sw};
         say "$lang - $name - discarding in favor of newer unread entry"
             if VERBOSE;
     }
-    $unread{$lang}{$name} = $entry;
+    $unread{$sw} = $entry;
 
     my $listed;
     for my $b (@{$conf->{blacklist} || []}) {
@@ -90,12 +91,13 @@ for my $entry ($feed->entries) {
     }
     next if $listed;
 
-    if ("$lang|$name" ~~ %db and $title ne $db{"$lang|$name"}) {
+    if (! $unseen{$sw} and $sw ~~ %db and $title ne $db{$sw}) {
         push @unwanted_entries, $entry;
         VERBOSE && say "$lang - $name - unwanted because seen";
     }
     else {
-        $db{"$lang|$name"} = $title;
+        $unseen{$sw} = 1;
+        $db{$sw} = $title;
     }
 }
 
@@ -136,14 +138,14 @@ sub read_conf {
                         ]ix;
                         # Prolific purveyors of piffleware.
                         my %blacklist = map { $_ => 1 } qw(
-                            aspose aubertg avenj awncorp bayashi binary
-                            corliss csson curtis dannyt dfarrell diederich
-                            geotiger getty idoperel hanenkamp ina ingy
-                            ironcamel jgni jhthorsen jpr jvbsoft kaavannan
-                            madskill manwar melezhik mhcrnl pekingsam
-                            perlancar psixdists reedfish reneeb rsavage
-                            sharyanto sillymoos skim spebern szabgab tapper
-                            tobyink turnerjw zdm zoffix
+                            ahernit aspose aubertg avenj awncorp bayashi
+                            binary bluefeet corliss csson curtis dannyt
+                            dfarrell diederich geotiger getty idoperel
+                            hanenkamp ina ingy ironcamel jgni jhthorsen jpr
+                            jvbsoft kaavannan madskill manwar melezhik mhcrnl
+                            pekingsam perlancar psixdists reedfish reneeb
+                            rsavage sharyanto sillymoos skim spebern szabgab
+                            tapper tobyink turnerjw zdm zoffix
                         );
                         my ($user) = $_[0]->link->href =~ m[/~([^/]+)/];
                         return 1 if $blacklist{$user};
