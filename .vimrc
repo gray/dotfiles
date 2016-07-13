@@ -507,7 +507,7 @@ if has('autocmd')
         \     execute 'normal! g`"' | let b:restored_pos = 1 |
         \ endif
     " Open any containing folds on startup or when restoring cursor position.
-    autocmd VimEnter * execute 'normal! zv'
+    autocmd VimEnter * execute 'normal! zv' | redraw!
     autocmd BufWinEnter *
         \ if exists('b:restored_pos') |
         \     execute 'normal! zv' | unlet b:restored_pos |
