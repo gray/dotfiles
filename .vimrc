@@ -462,7 +462,10 @@ nnoremap Q gqap
 vnoremap Q gq
 
 " Avoid accidentally calling up the command history.
-nnoremap q: <nop>
+nmap q: <nop>
+
+" Avoid accidentally deleting selection when using NerdCommenter mappings.
+vmap <leader>c <nop>
 
 " Toggle various plugins.
 noremap <silent> <leader>fb :CtrlPBuffer<cr>
