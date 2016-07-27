@@ -29,7 +29,7 @@ esac
 [[ -z $PS1 ]] && return
 
 # Prevent C-s from accidentally freezing the terminal.
-[[ -t 0 ]] && stty ixany
+[[ -t 0 ]] && stty -ixon ixoff ixany start '' stop ''
 
 shopt -s no_empty_cmd_completion
 shopt -s checkwinsize  # Update windows size after each command.
