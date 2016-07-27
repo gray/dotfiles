@@ -430,12 +430,14 @@ noremap gj j
 noremap gk k
 
 " Saner paging behaviour.
-noremap <silent> <space> <c-d><c-d>
-noremap <silent> - <c-u><c-u>
 noremap <silent> <pagedown> <c-d><c-d>
 noremap <silent> <pageup> <c-u><c-u>
+map <silent> <s-down> <pagedown>
+map <silent> <s-up> <pageup>
 inoremap <silent> <pagedown> <c-\><c-o><c-d><c-\><c-o><c-d>
 inoremap <silent> <pageup> <c-\><c-o><c-u><c-\><c-o><c-u>
+imap <silent> <s-down> <pagedown>
+imap <silent> <s-up> <pageup>
 
 cnoremap <c-a> <home>
 inoremap <c-a> <home>
