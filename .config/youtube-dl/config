@@ -1,4 +1,5 @@
 --external-downloader aria2c
+--external-downloader-args '--console-log-level=warn'
 --restrict-filenames
 --exec 'tag --add red {}'
 --sub-lang en
