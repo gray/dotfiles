@@ -250,3 +250,6 @@
 [submodule ".vim/bundle/open-browser"]
 	path = .vim/bundle/open-browser
 	url = git://github.com/tyru/open-browser.vim.git
+[submodule ".vim/bundle/targets"]
+	path = .vim/bundle/targets
+	url = git://github.com/wellle/targets.vim.git
