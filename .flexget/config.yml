@@ -278,35 +278,14 @@ tasks:
   # Streams
   ##########
   '{{secrets.streams.1.task}}':
-    template: streams
-    rss: { url: '{{secrets.streams.1.url}}', silent: yes, all_entries: no }
-    accept_all: yes
-    set: { path: '{{secrets.streams.1.path}}' }
-    exec:
-      on_output:
-        for_accepted:
-          - '{{secrets.streams.1.cmd1}}'
-          - '{{secrets.streams.1.cmd2}}'
-          - |
-            growlnotify -t 'Flexget' \
-              -m 'Added {{task}} stream: {{title | re_replace("['']", "")}}' \
-              >/dev/null 2>&1 \
-            && \
-            youtube-dl -o '{{path}}/%(title)s-%(id)s.%(ext)s' '{{url}}' \
-              >/dev/null 2>&1 \
-            && \
-            growlnotify -t 'Flexget' \
-              -m 'Completed {{task}} stream: {{title | re_replace("['']", "")}}' \
-              >/dev/null 2>&1
-  '{{secrets.streams.2.task}}':
     interval: 1 hour
     template: streams
     inputs:
-      - rss: { url: '{{secrets.streams.2.url1}}', silent: yes, all_entries: no }
-      - rss: { url: '{{secrets.streams.2.url2}}', silent: yes, all_entries: no }
+      - rss: { url: '{{secrets.streams.1.url1}}', silent: yes, all_entries: no }
+      - rss: { url: '{{secrets.streams.1.url2}}', silent: yes, all_entries: no }
     regexp:
-      accept: [ '{{secrets.streams.2.regexp}}': { from: title } ]
-    set: { path: '{{secrets.streams.2.path}}' }
+      accept: [ '{{secrets.streams.1.regexp}}': { from: title } ]
+    set: { path: '{{secrets.streams.1.path}}' }
     exec:
       on_output:
         for_accepted:
