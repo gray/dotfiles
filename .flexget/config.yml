@@ -131,7 +131,7 @@ templates:
       from: title
     content_size: { min: 300, max: 2500 }
     imdb_lookup: yes
-    imdb_required: yes
+    require_field: imdb_url
     seen_movies: strict
     if:
       - 'imdb_year < now.year - 6': reject
