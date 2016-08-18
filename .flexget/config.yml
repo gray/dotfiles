@@ -239,7 +239,7 @@ tasks:
     # Only accept scene torrents here- members have no quality standards.
     regexp:
       reject_excluding:
-        - '(?x) ^ XSbot $': { from: author }
+        - '^XSbot': { from: author }
   torrentday_tv_premieres:
     manual: yes
     priority: 22
@@ -259,7 +259,7 @@ tasks:
     # Only accept scene torrents here- members often mislabel.
     regexp:
       reject_excluding:
-        - '(?x) ^ XSbot $': { from: author }
+        - '^XSbot': { from: author }
   torrentday_movies:
     priority: 32
     include: [ private/torrentday_movies-rss.yml ]
