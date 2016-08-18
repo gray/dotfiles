@@ -17,6 +17,7 @@ script_line2 = use warnings
 [Interrupt]
 [LexicalPersistence]
 [Packages]
+[Pager]
 [ReadLine]
     history_file = ~/.reply_history
 [ResultCache]
