@@ -185,7 +185,7 @@ do
         esac
     done
 
-    log "Added torrent: $name"
+    log "Added torrent: $name - $hash"
     growl "Added torrent: $name"
 
     force_public=0
@@ -279,7 +279,7 @@ for line in $(remote --torrent all --info); do
     if [ -z "$dir" ] || [ ! -e "$dir/$name" ]; then
         if [ Finished = "$state" ]; then
             remote --torrent "$hash" --remove >/dev/null
-            log "Removed torrent: $name"
+            log "Removed torrent: $name - $hash"
         fi
         continue
     fi
@@ -473,7 +473,7 @@ for line in $(remote --torrent all --info); do
     fi
 
     remote --torrent "$hash" --remove >/dev/null
-    log "Removed torrent: $name"
+    log "Removed torrent: $name - $hash"
 done
 
 case $OSTYPE in darwin*)
