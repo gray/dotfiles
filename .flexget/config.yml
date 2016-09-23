@@ -68,6 +68,7 @@ templates:
     series:
       settings:
         tv: &TV_SETTING
+          exact: yes
           quality: hdtv+ <=720p
           target: <720p
           timeframe: 2 hours
