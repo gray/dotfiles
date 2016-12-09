@@ -1,2 +1,9 @@
 --pager=less -R
 --color-match=yellow on_blue
+
+--type-set=config:ext:=config,conf,cfg,cnf,ini,rc
+
+--ignore-dir=log
+--ignore-dir=logs
+--ignore-dir=tmp
+--ignore-dir=temp
