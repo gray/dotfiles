@@ -440,16 +440,19 @@ for line in $(remote --torrent all --info); do
         esac
 
         if [ $is_video_dir ]; then
-            ! find "$dir/$name" \(                                      \
-                \( -type d -name [Ss][Aa][Mm][Pp][Ll][Ee] -prune \) -o  \
-                \( -type f \(                                           \
-                    -name *.[Tt][Xx][Tt] -o -name *.[Nn][Ff][Oo] -o     \
-                    -name *.[Hh][Tt][Mm][Ll] -o -name *.[Jj][Pp][Gg] -o \
-                    -name *.[Jj][Pp][Ee][Gg] -o -name *.[Pp][Nn][Gg] -o \
-                    -name *.[Gg][Ii][Ff] -o -name *.[Rr][Tt][Ff] -o     \
-                    -name [Ss][Aa][Mm][Pp][Ll][Ee].??? -o               \
-                    -name *[/.\ -][Ss][Aa][Mm][Pp][Ll][Ee].??? -o       \
-                    -name *\([Ss][Aa][Mm][Pp][Ll][Ee]\).???             \
+            ! find "$dir/$name" \(                                          \
+                \( -type d -name [Ss][Aa][Mm][Pp][Ll][Ee] -prune \) -o      \
+                \( -type d -name [Ss][Cc][Rr][Ee][Ee][Nn][Ss] -prune \) -o  \
+                \( -type d -name [Pp][Rr][Oo][Oo][Ff][Ss]? -prune \) -o  \
+                \( -type f \(                                               \
+                    -name *.[Tt][Xx][Tt] -o -name *.[Nn][Ff][Oo] -o         \
+                    -name *.[Hh][Tt][Mm][Ll] -o -name *.[Jj][Pp][Gg] -o     \
+                    -name *.[Jj][Pp][Ee][Gg] -o -name *.[Pp][Nn][Gg] -o     \
+                    -name *.[Gg][Ii][Ff] -o -name *.[Rr][Tt][Ff] -o         \
+                    -name [Ss][Aa][Mm][Pp][Ll][Ee].??? -o                   \
+                    -name *[/.\ -][Ss][Aa][Mm][Pp][Ll][Ee].??? -o           \
+                    -name *\([Ss][Aa][Mm][Pp][Ll][Ee]\).??? -o              \
+                    -name [Rr][Aa][Rr][Bb][Gg].[Cc][Oo][Mm].???             \
                 \) \) \) -exec rm -rf {} + 2>/dev/null
         fi
 
