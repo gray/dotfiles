@@ -129,7 +129,7 @@ remote () {
         esac
     fi
     exec 3>&- 4>&-
-    printf "$remote_error" >&2
+    printf '%s' "$remote_error" >&2
 }
 
 IFS=$(printf "\n\t")
@@ -320,7 +320,7 @@ for line in $(remote --torrent all --info); do
     # file per torrent location will not suffice; each RAR archive requires
     # its own lock file.
     if [ 1 = $HAS_UNRAR ]; then
-        for file in $(find "$dir/$name" -type f -name *.[Rr][Aa][Rr] 2>/dev/null); do
+        for file in $(find "$dir/$name" -type f -name '*.[Rr][Aa][Rr]' 2>/dev/null); do
             has_rar=1
             rar_dir=${file%/*}
             rar_file=${file##*/}
