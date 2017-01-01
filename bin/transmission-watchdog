@@ -215,10 +215,10 @@ do
         remote --torrent "$hash" --uplimit "$PUBLIC_UP_RATE" \
             --seedratio "$PUBLIC_RATIO" >/dev/null
         # Add some public trackers.
-        for tracker in tracker.openbittorrent.com:80                        \
-            tracker.istole.it:80 tracker.btzoo.eu:80                        \
-            tracker.coppersurfer.tk:6969 tracker.leechers-paradise.org:6969 \
-            tracker.internetwarriors.net:1337 pow7.com:80;
+        for tracker in tracker.openbittorrent.com:80 tracker.istole.it:80   \
+            tracker.internetwarriors.net:1337 tracker.coppersurfer.tk:6969  \
+            tracker.leechers-paradise.org:6969 open.demonii.com:1337        \
+            public.popcorn-tracker.org:6969;
         do
             remote --torrent "$hash" --tracker-add \
                 udp://${tracker}/announce >/dev/null
