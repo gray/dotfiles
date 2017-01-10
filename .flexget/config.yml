@@ -1,6 +1,6 @@
 # warnings off
 
-secrets: private/secrets.yml
+variables: private/variables.yml
 
 templates:
   global:
@@ -141,18 +141,18 @@ templates:
       - 'imdb_year < now.year - 6': reject
       - "'musical' in (imdb_genres or [])": reject
       - "['music'] == (imdb_genres or [])": reject
-      - ? "'music' in (imdb_genres or []) and
-            any([i in (imdb_genres or []) for i in ('biography', 'documentary')])"
+      - ? "'music' in (imdb_genres or []) and ('biography' in (imdb_genres or [])
+              or 'documentary' in (imdb_genres or []))"
         : reject
       - "['documentary', 'sport'] == (imdb_genres or [])": reject
       # Probably a standup comedy.
-      - "'comedy' in (imdb_genres or []) and 1 == len(imdb_actors or [])": reject
+      - "'comedy' in (imdb_genres or []) and 1 == (imdb_actors or [])|length": reject
       - "'english' == (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/. }
           imdb:
             min_score: 6.2
             min_votes: 500
-      - '1 < len(imdb_languages or [])':
+      - '1 < (imdb_languages or [])|length':
           set: { path: ~/Media/Movies/Foreign/. }
       - "'documentary' in (imdb_genres or [])":
           set: { path: ~/Media/Movies/Documentaries/. }
@@ -232,8 +232,8 @@ tasks:
         - '(?x) ^ \W* (?: reality | sports ) \W* $': { from: comments }
     if:
       # Accept only the current year, respecting dates near the boundary.
-      - ? 'not str(year).isdigit() or int(year) not in
-            [(now + timedelta(days=n)).year for n in (0, -60, 60)]'
+      - ? 'not year.isdigit() or year|int < (now - timedelta(days=60)).year
+              or year|int > (now + timedelta(days=60)).year'
         :  reject
   xspeeds_tv_premieres:
     manual: yes
@@ -282,15 +282,15 @@ tasks:
   ##########
   # Streams
   ##########
-  '{{secrets.streams.1.task}}':
+  '{?streams.1.task?}':
     interval: 1 hour
     template: streams
     inputs:
-      - rss: { url: '{{secrets.streams.1.url1}}', silent: yes, all_entries: no }
-      - rss: { url: '{{secrets.streams.1.url2}}', silent: yes, all_entries: no }
+      - rss: { url: '{?streams.1.url1?}', silent: yes, all_entries: no }
+      - rss: { url: '{?streams.1.url2?}', silent: yes, all_entries: no }
     regexp:
-      accept: [ '{{secrets.streams.1.regexp}}': { from: title } ]
-    set: { path: '{{secrets.streams.1.path}}' }
+      accept: [ '{?streams.1.regexp?}': { from: title } ]
+    set: { path: '{?streams.1.path?}' }
     exec:
       on_output:
         for_accepted:
