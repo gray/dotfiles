@@ -31,9 +31,9 @@ templates:
     regexp:
       reject:
         # Avoid certain groups (re-encoders and poor encoders).
-        - ? '(?x) [\W_] (?: afg | (\{?)c[_ ]p\1 | heat | jah | kcrt | msd
-                          | nogr(?:ou)?p | pimp4003 | sva | viethd | ViSUM
-                        ) [\W_]* $'
+        - ? '(?x) [\W_] (?: afg | (\{?)c[_ ]p\1 | deadpool | heat | jah | kcrt
+                          | msd | nogr(?:ou)?p | pimp4003 | sva | viethd
+                          | visum ) [\W_]* $'
           : { from: title }
 
     if:
@@ -103,7 +103,7 @@ templates:
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
-        - '(?x) (?:_|\b) (?: au | nz | pl | uk | n[fh]l | ufc | wwe | sports
+        - '(?x) (?:_|\b) (?: nz | pl | n[fh]l | ufc | wwe | sports
                              | championships? | 24(?:h|-7) | bak(?:e|ing)
                              | world\W+series | live\W+at )
                 (?:_|\b)'
