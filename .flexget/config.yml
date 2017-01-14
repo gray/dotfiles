@@ -188,7 +188,7 @@ tasks:
     template: [ private-torrents, tv-series ]
     manipulate:
       # Use the scene release name.
-      - title: { extract: '.*  \[ (.+?) \] *$' }
+      - title: { extract: ' \[ (\S+) \] *$' }
     # Site doesn't distinguish between dvd and dvd screeners.
     regexp:
       reject:
@@ -219,7 +219,7 @@ tasks:
     manipulate:
       - year: { from: title, extract: '^[^[]+\[ (\d{4}) \]' }
       # Use the scene release name.
-      - title: { extract: '.*  \[ (.+?) \] *$' }
+      - title: { extract: ' \[ (\S+) \] *$' }
     regexp:
       reject:
         # Site doesn't distinguish between dvd and dvd screeners.
