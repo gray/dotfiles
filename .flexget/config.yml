@@ -30,20 +30,20 @@ templates:
     content_size: { min: 25, max: 2500 }
     regexp:
       reject:
-        # Avoid certain groups (re-encoders and poor encoders).
-        - ? '(?x) [\W_] (?: afg | (\{?)c[_ ]p\1 | deadpool | heat | jah | kcrt
-                          | msd | nogr(?:ou)?p | pimp4003 | sva | viethd
-                          | visum ) [\W_]* $'
+        # Avoid certain release groups.
+        - ? '(?x) [\W_] (?: afg | deadpool | jah | kcrt | lotv | msd
+                            | nogr(?:ou)?p | ny2 | pimp4003 | viethd | visum
+                        ) [\W_]* $'
           : { from: title }
-
     if:
       # Reject season previews or recaps.
       - '"ep" == series_id_type and 0 == series_episode':
           regexp:
             reject:
-              - ? '(?x) (?:_|\b) (?: preview | sneak \W+  peek | trailer
-                                   | behind \W+ the \W+ scenes
-                                   | first \W+ look | making \W+ of )
+              - ? '(?x) (?:_|\b) (?: preview | trailer
+                                     | behind \W+ the \W+ scenes
+                                     | catch(?:ing)? \W+ up | first \W+ look
+                                     | making \W+ of | sneak \W+ peek )
                         (?:_|\b)'
                 : { from: title }
       # Only accept specials for later seasons.
@@ -60,6 +60,7 @@ templates:
       - 'path.startswith("~/Media/TV/Foreign/")':
           regexp:
             reject_excluding: [ '(?x) \b sub(?:s|bed) \b': { from: title } ]
+            reject: [ '(?x) \b nl \W+ subs \b': { from: title } ]
       - 'not path.startswith("~/Media/TV/Foreign/")':
           regexp:
             reject: [ '(?x) \b sub(?:s|bed) \b': { from: title } ]
@@ -85,6 +86,7 @@ templates:
           path: ~/Media/TV/Documentaries/{{series_name}}/.
         foreign:
           <<: *TV_SETTING
+          quality: webrip+ <=720p
           path: ~/Media/TV/Foreign/{{series_name}}/.
         talk_shows:
           <<: *TV_SETTING
@@ -103,15 +105,17 @@ templates:
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
-        - '(?x) (?:_|\b) (?: nz | pl | n[fh]l | ufc | wwe | sports
-                             | championships? | 24(?:h|-7) | bak(?:e|ing)
-                             | world\W+series | live\W+at )
+        - ? '(?x) (?:_|\b) (?: pdtv | norwegian | hanrel | dubbed
+                               | horriblesubs | tgl )
+                (?:_|\b)'
+          : { from: title }
+        - '(?x) (?:_|\b) (?: nz | pl | sports | championships? | bak(?:e | ing)
+                             | world \W+ series | live \W+ at )
                 (?:_|\b)'
         - '(?x) chefs?'
-        - '(?x) (?:_|\b) (?: brit(?:s | ish | ain | annic?a)? | england
-                             | australia | kitchen | food | cook | tattoo )'
-        - '(?x) (?:_|\b) (?: pdtv | norwegian | hanrel | dubbed ) (?:_|\b)':
-            from: title
+        - '(?x) (?:_|\b) (?: australia | brit(?:s | ish | ain | annic?a)?
+                             | engl(?:and | ish) | kitchen | food | cook
+                             | tattoo )'
       from: series_name
 
   movies:
@@ -126,7 +130,7 @@ templates:
                             | ro[ds]ubbed )
                   (?:_|\b)'
           : { from: [ title, description ] }
-        # Avoid certain groups.
+        # Avoid certain release groups.
         - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
                           | nnd | thc | ssdd | crys | nogr(?:ou)?p | evo | ift
                           | play[sx]d | aqos | santi ) [\W_]* $'
@@ -146,13 +150,14 @@ templates:
         : reject
       - "['documentary', 'sport'] == (imdb_genres or [])": reject
       # Probably a standup comedy.
-      - "'comedy' in (imdb_genres or []) and 1 == (imdb_actors or [])|length": reject
+      - "'comedy' in (imdb_genres or []) and 1 == (imdb_actors or []) | length":
+          reject
       - "'english' == (imdb_languages or ['english'])[0]":
           set: { path: ~/Media/Movies/. }
           imdb:
             min_score: 6.2
             min_votes: 500
-      - '1 < (imdb_languages or [])|length':
+      - '1 < (imdb_languages or []) | length':
           set: { path: ~/Media/Movies/Foreign/. }
       - "'documentary' in (imdb_genres or [])":
           set: { path: ~/Media/Movies/Documentaries/. }
@@ -188,7 +193,7 @@ tasks:
     template: [ private-torrents, tv-series ]
     manipulate:
       # Use the scene release name.
-      - title: { extract: ' \[ (\S+) \] *$' }
+      - title: { extract: ' \[ ([^[]+) \] *$' }
     # Site doesn't distinguish between dvd and dvd screeners.
     regexp:
       reject:
@@ -207,7 +212,7 @@ tasks:
     template: [ private-torrents, tv-series ]
     manipulate:
       - title:
-          replace: { regexp: '\b\W*no\s*rars?\W*$', format: '' }
+          replace: { regexp: '(?x) \b\W* no \W* rars? \W*$', format: '' }
 
   #####################
   # TV series premieres
@@ -219,21 +224,22 @@ tasks:
     manipulate:
       - year: { from: title, extract: '^[^[]+\[ (\d{4}) \]' }
       # Use the scene release name.
-      - title: { extract: ' \[ (\S+) \] *$' }
+      - title: { extract: ' \[ ([^[]+) \] *$' }
     regexp:
       reject:
         # Site doesn't distinguish between dvd and dvd screeners.
         - '(?x) \b dvdrip \b': { from: title }
         - '(?x) [\W_] kor $': { from: title }
         - ? '(?x) \b (?: anime | celebrities | children | cooking | dance
-              | dating | fashion | food | gameshow | homeandgarden | lifestyle
-              | music | soap | sport ) \b'
+                         | dating | fashion | food | gameshow | homeandgarden
+                         | lifestyle | music | soap | sport
+                     ) \b'
           : { from: comments }
         - '(?x) ^ \W* (?: reality | sports ) \W* $': { from: comments }
     if:
       # Accept only the current year, respecting dates near the boundary.
-      - ? 'not year.isdigit() or year|int < (now - timedelta(days=60)).year
-              or year|int > (now + timedelta(days=60)).year'
+      - ? 'not year.isdigit() or year | int < (now - timedelta(days=60)).year
+              or year | int > (now + timedelta(days=60)).year'
         :  reject
   xspeeds_tv_premieres:
     manual: yes
@@ -251,7 +257,7 @@ tasks:
     template: [ private-torrents, tv-premieres ]
     manipulate:
       - title:
-          replace: { regexp: '\b\W*no\s*rars?\W*$', format: '' }
+          replace: { regexp: '(?x) \b\W* no \W* rars? \W*$', format: '' }
 
   ########
   # Movies
@@ -270,7 +276,7 @@ tasks:
     template: [ private-torrents, movies ]
     manipulate:
       - title:
-          replace: { regexp: '\b\W*no\s*rars?\W*$', format: '' }
+          replace: { regexp: '(?x) \b\W* no \W* rars? \W*$', format: '' }
   ptp:
     priority: 33
     include: [ private/ptp-rss.yml ]
