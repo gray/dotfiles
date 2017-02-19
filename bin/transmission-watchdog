@@ -429,13 +429,14 @@ for line in $(remote --torrent all --info); do
                 is_video_dir=1 ;;
             "$WATCH_DIR"/TV/* | "$WATCH_DIR"/Movies/*)
                 is_video_dir=1
-                ! find "$dir/$name/" \(                                 \
-                    \( -type d \(                                       \
-                        -name [Ss][Uu][Bb][Ss] -o                       \
-                        -name [Ss][Uu][Bb][Tt][Ii][Tt][Ll][Ee][Ss]      \
-                    \) -prune \) -o                                     \
-                    \( -type f \(                                       \
-                        -name '*.srt' -o -name '*.idx' -o -name '*.sub' \
+                ! find "$dir/$name/" \(                                    \
+                    \( -type d \(                                          \
+                        -name [Ss][Uu][Bb][Ss] -o                          \
+                        -name [Ss][Uu][Bb][Tt][Ii][Tt][Ll][Ee][Ss]         \
+                    \) -prune \) -o                                        \
+                    \( -type f \(                                          \
+                        -name '*.srt' -o -name '*.idx' -o -name '*.sub' -o \
+                        -name '*.ass' -o -name '*.ssa'                     \
                     \) \) \)  -exec rm -rf {} + 2>/dev/null
         esac
 
