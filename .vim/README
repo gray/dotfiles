@@ -17,7 +17,7 @@ add new plugin:
 update plugins:
     git submodule -q foreach git pull -q -r -s theirs origin master
     # or add this to crontab:
-    @weekly cd $REPO && git submodule -q foreach git pull -q -r -s theirs origin master && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
+    @weekly cd $REPO && git submodule -q foreach git pull -q -r -s recursive -X theirs origin master && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
 
 remove plugin:
     cd $REPO
