@@ -15,7 +15,7 @@ add new plugin:
     git commit -m "..." .gitmodules .vim/bundle/ack
 
 update plugins:
-    git submodule -q foreach git pull -q -r -s theirs origin master
+    git submodule -q foreach git pull -q -r -s recursive -X theirs origin master
     # or add this to crontab:
     @weekly cd $REPO && git submodule -q foreach git pull -q -r -s recursive -X theirs origin master && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
 
@@ -31,99 +31,93 @@ installed plugins
 =================
 
 a:
-    http://www.vim.org/scripts/script.php?script_id=31
+    https://github.com/vim-scripts/a.vim
 abolish:
-    http://www.vim.org/scripts/script.php?script_id=1545
+    https://github.com/tpope/vim-abolish
 ack:
-    http://www.vim.org/scripts/script.php?script_id=2572
+    https://github.com/mileszs/ack.vim
 afterimage:
-    http://www.vim.org/scripts/script.php?script_id=1617
+    https://github.com/tpope/vim-afterimage
 airline:
     https://github.com/vim-airline/vim-airline
 asterisk:
     https://github.com/haya14busa/vim-asterisk
 camelcasemotion:
-    http://www.vim.org/scripts/script.php?script_id=1905
+    https://github.com/vim-scripts/camelcasemotion
 characterize:
-    http://www.vim.org/scripts/script.php?script_id=4410
+    https://github.com/tpope/vim-characterize
 ctrlp:
-    http://www.vim.org/scripts/script.php?script_id=3736
+    https://github.com/ctrlpvim/ctrlp.vim
 delimitMate:
-    http://www.vim.org/scripts/script.php?script_id=2754
+    https://github.com/Raimondi/delimitMate
 dirdiff:
-    http://www.vim.org/scripts/script.php?script_id=102
+    https://github.com/will133/vim-dirdiff
 dispatch:
-    http://www.vim.org/scripts/script.php?script_id=4504
+    https://github.com/tpope/vim-dispatch
 endwise:
-    http://www.vim.org/scripts/script.php?script_id=2386
+    https://github.com/tpope/vim-endwise
 eunuch:
-    http://www.vim.org/scripts/script.php?script_id=4300
+    https://github.com/tpope/vim-eunuch
+exchange:
+    https://github.com/tommcdo/vim-exchange
 fastfold:
-    http://www.vim.org/scripts/script.php?script_id=5104
+    https://github.com/Konfekt/FastFold
 fugitive:
-    http://www.vim.org/scripts/script.php?script_id=2975
+    https://github.com/tpope/vim-fugitive
 gist:
-    http://www.vim.org/scripts/script.php?script_id=2423
+    https://github.com/mattn/gist-vim
 gitv:
-    http://www.vim.org/scripts/script.php?script_id=3574
+    https://github.com/gregsexton/gitv
 histwin:
-    http://www.vim.org/scripts/script.php?script_id=2932
+    https://github.com/chrisbra/histwin.vim
 indent-object:
-    http://www.vim.org/scripts/script.php?script_id=3037
+    https://github.com/michaeljsmith/vim-indent-object
 largefile:
-    http://www.vim.org/scripts/script.php?script_id=1506
-manpageview:
-    http://www.vim.org/scripts/script.php?script_id=489
-mark:
-    http://www.vim.org/scripts/script.php?script_id=2666
+    https://github.com/vim-scripts/LargeFile
 matchit:
-    http://www.vim.org/scripts/script.php?script_id=39
+    https://github.com/benjifisher/matchit.zip
 nrrwregn:
-    http://www.vim.org/scripts/script.php?script_id=3075
-nerd commenter:
-    http://www.vim.org/scripts/script.php?script_id=1218
-nerd tree:
-    http://www.vim.org/scripts/script.php?script_id=1658
-open browser:
-    http://www.vim.org/scripts/script.php?script_id=3133
+    https://github.com/chrisbra/NrrwRgn
+nerdcommenter:
+    https://github.com/scrooloose/nerdcommenter
+nerdtree:
+    https://github.com/scrooloose/nerdtree
+open-browser:
+    https://github.com/tyru/open-browser.vim
 perlomni:
-    http://www.vim.org/scripts/script.php?script_id=2852
+    https://github.com/c9s/perlomni.vim
 perlprove:
-    http://www.vim.org/scripts/script.php?script_id=1319
+    https://github.com/vim-scripts/perlprove.vim
 ragtag:
-    http://www.vim.org/scripts/script.php?script_id=1896
+    https://github.com/tpope/vim-ragtag
 ref:
-    http://www.vim.org/scripts/script.php?script_id=3067
+    https://github.com/thinca/vim-ref
 repeat:
-    http://www.vim.org/scripts/script.php?script_id=2136
-replace with register:
-    http://www.vim.org/scripts/script.php?script_id=2703
+    https://github.com/tpope/vim-repeat
 scratch:
-    http://www.vim.org/scripts/script.php?script_id=664
+    https://github.com/yegappan/scratch
 splitjoin:
-    http://www.vim.org/scripts/script.php?script_id=3613
+    https://github.com/AndrewRadev/splitjoin.vim
 supertab:
-    http://www.vim.org/scripts/script.php?script_id=1643
+    https://github.com/ervandew/supertab
 surround:
-    http://www.vim.org/scripts/script.php?script_id=1697
+    https://github.com/tpope/vim-surround
 tabular:
     https://github.com/godlygeek/tabular
 tagbar:
-    http://www.vim.org/scripts/script.php?script_id=3465
+    https://github.com/majutsushi/tagbar
 taglist:
-    http://www.vim.org/scripts/script.php?script_id=273
+    https://github.com/vim-scripts/taglist.vim
+targets:
+    https://github.com/wellle/targets.vim
 undotree:
-    http://www.vim.org/scripts/script.php?script_id=4177
+    https://github.com/mbbill/undotree
 unimpaired:
-    http://www.vim.org/scripts/script.php?script_id=1590
-universal text linking:
-    http://www.vim.org/scripts/script.php?script_id=293
+    https://github.com/tpope/vim-unimpaired
 vcscommand:
-    http://www.vim.org/scripts/script.php?script_id=90
-visualrepeat:
-    http://www.vim.org/scripts/script.php?script_id=3848
+    https://github.com/vim-scripts/vcscommand.vim
 zoomwin:
-    http://www.vim.org/scripts/script.php?script_id=508
+    https://github.com/vim-scripts/ZoomWin
 
 
 installed filetypes
@@ -136,13 +130,11 @@ actionscript:
 applescript:
     http://www.vim.org/scripts/script.php?script_id=1736
 arduino:
-    http://www.vim.org/scripts/script.php?script_id=2654
-asciidoc:
-    http://asciidoc.googlecode.com/hg/vim/syntax/asciidoc.vim
+    https://github.com/vim-scripts/Arduino-syntax-file
 csv:
-    http://www.vim.org/scripts/script.php?script_id=2830
+    https://github.com/chrisbra/csv.vim
 git:
-    http://www.vim.org/scripts/script.php?script_id=1654
+    https://github.com/tpope/vim-git
 go:
     https://github.com/fatih/vim-go
 javascript:
@@ -153,16 +145,16 @@ nginx:
     http://www.vim.org/scripts/script.php?script_id=1886
 perl:
     https://github.com/vim-perl/vim-perl
+perl6:
+    https://github.com/vim-perl/vim-perl6
 puppet:
-    https://github.com/puppetlabs/puppet-syntax-vim
-python:
-    http://www.vim.org/scripts/script.php?script_id=790
+    https://github.com/rodjek/vim-puppet
 ruby:
     https://github.com/vim-ruby/vim-ruby
 rust:
     https://github.com/rust-lang/rust.vim
 scala:
-    http://lampsvn.epfl.ch/trac/scala/browser/scala-tool-support/trunk/src/vim/
+    https://github.com/derekwyatt/vim-scala
 srt:
     http://www.linuxpages.org/srt.vim_en.php
 swift:
@@ -171,8 +163,6 @@ swig:
     http://www.vim.org/scripts/script.php?script_id=1615
 tmux:
     https://github.com/keith/tmux.vim
-yaml:
-    http://vim.googlecode.com/hg/runtime/syntax/yaml.vim
 
 
 installed colors
@@ -181,46 +171,40 @@ installed colors
 css_color:
     https://github.com/ap/vim-css-color
 darkspectrum:
-    http://www.vim.org/scripts/script.php?script_id=2215
+    https://github.com/vim-scripts/darkspectrum
 gentooish:
-    http://www.vim.org/scripts/script.php?script_id=2474
+    https://github.com/cdaddr/gentooish.vim
 hickop:
-    http://www.vim.org/scripts/script.php?script_id=4113
-ir_black:
-    https://github.com/twerth/dotfiles/raw/master/etc/vim/colors/ir_black.vim
+    https://github.com/hickop/vim-hickop-colors
 jellybeans:
-    http://www.vim.org/scripts/script.php?script_id=2555
+    https://github.com/nanotech/jellybeans.vim
 kolor:
-    http://www.vim.org/scripts/script.php?script_id=4339
+    https://github.com/zeis/vim-kolor
 lettuce:
     http://www.vim.org/scripts/script.php?script_id=1975
 liquidcarbon:
     http://www.vim.org/scripts/script.php?script_id=3274
 metacosm:
-    http://www.vim.org/scripts/script.php?script_id=985
+    https://github.com/vim-scripts/metacosm.vim
 molokai:
-    http://www.vim.org/scripts/script.php?script_id=2340
+    https://github.com/tomasr/molokai
 monokai:
     https://github.com/sickill/vim-monokai
 neverness:
-    http://www.vim.org/scripts/script.php?script_id=1560
+    https://github.com/vim-scripts/Neverness-colour-scheme
 peaksea:
-    http://www.vim.org/scripts/script.php?script_id=760
+    https://github.com/vim-scripts/peaksea
 solarized:
-    http://www.vim.org/scripts/script.php?script_id=3520
+    https://github.com/altercation/vim-colors-solarized
 sunburst:
     https://github.com/sickill/vim-sunburst
-synic:
-    http://www.vim.org/scripts/script.php?script_id=1897
-tomorrow:
-    https://github.com/chriskempson/vim-tomorrow-theme
 vividchalk:
-    http://www.vim.org/scripts/script.php?script_id=1891
+    https://github.com/tpope/vim-vividchalk
 wombat256:
-    http://www.vim.org/scripts/script.php?script_id=2465
+    https://github.com/vim-scripts/wombat256.vim
 xoria256:
-    http://www.vim.org/scripts/script.php?script_id=2140
+    https://github.com/vim-scripts/xoria256.vim
 xterm16:
-    http://www.vim.org/scripts/script.php?script_id=795
+    https://github.com/vim-scripts/xterm16.vim
 yowish:
-    http://www.vim.org/scripts/script.php?script_id=5083
+    https://github.com/KabbAmine/yowish.vim

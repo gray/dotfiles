@@ -556,9 +556,6 @@ if has('autocmd')
         \ endif
     autocmd BufLeave,CursorHoldI * stopinsert | doautocmd InsertLeave
 
-    " Automatically unset paste mode.
-    autocmd InsertLeave * setlocal nopaste
-
     " Make visible only in insert mode.
     if exists('+colorcolumn')
         autocmd InsertEnter * setlocal colorcolumn=80
@@ -641,8 +638,7 @@ let g:solarized_termcolors = 256
 if has('gui_running') || &t_Co == 256
     colorscheme gentooish
 else
-    colorscheme ir_black
-    highlight! link NonText SpecialKey
+    colorscheme jellybeans
 endif
 doautocmd ColorScheme
 
