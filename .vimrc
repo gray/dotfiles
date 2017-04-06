@@ -249,9 +249,7 @@ function! s:AdjustColorScheme ()
 
             " Vim resets the background to light if a colorscheme sets the
             " Normal group's ctermbg to a value greater than 8.
-            if &t_Co == 256
-                set background=dark
-            endif
+            if &t_Co == 256 | set background=dark | endif
 
             if exists('l:colors_name')
                 let g:colors_name = l:colors_name
@@ -630,8 +628,6 @@ endif
 
 " Colors ------------------------------------------------------------------{{{1
 
-set background=dark
-
 let g:solarized_termtrans = 1
 let g:solarized_termcolors = 256
 
@@ -640,8 +636,9 @@ if has('gui_running') || &t_Co == 256
 else
     colorscheme jellybeans
 endif
-doautocmd ColorScheme
 
+" Bug in terminal vim: https://redd.it/22krs1
+set background=dark
 
 " GUI ---------------------------------------------------------------------{{{1
 
