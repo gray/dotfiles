@@ -45,9 +45,9 @@ my $feed = $reader->tag(Modules =>
 );
 die $reader->error unless $feed;
 
-my (%unread, %unseen, @unwanted_entries);
+my (%unread, %unseen, @unwanted_entry);
 
-FEED:
+ENTRY:
 for my $entry ($feed->entries) {
     my $source  = substr $entry->source->get_attr('gr:stream-id'), 5;
     my $conf    = $conf->{$source}
@@ -61,14 +61,13 @@ for my $entry ($feed->entries) {
        $desc  &&= $desc->body;
 
     my $sw = "$lang|$name";
-    if ($unread{$sw}) {
-        push @unwanted_entries, delete $unread{$sw};
+    if (my $entry = $unread{$sw}) {
+        push @unwanted_entry, $entry;
         say "$lang - $name - discarding in favor of newer unread entry"
             if VERBOSE;
     }
     $unread{$sw} = $entry;
 
-    my $listed;
     for my $b (@{$conf->{blacklist} || []}) {
         if ('CODE' eq ref $b) {
             next unless $b->($entry);
@@ -76,23 +75,19 @@ for my $entry ($feed->entries) {
         else {
             next unless [$name, $title, $summary, $desc] ~~ $b;
         }
-        $listed = 1;
-        push @unwanted_entries, $entry;
+        push @unwanted_entry, $entry;
         VERBOSE && say "$lang - $name - blacklisted";
-        last;
+        next ENTRY;
     }
-    next if $listed;
 
     for my $w (@{$conf->{whitelist} || []}) {
         next if not $name ~~ $w;
-        $listed = 1;
         VERBOSE && say "$lang - $name - whitelisted";
-        last;
+        next ENTRY;
     }
-    next if $listed;
 
     if (! $unseen{$sw} and $sw ~~ %db and $title ne $db{$sw}) {
-        push @unwanted_entries, $entry;
+        push @unwanted_entry, $entry;
         VERBOSE && say "$lang - $name - unwanted because seen";
     }
     else {
@@ -102,9 +97,9 @@ for my $entry ($feed->entries) {
 }
 
 sleep 0.25;
-goto FEED if $reader->more($feed);
+goto ENTRY if $reader->more($feed);
 
-$reader->mark_read_entry(\@unwanted_entries) or die $reader->error;
+$reader->mark_read_entry(\@unwanted_entry) or die $reader->error;
 
 $db{_last_time} = time;
 
@@ -132,20 +127,34 @@ sub read_conf {
                     sub {
                         return 1 if $dist->dist =~ m[
                             ^ (?:
-                                acme | dist-zilla | mojo[^-]* | bundle | win32
-                                | task-(?:belike | kensho) | catmandu | panda
+                                acme | biox? | device | dist-zilla | panda
+                                | task-belike
                             ) (?:-|$)
+                        ]ix;
+                        return 1 if $dist->dist =~ m[
+                            (?:^|-) (?:
+                                bundle | catmandu | kensho | mojo[^-]* | poex?
+                                | win(?: 32 | dows)[^-]*
+                            ) (?:-|$)
+                        ]ix;
+                        # Ignore foreign languages.
+                        return 1 if $dist->dist =~ m[
+                            ^Lingua- (?: (?!en)(?=\w{2}-) | (?!eng)(?=\w{3}-) )
                         ]ix;
                         # Prolific purveyors of piffleware.
                         my %blacklist = map { $_ => 1 } qw(
-                            ahernit aspose aubertg avenj awncorp bayashi
-                            binary bluefeet corliss csson curtis dannyt
-                            dfarrell diederich geotiger getty idoperel
-                            hanenkamp ina ingy ironcamel jgni jhthorsen jpr
-                            jvbsoft kaavannan madskill manwar melezhik mhcrnl
-                            pekingsam perlancar psixdists reedfish reneeb
-                            rsavage sharyanto sillymoos skim spebern szabgab
-                            tapper tobyink turnerjw zdm zoffix
+                            ahernit amaltsev aspose athreef aubertg awncorp
+                            bayashi bkb binary bluefeet capoeirab corliss
+                            csson curtis dannyt dfarrell diederich faraco
+                            geotiger getty gryphon hanenkamp idoperel  ina
+                            lnation ingy ironcamel jasei jberger jgni
+                            jhthorsen jpr jvbsoft kaavannan kentnl madskill
+                            manwar mauke melezhik mhcrnl miko newellc orange
+                            orkun pekingsam perlancar plicease prbrenan
+                            psixdists reedfish reneeb rsavage sharyanto
+                            sillymoos skim sms spebern steveb szabgab tapper
+                            tobyink turnerjw voj wangq yanick zdm znmstr
+                            zoffix
                         );
                         my ($user) = $_[0]->link->href =~ m[/~([^/]+)/];
                         return 1 if $blacklist{$user};
