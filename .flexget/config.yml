@@ -244,6 +244,7 @@ tasks:
       other_fields: [ comments ]
     manipulate:
       - year: { from: title, extract: '^[^[]+\[ (\d{4}) \]' }
+      - foreign: { from: title, extract: '\| (Foreign) \]' }
       # Use the scene release name.
       - title: { extract: ' \[ ([^[]+) \] *$' }
     regexp:
@@ -262,6 +263,7 @@ tasks:
       - ? 'not year.isdigit() or year | int < (now - timedelta(days=60)).year
               or year | int > (now + timedelta(days=60)).year'
         :  reject
+      - '"foreign" == foreign | lower': reject
   xspeeds_tv_premieres:
     manual: yes
     priority: 21
