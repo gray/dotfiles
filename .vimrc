@@ -424,12 +424,12 @@ map z#  <Plug>(asterisk-z#)
 map gz# <Plug>(asterisk-gz#)
 
 " Make it easier to navigate displayed lines when lines wrap.
+noremap <expr> j v:count ? 'j' : 'gj'
+noremap <expr> k v:count ? 'k' : 'gk'
+noremap <expr> gj v:count ? 'gj' : 'j'
+noremap <expr> gk v:count ? 'gk' : 'k'
 inoremap <down> <c-o>gj
 inoremap <up> <c-o>gk
-noremap j gj
-noremap k gk
-noremap gj j
-noremap gk k
 
 " Saner paging behaviour.
 noremap <silent> <pagedown> <c-d><c-d>
