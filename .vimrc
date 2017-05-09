@@ -362,6 +362,8 @@ let g:LargeFile = 50
 let g:targets_aiAI = 'ai  '
 let g:wordmotion_prefix = '<leader>'
 
+let g:zipPlugin_ext = '*.zip'
+
 nmap <plug>IgnoreMarkSearchNext <plug>MarkSearchNext
 nmap <plug>IgnoreMarkSearchPrev <plug>MarkSearchPrev
 
@@ -611,7 +613,7 @@ if has('autocmd')
         \    shellescape(expand('<afile>'))
     autocmd FileType epub
         \ execute 'silent %!einfo -q -p' shellescape(expand('<afile>'))
-        \     '| lynx -stdin -dump -force_html -display_charset=utf-8 -nolist'
+        \     '| lynx -stdin -dump -assume_charset=utf-8 -nolist'
     autocmd FileType pdf
         \ execute 'silent %!pdftotext -q' shellescape(expand('<afile>'))
         \     ' - | par w78'
