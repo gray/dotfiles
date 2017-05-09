@@ -454,6 +454,9 @@ imap <c-l> <c-o><c-l>
 xmap <c-l> <esc><c-l>gv
 smap <c-l> <esc><c-l>gv<c-g>
 
+" Make repeat command operate on visually selected lines.
+xnoremap <silent> . :normal .<cr>
+
 " Return to visual mode after indenting.
 vnoremap < <gv
 vnoremap > >gv
