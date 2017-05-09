@@ -127,9 +127,6 @@
 [submodule ".vim/bundle/repeat"]
 	path = .vim/bundle/repeat
 	url = git://github.com/tpope/vim-repeat.git
-[submodule ".vim/bundle/solarized"]
-	path = .vim/bundle/solarized
-	url = git://github.com/altercation/vim-colors-solarized.git
 [submodule ".vim/bundle/speeddating"]
 	path = .vim/bundle/speeddating
 	url = git://github.com/tpope/vim-speeddating.git

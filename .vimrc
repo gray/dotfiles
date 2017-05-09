@@ -628,9 +628,6 @@ endif
 
 " Colors ------------------------------------------------------------------{{{1
 
-let g:solarized_termtrans = 1
-let g:solarized_termcolors = 256
-
 if has('gui_running') || &t_Co == 256
     colorscheme gentooish
 else
