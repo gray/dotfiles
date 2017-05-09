@@ -48,14 +48,20 @@ set visualbell t_vb=  " No visual bell
 
 set printoptions=paper:letter
 
-if $TERM_PROGRAM == 'Apple_Terminal'
-    if &term == 'xterm-color'
-        set t_Co=16
-    endif
-elseif &term =~ '256-\?color'
+if &term =~ '256-\?color'
     set t_Co=256
+elseif &term == 'xterm-color'
+    set t_Co=16
 elseif &term =~ 'xterm'
     set t_Co=8
+endif
+
+let s:ok_termguicolors = has('termguicolors') && &t_Co == 256
+    \ && ($TERM_PROGRAM != 'Apple_Terminal' || ! empty($TMUX))
+    \ && (empty($SSH_CLIENT) || ! empty($TMUX))
+if s:ok_termguicolors
+    let &t_8f = "\<esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<esc>[48;2;%lu;%lu;%lum"
 endif
 
 if has('multi_byte')
@@ -214,50 +220,41 @@ endfunction
 
 function! s:AdjustColorScheme ()
     let l:bg = synIDattr(hlID('Normal'), 'bg#')
-    if empty(l:bg) || l:bg == -1
-        return
-    endif
+    if empty(l:bg) || l:bg == -1 | return | endif
 
     " If the background color is dark, set it to black.
     " TODO: also force the background of comments, strings, etc.
-    if has('gui_running')
+    if has('gui_running') || s:ok_termguicolors
         " Calculate the perceived brightness.
         let [l:r, l:g, l:b] = map([1,3,5], 'str2nr(l:bg[v:val : 1+v:val], 16)')
         let l:light = sqrt(0.241 * l:r*l:r + 0.691 * l:g*l:g + 0.068 * l:b*l:b)
-        if l:light < 130
-            highlight Normal guibg=black
-        endif
+        let l:dark = l:light < 130 ? 1 : 0
     else
         let l:dark_range = range(7) + [8] + range(16, 32) + range(52, 67)
             \ + range(88, 99) + range(124, 134) + range(160, 165)
             \ + [196, 197] + range(232, 244)
-        if index(l:dark_range, str2nr(l:bg)) >= 0
-            " Vim resets the colors to default if the ctermbg for the Normal
-            " group is set without first unsetting g:colors_name and setting
-            " g:syntax_cmd to an invalid value.
-            if exists('g:colors_name')
-                let l:colors_name = g:colors_name | unlet g:colors_name
-            endif
-            if exists('g:syntax_cmd')
-                let l:syntax_cmd = g:syntax_cmd
-            endif
-            let g:syntax_cmd = 'do not reset to default colors'
-
-            highlight Normal ctermbg=black
-
-            " Vim resets the background to light if a colorscheme sets the
-            " Normal group's ctermbg to a value greater than 8.
-            if &t_Co == 256 | set background=dark | endif
-
-            if exists('l:colors_name')
-                let g:colors_name = l:colors_name
-            endif
-            unlet g:syntax_cmd
-            if exists('l:syntax_cmd')
-                let g:syntax_cmd = l:syntax_cmd
-            endif
-        endif
+        let l:dark = index(l:dark_range, str2nr(l:bg)) >= 0 ? 1 : 0
     endif
+    if ! l:dark | return | endif
+
+    " Vim resets the colors to default if the ctermbg for the Normal group is
+    " set without first unsetting g:colors_name and setting g:syntax_cmd to an
+    " invalid value.
+    if exists('g:colors_name')
+        let l:colors_name = g:colors_name | unlet g:colors_name
+    endif
+    if exists('g:syntax_cmd') | let l:syntax_cmd = g:syntax_cmd | endif
+    let g:syntax_cmd = 'do not reset to default colors'
+
+    highlight Normal ctermbg=black guibg=black
+
+    " Vim resets the background to light if a colorscheme sets the Normal
+    " group's ctermbg to a value greater than 8.
+    if &t_Co == 256 | set background=dark | endif
+
+    if exists('l:colors_name') | let g:colors_name = l:colors_name | endif
+    unlet g:syntax_cmd
+    if exists('l:syntax_cmd') | let g:syntax_cmd = l:syntax_cmd | endif
 endfunction
 
 function! s:AdjustSyntaxHighlighting ()
@@ -631,14 +628,18 @@ endif
 
 " Colors ------------------------------------------------------------------{{{1
 
+if s:ok_termguicolors
+    set termguicolors
+endif
+
+set background=dark
+
 if has('gui_running') || &t_Co == 256
     colorscheme gentooish
 else
     colorscheme jellybeans
 endif
 
-" Bug in terminal vim: https://redd.it/22krs1
-set background=dark
 
 " GUI ---------------------------------------------------------------------{{{1
 
