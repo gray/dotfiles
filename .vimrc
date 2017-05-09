@@ -578,7 +578,7 @@ if has('autocmd')
         \ endif
 
     autocmd BufRead .vimrc setlocal foldmethod=marker
-    autocmd BufWritePost $MYVIMRC source $MYVIMRC
+    autocmd BufWritePost $MYVIMRC nested source $MYVIMRC
     autocmd BufNewFile,BufRead *.t compiler perlprove
 
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
