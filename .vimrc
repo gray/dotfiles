@@ -10,14 +10,16 @@ execute pathogen#infect()
 " Files, Backup -----------------------------------------------------------{{{1
 
 set history=1000    " Size of command/search history
-set viminfo='1000   " Save marks for N files
-set viminfo+=<1000  " Save N lines for each register
-set viminfo+=h      " Disable hlsearch at startup
-" Disable viminfo for tmp directories
-for s:dir in ['/tmp', '/var/tmp', $TMPDIR]
-    if ! empty(s:dir) | let &viminfo .= ',r' . resolve(s:dir) | endif
-endfor
-set viminfo+=n~/.vim/tmp/.viminfo  " Save the viminfo file elsewhere
+if has('viminfo')
+    set viminfo='1000   " Save marks for N files
+    set viminfo+=<1000  " Save N lines for each register
+    set viminfo+=h      " Disable hlsearch at startup
+    " Disable viminfo for tmp directories
+    for s:dir in ['/tmp', '/var/tmp', $TMPDIR]
+        if ! empty(s:dir) | let &viminfo .= ',r' . resolve(s:dir) | endif
+    endfor
+    set viminfo+=n~/.vim/tmp/.viminfo  " Save the viminfo file elsewhere
+endif
 
 set cpoptions+=W    " Do not overwrite readonly files
 set cpoptions+=>    " Separate register items by line breaks
@@ -38,16 +40,22 @@ endif
 
 " Display, Terminal -------------------------------------------------------{{{1
 
-set numberwidth=1     " Make line number column as narrow as possible
+if has('linebreak')
+    set numberwidth=1 " Make line number column as narrow as possible
+endif
 set lazyredraw        " Don't redraw while executing macros
 set ttyfast           " Indicates a fast terminal connection
-set title             " Set descriptive window/terminal title
+if has('title')
+    set title         " Set descriptive window/terminal title
+endif
 set display=lastline  " Show as much of the last line as possible
 
 set noerrorbells      " Error bells are annoying
 set visualbell t_vb=  " No visual bell
 
-set printoptions=paper:letter
+if has('printer')
+    set printoptions=paper:letter
+endif
 
 if &term =~ '256-\?color'
     set t_Co=256
@@ -76,9 +84,16 @@ if has('multi_byte')
 endif
 
 set nowrap            " Don't wrap long lines
-set linebreak         " Wrap lines at convenient points
+if has('linebreak')
+    set linebreak     " Wrap lines at convenient points
+    let &showbreak = has('multi_byte') ? "\u21aa" : '> '
+endif
 set list              " Visually display tabs and trailing spaces
-let &listchars = "tab:\ubb\ub7,trail:\ub7,extends:\ubb,precedes:\uab"
+if has('multi_byte')
+    let &listchars = "tab:\ubb\ub7,trail:\ub7,extends:\ubb,precedes:\uab"
+else
+    let &listchars = 'tab:> ,trail:-,extends:>,precedes:<'
+endif
 
 set ttimeoutlen=50    " Reduce delay for key codes
 
@@ -92,19 +107,25 @@ set shortmess+=t  " Truncate filename at start if too long
 set shortmess+=o  " Do not prompt to overwrite file
 set shortmess+=O  " Message for reading file overwrites previous
 
-set showcmd       " Display the command in the last line
+if has('cmdline_info')
+    set showcmd   " Display the command in the last line
+    set ruler     " Display info on current position
+endif
 set showmode      " Display the current mode in the last line
 set report=1      " Always report the number of lines changed
-set ruler         " Display info on current position
 set laststatus=2  " Always show status line
-set statusline=Editing:\ %r%t%m\ %=Location:\ Line\ %l/%L\ \ Col:\ %c\ (%p%%)
+if has('statusline')
+    set statusline=Editing:\ %r%t%m\ %=Location:\ Line\ %l/%L\ \ Col:\ %c\ (%p%%)
+endif
 
 
 " Cursor movement ---------------------------------------------------------{{{1
 
 set backspace=indent,eol,start  " Allow backspacing over these
 set whichwrap+=h,l,<,>,[,]      " h l <Left> <Right> can also change lines
-set virtualedit=block           " Select a rectangle in visual mode
+if has('virtualedit')
+    set virtualedit=block       " Select a rectangle in visual mode
+endif
 set scrolloff=2      " Lines visible above/below cursor when scrolling
 set sidescrolloff=2  " Lines visible left/right of cursor when scrolling
 set sidescroll=1     " Smoother scrolling when reaching end of screen
@@ -113,9 +134,8 @@ set nostartofline    " Keep the cursor in the same column
 
 " Text-Formatting, Identing, Tabbing --------------------------------------{{{1
 
-if has('eval') && ! &diff
-    filetype plugin on
-    filetype indent on
+if has('autocmd') && ! &diff
+    filetype plugin indent on
 endif
 
 set textwidth=78
@@ -134,9 +154,13 @@ set formatoptions+=n  " Recognize numbered lists
 set formatoptions+=r  " Insert comment leader after <cr> in insert mode.
 set formatoptions+=q  " Allow formatting of comments with 'gq'
 set formatoptions+=1  " Break a line before, not after, a one-letter word
-set formatoptions+=j  " Remove comment leader when joining lines
+if v:version > 703 || v:version == 703 && has('patch541')
+    set formatoptions+=j  " Remove comment leader when joining lines
+endif
 
-set foldclose=all     " Close folds at startup
+if has('folding')
+    set foldclose=all " Close folds at startup
+endif
 
 
 " Matching, Searching, Substituting ---------------------------------------{{{1
@@ -144,10 +168,12 @@ set foldclose=all     " Close folds at startup
 set showmatch        " Show matching bracket
 set matchtime=2      " (for only .2 seconds)
 
-set incsearch        " Show search matches as you type
+if has('extra_search') && has('reltime')
+    set incsearch    " Show search matches as you type
+    set hlsearch     " Highlight search results
+endif
 set ignorecase       " Ignore case when searching
 set smartcase        " Override 'ignorecase' when needed
-set hlsearch         " Highlight search results
 
 set gdefault         " Apply substitution to all matches
 
@@ -156,17 +182,23 @@ set gdefault         " Apply substitution to all matches
 
 set complete-=i            " Don't scan included files
 set complete+=k            " Use dictionary files for completion
-set completeopt=longest    " Insert longest completion match
-set completeopt+=menu      " Use popup menu with completions
-set completeopt+=menuone   " Show popup even with one match
+if has('insert_expand')
+    set completeopt=longest    " Insert longest completion match
+    set completeopt+=menu      " Use popup menu with completions
+    set completeopt+=menuone   " Show popup even with one match
+endif
 set infercase              " Try to adjust insert completions for case
 
-set wildmenu                    " Enable wildmenu for completion
+if has('wildmenu')
+    set wildmenu                " Enable wildmenu for completion
+endif
 set wildmode=list:longest,full  " Complete longest common string,
-set wildignore+=*~,*.swo,*.swp,*/.vim/tmp/*,tags
-set wildignore+=*.a,*.class,*.la,*.mo,*.o,*.obj,*.pyc,*.pyo,*.so
-set wildignore+=.DS_Store,*.gif,*.jpg,*.png
-set wildignore+=**/CVS/*,**/.bzr/*,**/.git/*,**/.hg/*,**/.svn/*,blib
+if has('wildignore')
+    set wildignore+=*~,*.swo,*.swp,*/.vim/tmp/*,tags
+    set wildignore+=*.a,*.class,*.la,*.mo,*.o,*.obj,*.pyc,*.pyo,*.so
+    set wildignore+=.DS_Store,*.gif,*.jpg,*.png
+    set wildignore+=**/CVS/*,**/.bzr/*,**/.git/*,**/.hg/*,**/.svn/*,blib
+endif
 
 set tags=tags;/  " Search for a ctags file
 set showfulltag
@@ -181,21 +213,29 @@ if has('clipboard') && empty($SSH_CLIENT)
     set clipboard^=unnamed    " Use system clipboard
 endif
 
-set mouse=a            " Enable the mouse for all modes
-set mousehide          " Hide mouse while typing
-set mousemodel=popup   " Use popup menu for right mouse button
+if has('mouse')
+    set mouse=a            " Enable the mouse for all modes
+    set mousehide          " Hide mouse while typing
+    set mousemodel=popup   " Use popup menu for right mouse button
+endif
 
 set noequalalways      " Don't resize windows to the same size
-set splitright         " When splitting vertically, split to the right
-set splitbelow         " When splitting horizontally, split below
+if has('vertsplit')
+    set splitright     " When splitting vertically, split to the right
+endif
+if has('windows')
+    set splitbelow     " When splitting horizontally, split below
+    set tabpagemax=128 " Maximum number of tabs open
+endif
 
-set tabpagemax=128     " Maximum number of tabs open
 
 
 " Syntax Highlighting -----------------------------------------------------{{{1
 
 " NOTE: enabling syntax clears any pre-existing Syntax autocommands.
-if has('syntax') && ! &diff
+let s:ok_syntax = has('syntax') && ! exists('g:syntax_on')
+    \ && (&t_Co > 2 || has('gui_running')) && ! &diff
+if s:ok_syntax
     syntax enable
 endif
 
@@ -376,9 +416,11 @@ let g:cpan_mod_cachef = expand('~/.vim/tmp/cache/cpan-modules.txt', 1)
 if ! exists('g:airline_symbols')
     let g:airline_symbols = {}
 endif
-let g:airline_symbols.branch = "\u2387 "
-let g:airline_left_sep = "\u25b6"
-let g:airline_right_sep = "\u25c0"
+if has('multi_byte')
+    let g:airline_symbols.branch = "\u2387 "
+    let g:airline_left_sep = "\u25b6"
+    let g:airline_right_sep = "\u25c0"
+endif
 let g:airline_section_z = '%l/%L : %c (%p%%)'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_min_count = 2
@@ -582,7 +624,9 @@ if has('autocmd')
         \     try | execute 'compiler' &filetype | catch | endtry |
         \ endif
 
-    autocmd BufRead .vimrc setlocal foldmethod=marker
+    if has('folding')
+        autocmd BufRead .vimrc setlocal foldmethod=marker
+    endif
     autocmd BufWritePost $MYVIMRC nested source $MYVIMRC
     autocmd BufNewFile,BufRead *.t compiler perlprove
 
