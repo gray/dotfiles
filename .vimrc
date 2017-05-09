@@ -442,13 +442,13 @@ inoremap <c-a> <home>
 inoremap <c-f> <right>
 inoremap <c-b> <left>
 
-" Redraw screen, toggle search highlighting, sync syntax, toggle list.
-nnoremap <silent> <c-l> <esc>:setlocal invhlsearch invlist
-    \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart
-    \ <cr>:setlocal cursorcolumn! cursorline!<cr><c-l>
-inoremap <silent> <c-l> <esc>:setlocal invhlsearch invlist
-    \ <cr>:call mark#Toggle()<cr>:syntax sync fromstart
-    \ <cr>:setlocal cursorcolumn! cursorline!<cr><c-l>a
+" Redraw screen after updating highlighting.
+nnoremap <silent> <c-l> :nohlsearch <bar> :setlocal list! <bar>
+    \ :silent <c-r>=has('diff') ? '<bar> diffupdate' : ''<cr> <bar>
+    \ :normal! <c-l><cr>
+imap <c-l> <c-o><c-l>
+xmap <c-l> <esc><c-l>gv
+smap <c-l> <esc><c-l>gv<c-g>
 
 " Return to visual mode after indenting.
 vnoremap < <gv
