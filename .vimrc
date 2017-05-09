@@ -52,8 +52,6 @@ if $TERM_PROGRAM == 'Apple_Terminal'
     if &term == 'xterm-color'
         set t_Co=16
     endif
-    " Fixes backspace interaction with delimitMate.
-    execute 'set t_kb=\<c-h>'
 elseif &term =~ '256-\?color'
     set t_Co=256
 elseif &term =~ 'xterm'
@@ -308,6 +306,7 @@ command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 " Plugin Settings ---------------------------------------------------------{{{1
 
 let g:SuperTabDefaultCompletionType = 'context'
+let g:delimitMate_expand_cr = 1
 
 if executable('ag')
     let g:ackprg = 'ag --nogroup --nocolor --column'
