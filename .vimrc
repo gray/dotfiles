@@ -346,6 +346,7 @@ let g:tagbar_type_xs = {
     \ }
 
 let g:netrw_nogx = 1
+let g:openbrowser_format_message = ''
 if has('macunix')
     let g:openbrowser_browser_commands = [{
         \ 'name': "open",
@@ -482,8 +483,8 @@ nnoremap <silent> <leader>sj :SplitjoinJoin<cr>
 
 nmap <silent> <leader>z <plug>ZoomWin
 
-nmap gx <Plug>(openbrowser-smart-search)
-xmap gx <Plug>(openbrowser-smart-search)
+nmap gx <plug>(openbrowser-open)
+xmap gx <plug>(openbrowser-open)gv
 
 
 " Autocommands ------------------------------------------------------------{{{1
