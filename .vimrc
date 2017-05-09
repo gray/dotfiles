@@ -13,9 +13,10 @@ set history=1000    " Size of command/search history
 set viminfo='1000   " Save marks for N files
 set viminfo+=<1000  " Save N lines for each register
 set viminfo+=h      " Disable hlsearch at startup
-set viminfo+=r/tmp  " Disable viminfo for tmp directories
-set viminfo+=r/private/var/tmp
-let &viminfo .= ',r' . substitute(expand($TMPDIR), '/\+$', '', '')
+" Disable viminfo for tmp directories
+for s:dir in ['/tmp', '/var/tmp', $TMPDIR]
+    if ! empty(s:dir) | let &viminfo .= ',r' . resolve(s:dir) | endif
+endfor
 set viminfo+=n~/.vim/tmp/.viminfo  " Save the viminfo file elsewhere
 
 set cpoptions+=W    " Do not overwrite readonly files
@@ -26,12 +27,12 @@ set modelines=0     " Trust no one
 set autoread        " Reload file if externally, but not internally modified
 set autowrite       " Write file if modified
 set directory=~/.vim/tmp/swap//
-set backupdir=~/.vim/tmp/
-set backupskip+=/private/tmp/*
+set writebackup
+set backupdir=~/.vim/tmp/backup/
 
 if has('persistent_undo')
-    set undodir=~/.vim/tmp/undo/
     set undofile
+    set undodir=~/.vim/tmp/undo/
 endif
 
 
@@ -500,9 +501,11 @@ if has('autocmd')
     autocmd ColorScheme,Syntax * call s:AdjustSyntaxHighlighting()
 
     " Disable undo files for tmp directories.
-    if has('persistent_undo') |
-        autocmd BufNewFile,BufRead /tmp/*,/private/tmp/*,$TMPDIR/*
-            \ setlocal noundofile |
+    if has('persistent_undo')
+        autocmd BufNewFile,BufRead /tmp/*,/var/tmp/* setlocal noundofile
+        if ! empty($TMPDIR)
+            autocmd BufNewFile,BufRead $TMPDIR/* setlocal noundofile
+        endif
     endif
 
     " Restore the cursor position.
@@ -584,6 +587,7 @@ if has('autocmd')
 
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
+    autocmd FileType crontab setlocal backupcopy=yes
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
         \ setlocal nowritebackup nolist spell spellcapcheck= wrap textwidth=74 |
         \ if has('persistent_undo') | setlocal noundofile | endif |
