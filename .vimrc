@@ -455,39 +455,38 @@ smap <c-l> <esc><c-l>gv<c-g>
 xnoremap <silent> . :normal .<cr>
 
 " Return to visual mode after indenting.
-vnoremap < <gv
-vnoremap > >gv
+xnoremap < <gv
+xnoremap > >gv
 
 " Select last pasted text.
 nnoremap gV `[v`]
 
 " Paragraph formatting.
 nnoremap Q gqap
-vnoremap Q gq
+xnoremap Q gq
 
 " Avoid accidentally calling up the command history.
-nmap q: <nop>
+nnoremap q: <nop>
 
 " Avoid accidentally deleting selection when using NerdCommenter mappings.
-vmap <leader>c <nop>
+xnoremap <leader>c <nop>
 
 " Toggle various plugins.
-noremap <silent> <leader>fb :CtrlPBuffer<cr>
-noremap <silent> <leader>fr :CtrlPMRU<cr>
-noremap <silent> <leader>fv :CtrlPRTS<cr>
-noremap <silent> <leader>nt :NERDTreeToggle<cr>
-noremap <silent> <leader>tl :TlistToggle<cr>
-noremap <silent> <leader>tb :TagbarToggle<cr>
-noremap <silent> <leader>ut :UndotreeToggle<cr>
-noremap <silent> <leader>hw :Histwin<cr>
+nnoremap <silent> <leader>fb :CtrlPBuffer<cr>
+nnoremap <silent> <leader>fr :CtrlPMRU<cr>
+nnoremap <silent> <leader>fv :CtrlPRTS<cr>
+nnoremap <silent> <leader>nt :NERDTreeToggle<cr>
+nnoremap <silent> <leader>tl :TlistToggle<cr>
+nnoremap <silent> <leader>tb :TagbarToggle<cr>
+nnoremap <silent> <leader>ut :UndotreeToggle<cr>
+nnoremap <silent> <leader>hw :Histwin<cr>
+nnoremap <silent> <leader>ss :SplitjoinSplit<cr>
+nnoremap <silent> <leader>sj :SplitjoinJoin<cr>
 
 nmap <silent> <leader>z <plug>ZoomWin
 
-noremap <silent> <leader>ss :SplitjoinSplit<cr>
-noremap <silent> <leader>sj :SplitjoinJoin<cr>
-
 nmap gx <Plug>(openbrowser-smart-search)
-vmap gx <Plug>(openbrowser-smart-search)
+xmap gx <Plug>(openbrowser-smart-search)
 
 
 " Autocommands ------------------------------------------------------------{{{1
