@@ -1,9 +1,3 @@
-maintenance
-===========
-
-clean up stale undo files:
-    perl -MPath::Tiny -E 'for (path("~/.vim/tmp/undo")->children(qr/^%/)) { $_->remove if ! path($_->basename =~ tr[%][/]r)->exists }'
-
 submodule management
 ====================
 
@@ -14,10 +8,8 @@ add new plugin:
     git submodule init
     git commit -m "..." .gitmodules .vim/bundle/ack
 
-update plugins:
-    git submodule -q foreach git pull -q -r -s recursive -X theirs origin master
-    # or add this to crontab:
-    @weekly cd $REPO && git submodule -q foreach git pull -q -r -s recursive -X theirs origin master && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
+update plugin:
+    git pull -q -r -s recursive -X theirs origin master
 
 remove plugin:
     cd $REPO
@@ -25,6 +17,15 @@ remove plugin:
     git submodule deinit -f .vim/bundle/$PLUGIN
     git rm -f .vim/bundle/$PLUGIN
     rm -rf .git/modules/.vim/bundle/$PLUGIN
+
+
+maintenance
+===========
+
+update all plugins:
+    @weekly cd $REPO && git submodule -q foreach git pull -q -r -s recursive -X theirs origin master && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
+clean up stale undo files:
+    @weekly perl -MPath::Tiny -E 'for (path("~/.vim/tmp/undo")->children(qr/^\%/)) { $_->remove if ! path($_->basename =~ tr[\%][/]r)->exists }'
 
 
 installed plugins
@@ -42,8 +43,6 @@ airline:
     https://github.com/vim-airline/vim-airline
 asterisk:
     https://github.com/haya14busa/vim-asterisk
-camelcasemotion:
-    https://github.com/vim-scripts/camelcasemotion
 characterize:
     https://github.com/tpope/vim-characterize
 ctrlp:
@@ -118,6 +117,8 @@ unimpaired:
     https://github.com/tpope/vim-unimpaired
 vcscommand:
     https://github.com/vim-scripts/vcscommand.vim
+wordmotion:
+    https://github.com/chaoren/vim-wordmotion
 zoomwin:
     https://github.com/vim-scripts/ZoomWin
 

@@ -13,9 +13,6 @@
 [submodule ".vim/bundle/arduino"]
 	path = .vim/bundle/arduino
 	url = git://github.com/vim-scripts/Arduino-syntax-file.git
-[submodule ".vim/bundle/camelcasemotion"]
-	path = .vim/bundle/camelcasemotion
-	url = git://github.com/vim-scripts/camelcasemotion.git
 [submodule ".vim/bundle/css_color"]
 	path = .vim/bundle/css_color
 	url = git://github.com/ap/vim-css-color.git
@@ -244,3 +241,6 @@
 [submodule ".vim/bundle/niceblock"]
 	path = .vim/bundle/niceblock
 	url = https://github.com/kana/vim-niceblock.git
+[submodule ".vim/bundle/wordmotion"]
+	path = .vim/bundle/wordmotion
+	url = https://github.com/chaoren/vim-wordmotion

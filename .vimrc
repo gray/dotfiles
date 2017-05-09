@@ -360,6 +360,7 @@ endif
 let g:LargeFile = 50
 
 let g:targets_aiAI = 'ai  '
+let g:wordmotion_prefix = '<leader>'
 
 nmap <plug>IgnoreMarkSearchNext <plug>MarkSearchNext
 nmap <plug>IgnoreMarkSearchPrev <plug>MarkSearchPrev
