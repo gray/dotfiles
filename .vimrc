@@ -147,6 +147,7 @@ set softtabstop=4     " Backspace will now delete 4 spaces at a time
 set shiftwidth=4      " Number of spaces for each indent
 set shiftround        " Round indent to multiple of shiftwidth
 set nojoinspaces      " Don't insert two spaces after join command
+set nrformats-=octal  " Don't recognize octal numbers for CTRL-A/X
 
 set formatoptions-=t  " Don't auto-wrap text
 set formatoptions+=c  " Auto-wrap comments
