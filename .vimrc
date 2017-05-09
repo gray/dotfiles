@@ -134,6 +134,7 @@ set formatoptions+=n  " Recognize numbered lists
 set formatoptions+=r  " Insert comment leader after <cr> in insert mode.
 set formatoptions+=q  " Allow formatting of comments with 'gq'
 set formatoptions+=1  " Break a line before, not after, a one-letter word
+set formatoptions+=j  " Remove comment leader when joining lines
 
 set foldclose=all     " Close folds at startup
 
