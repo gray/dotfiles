@@ -359,6 +359,8 @@ endif
 
 let g:LargeFile = 50
 
+let g:targets_aiAI = 'ai  '
+
 nmap <plug>IgnoreMarkSearchNext <plug>MarkSearchNext
 nmap <plug>IgnoreMarkSearchPrev <plug>MarkSearchPrev
 

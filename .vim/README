@@ -76,6 +76,8 @@ largefile:
     https://github.com/vim-scripts/LargeFile
 matchit:
     https://github.com/benjifisher/matchit.zip
+niceblock:
+    https://github.com/kana/vim-niceblock
 nrrwregn:
     https://github.com/chrisbra/NrrwRgn
 nerdcommenter:
