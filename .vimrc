@@ -3,13 +3,23 @@
 set nocompatible  " Explicitly set in case Vim was started with the -u flag
 
 " Adds .vim/bundle/* to runtimepath.
-source ~/.vim/bundle/pathogen/autoload/pathogen.vim
+runtime bundle/pathogen/autoload/pathogen.vim
 execute pathogen#infect()
 
 
 " Files, Backup -----------------------------------------------------------{{{1
 
+set modelines=0     " Trust no one
+set autoread        " Reload file if externally, but not internally modified
+set autowrite       " Write file if modified
+set directory=~/.vim/tmp/swap//
+set writebackup     " Default, but vim might be comiled without feature
+set backupdir=~/.vim/tmp/backup/
+
+set cpoptions+=W    " Do not overwrite readonly files
+set cpoptions+=>    " Separate register items by line breaks
 set history=1000    " Size of command/search history
+
 if has('viminfo')
     set viminfo='1000   " Save marks for N files
     set viminfo+=<1000  " Save N lines for each register
@@ -21,17 +31,6 @@ if has('viminfo')
     set viminfo+=n~/.vim/tmp/.viminfo  " Save the viminfo file elsewhere
 endif
 
-set cpoptions+=W    " Do not overwrite readonly files
-set cpoptions+=>    " Separate register items by line breaks
-
-set modelines=0     " Trust no one
-
-set autoread        " Reload file if externally, but not internally modified
-set autowrite       " Write file if modified
-set directory=~/.vim/tmp/swap//
-set writebackup
-set backupdir=~/.vim/tmp/backup/
-
 if has('persistent_undo')
     set undofile
     set undodir=~/.vim/tmp/undo/
@@ -40,21 +39,28 @@ endif
 
 " Display, Terminal -------------------------------------------------------{{{1
 
-if has('linebreak')
-    set numberwidth=1 " Make line number column as narrow as possible
-endif
 set lazyredraw        " Don't redraw while executing macros
 set ttyfast           " Indicates a fast terminal connection
+set ttimeoutlen=50    " Reduce delay for key codes
+set noerrorbells      " Error bells are annoying
+set visualbell t_vb=  " No visual bell
+
 if has('title')
     set title         " Set descriptive window/terminal title
 endif
 set display=lastline  " Show as much of the last line as possible
+set nowrap            " Don't wrap long lines
+if has('folding')
+    set foldclose=all " Close folds at startup
+endif
 
-set noerrorbells      " Error bells are annoying
-set visualbell t_vb=  " No visual bell
+set list              " Visually display tabs and trailing spaces
+let &listchars = "tab:> ,trail:-,extends:>,precedes:<"
 
-if has('printer')
-    set printoptions=paper:letter
+if has('linebreak')
+    set linebreak     " Wrap lines at convenient points
+    let &showbreak = '> '
+    set numberwidth=1 " Make line number column as narrow as possible
 endif
 
 if &term =~ '256-\?color'
@@ -75,27 +81,11 @@ endif
 
 if has('multi_byte')
     set encoding=utf-8
-    if empty(&termencoding)
-        set termencoding=utf-8
-    endif
-    if &termencoding == 'utf-8'
-        let &showbreak = "\u21aa "
-    endif
-endif
+    if empty(&termencoding) | set termencoding=utf-8 | endif
 
-set nowrap            " Don't wrap long lines
-if has('linebreak')
-    set linebreak     " Wrap lines at convenient points
-    let &showbreak = has('multi_byte') ? "\u21aa" : '> '
-endif
-set list              " Visually display tabs and trailing spaces
-if has('multi_byte')
     let &listchars = "tab:\ubb\ub7,trail:\ub7,extends:\ubb,precedes:\uab"
-else
-    let &listchars = 'tab:> ,trail:-,extends:>,precedes:<'
+    if has('linebreak') | let &showbreak = "\u21aa" | endif
 endif
-
-set ttimeoutlen=50    " Reduce delay for key codes
 
 
 " Messages, Statusline ----------------------------------------------------{{{1
@@ -122,7 +112,7 @@ endif
 " Cursor movement ---------------------------------------------------------{{{1
 
 set backspace=indent,eol,start  " Allow backspacing over these
-set whichwrap+=h,l,<,>,[,]      " h l <Left> <Right> can also change lines
+set whichwrap+=h,l,<,>,[,]      " h l <left> <right> can also change lines
 if has('virtualedit')
     set virtualedit=block       " Select a rectangle in visual mode
 endif
@@ -159,8 +149,8 @@ if v:version > 703 || v:version == 703 && has('patch541')
     set formatoptions+=j  " Remove comment leader when joining lines
 endif
 
-if has('folding')
-    set foldclose=all " Close folds at startup
+if has('printer')
+    set printoptions=paper:letter
 endif
 
 
@@ -228,7 +218,6 @@ if has('windows')
     set splitbelow     " When splitting horizontally, split below
     set tabpagemax=128 " Maximum number of tabs open
 endif
-
 
 
 " Syntax Highlighting -----------------------------------------------------{{{1
@@ -392,7 +381,7 @@ let g:netrw_nogx = 1
 let g:openbrowser_format_message = ''
 if has('macunix')
     let g:openbrowser_browser_commands = [{
-        \ 'name': "open",
+        \ 'name': 'open',
         \ 'args': ['{browser}', '-g', '{uri}']
         \ }]
 endif
@@ -605,7 +594,7 @@ if has('autocmd')
 
     " Fall back to syntax keyword completion.
     if exists('+omnifunc')
-        autocmd Filetype *
+        autocmd FileType *
             \ if ! empty(&omnifunc) && ! exists('*'.&omnifunc) |
             \     silent! runtime autoload/<amatch>complete.vim |
             \ endif |
@@ -615,7 +604,7 @@ if has('autocmd')
     endif
 
     " Attempt to set the compiler, if it's not already set.
-    autocmd Filetype *
+    autocmd FileType *
         \ if ! exists('b:current_compiler') |
         \     try | execute 'compiler' &filetype | catch | endtry |
         \ endif
@@ -627,10 +616,9 @@ if has('autocmd')
     autocmd BufNewFile,BufRead *.t compiler perlprove
 
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
-    autocmd FileType apache setlocal shiftwidth=2 softtabstop=2
     autocmd FileType crontab setlocal backupcopy=yes
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
-        \ setlocal nowritebackup nolist spell spellcapcheck= wrap textwidth=74 |
+        \ setlocal nowritebackup nolist spell spellcapcheck= textwidth=72 |
         \ if has('persistent_undo') | setlocal noundofile | endif |
         \ let b:no_viminfo = 1
     autocmd FileType html
@@ -666,7 +654,7 @@ if has('autocmd')
     autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite setlocal nomodifiable
 
     " Preview window for ref plugin.
-    autocmd FileType ref nmap <silent> <buffer> <bs> <Plug>(ref-back)
+    autocmd FileType ref nmap <silent> <buffer> <bs> <plug>(ref-back)
 
     augroup end
 endif
