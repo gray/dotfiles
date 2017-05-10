@@ -510,8 +510,6 @@ nnoremap <silent> <leader>hw :Histwin<cr>
 nnoremap <silent> <leader>ss :SplitjoinSplit<cr>
 nnoremap <silent> <leader>sj :SplitjoinJoin<cr>
 
-nmap <silent> <leader>z <plug>ZoomWin
-
 nmap gx <plug>(openbrowser-open)
 xmap gx <plug>(openbrowser-open)gv
 

@@ -172,9 +172,6 @@
 [submodule ".vim/bundle/undotree"]
 	path = .vim/bundle/undotree
 	url = git://github.com/mbbill/undotree.git
-[submodule ".vim/bundle/zoomwin"]
-	path = .vim/bundle/zoomwin
-	url = git://github.com/vim-scripts/ZoomWin.git
 [submodule ".vim/bundle/characterize"]
 	path = .vim/bundle/characterize
 	url = git://github.com/tpope/vim-characterize.git

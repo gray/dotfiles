@@ -119,8 +119,6 @@ vcscommand:
     https://github.com/vim-scripts/vcscommand.vim
 wordmotion:
     https://github.com/chaoren/vim-wordmotion
-zoomwin:
-    https://github.com/vim-scripts/ZoomWin
 
 
 installed filetypes
