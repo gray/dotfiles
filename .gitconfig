@@ -3,9 +3,24 @@
 [core]
     excludesfile = ~/.gitexclude
     whitespace = fix,trailing-space,cr-at-eol
+
+[url "https://"]
+    insteadOf = git://
+[url "git@github.com:"]
+    pushInsteadOf = git://github.com/
+    pushInsteadOf = https://github.com/
+
 [pack]
-    # Auto-detect the number of CPUs.
     threads = 0
+[submodule]
+    fetchJobs = 0
+[rebase]
+    autosquash = true
+; [transfer]
+;     fsckobjects = true
+[fsck]
+    badTimezone = ignore
+
 [diff]
     renames = copies
 [color]
@@ -27,8 +42,7 @@
     updated = red bold
     changed = red
     untracked = magenta
-[rebase]
-    autosquash = true
+
 [alias]
     aliases = !git config --get-regexp '^alias\\..*' | cut -c 7- | sed 's/ / = /' | sort
     br = branch
@@ -52,10 +66,3 @@
     ammend = commit --amend
 
     patch = add --patch
-[transfer]
-    fsckobjects = true
-[url "git://github.com/"]
-    insteadOf = https://github.com/
-[url "git@github.com:"]
-    pushInsteadOf = git://github.com/
-    pushInsteadOf = https://github.com/
