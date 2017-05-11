@@ -107,8 +107,6 @@ tabular:
     https://github.com/godlygeek/tabular
 tagbar:
     https://github.com/majutsushi/tagbar
-taglist:
-    https://github.com/vim-scripts/taglist.vim
 targets:
     https://github.com/wellle/targets.vim
 undotree:

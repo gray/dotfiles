@@ -350,19 +350,6 @@ let g:ctrlp_extensions = [ 'tag', 'buffertag', 'dir', 'line', 'rtscript' ]
 let g:NERDSpaceDelims = 1
 let g:NERDTreeShowHidden = 1
 
-let g:Tlist_Enable_Fold_Column = 0
-let g:Tlist_Exit_OnlyWindow = 1
-let g:Tlist_File_Fold_Auto_Close = 1
-let g:Tlist_GainFocus_On_ToggleOpen = 1
-let g:Tlist_Inc_Winwidth = 0
-let g:Tlist_Show_One_File = 1
-let g:tlist_make_settings = 'make;t:targets;m:macros'
-let g:tlist_perl_settings = 'perl;p:packages;c:constants;l:labels;' .
-    \ 's:subroutines'
-let g:tlist_xs_settings = 'c;d:macro;g:enum;s:struct;u:union;t:typedef;' .
-    \ 'v:variable;f:function'
-
-let g:tagbar_left = 1
 let g:tagbar_autofocus = 1
 let g:tagbar_type_make = { 'kinds' : [ 't:targets', 'm:macros' ] }
 let g:tagbar_type_xs = {
@@ -503,7 +490,6 @@ nnoremap <silent> <leader>fb :CtrlPBuffer<cr>
 nnoremap <silent> <leader>fr :CtrlPMRU<cr>
 nnoremap <silent> <leader>fv :CtrlPRTS<cr>
 nnoremap <silent> <leader>nt :NERDTreeToggle<cr>
-nnoremap <silent> <leader>tl :TlistToggle<cr>
 nnoremap <silent> <leader>tb :TagbarToggle<cr>
 nnoremap <silent> <leader>ut :UndotreeToggle<cr>
 nnoremap <silent> <leader>hw :Histwin<cr>
