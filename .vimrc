@@ -94,20 +94,19 @@ endif
 
 " Messages, Statusline ----------------------------------------------------{{{1
 
-set shortmess=a   " Use abbreviated messages
-set shortmess+=T  " Truncate messages in the middle if too long
-set shortmess+=I  " Disable intro message
-set shortmess+=t  " Truncate filename at start if too long
-set shortmess+=o  " Do not prompt to overwrite file
-set shortmess+=O  " Message for reading file overwrites previous
+set shortmess+=a      " Use abbreviated messages
+set shortmess+=I      " Disable intro message
+if has('patch-7.4.314')
+    set shortmess+=c  " Disable insert completion messages
+endif
 
 if has('cmdline_info')
-    set showcmd   " Display the command in the last line
-    set ruler     " Display info on current position
+    set showcmd       " Display the command in the last line
+    set ruler         " Display info on current position
 endif
-set showmode      " Display the current mode in the last line
-set report=1      " Always report the number of lines changed
-set laststatus=2  " Always show status line
+set showmode          " Display the current mode in the last line
+set report=1          " Always report the number of lines changed
+set laststatus=2      " Always show status line
 if has('statusline')
     set statusline=Editing:\ %r%t%m\ %=Location:\ Line\ %l/%L\ \ Col:\ %c\ (%p%%)
 endif
