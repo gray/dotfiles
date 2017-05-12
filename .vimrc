@@ -597,8 +597,8 @@ if has('autocmd')
 
     " Attempt to set the compiler, if it's not already set.
     autocmd FileType *
-        \ if ! exists('b:current_compiler') |
-        \     try | execute 'compiler' &filetype | catch | endtry |
+        \ if ! empty(&filetype) && ! exists('b:current_compiler') |
+        \     silent! execute 'compiler' &filetype |
         \ endif
 
     if has('folding')
