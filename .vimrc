@@ -39,28 +39,32 @@ endif
 
 " Display, Terminal -------------------------------------------------------{{{1
 
-set lazyredraw        " Don't redraw while executing macros
-set ttyfast           " Indicates a fast terminal connection
-set ttimeoutlen=50    " Reduce delay for key codes
-set noerrorbells      " Error bells are annoying
-set visualbell t_vb=  " No visual bell
+set lazyredraw         " Don't redraw while executing macros
+set ttimeoutlen=50     " Reduce delay for key codes
+if exists('+belloff')
+    set belloff=all    " Disable all bell notifications
+else
+    set noerrorbells   " Disable bell notifications for errors
+    set visualbell     " Enable visual bell
+    set t_vb=          " Make visual bell invisible
+endif
 
 if has('title')
-    set title         " Set descriptive window/terminal title
+    set title          " Set descriptive window/terminal title
 endif
-set display=lastline  " Show as much of the last line as possible
-set nowrap            " Don't wrap long lines
+set display=lastline   " Show as much of the last line as possible
+set nowrap             " Don't wrap long lines
 if has('folding')
-    set foldclose=all " Close folds at startup
+    set foldclose=all  " Close folds at startup
 endif
 
-set list              " Visually display tabs and trailing spaces
+set list               " Visually display tabs and trailing spaces
 let &listchars = "tab:> ,trail:-,extends:>,precedes:<"
 
 if has('linebreak')
-    set linebreak     " Wrap lines at convenient points
+    set linebreak      " Wrap lines at convenient points
     let &showbreak = '> '
-    set numberwidth=1 " Make line number column as narrow as possible
+    set numberwidth=1  " Minimize line number column
 endif
 
 if &term =~ '256-\?color'
@@ -506,8 +510,10 @@ if has('autocmd')
     augroup vimrc
     autocmd!
 
-    " GUI startup resets the visual bell; turn it back off.
-    autocmd GUIEnter * set visualbell t_vb=
+    " GUI startup resets the visual bell terminal code; disable it again.
+    if ! exists('+belloff')
+        autocmd GUIEnter * set t_vb=
+    endif
 
     autocmd GUIEnter,ColorScheme * call s:AdjustColorScheme()
     autocmd ColorScheme,Syntax * call s:AdjustSyntaxHighlighting()
