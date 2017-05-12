@@ -608,7 +608,7 @@ if has('autocmd')
     " Custom filetype mappings are defined in ~/.vim/filetype.vim
     autocmd FileType crontab setlocal backupcopy=yes
     autocmd FileType bzr,cvs,gitcommit,hgcommit,svn
-        \ setlocal nowritebackup nolist spell spellcapcheck= textwidth=72 |
+        \ setlocal nolist spell textwidth=72 |
         \ if has('persistent_undo') | setlocal noundofile | endif |
         \ let b:no_viminfo = 1
     autocmd FileType html
