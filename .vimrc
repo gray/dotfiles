@@ -174,27 +174,30 @@ set gdefault         " Apply substitution to all matches
 
 " Menus, Completion -------------------------------------------------------{{{1
 
-set complete-=i            " Don't scan included files
-set complete+=k            " Use dictionary files for completion
+set complete-=i                 " Don't scan included files
+set complete-=t                 " Don't scan tags
 if has('insert_expand')
-    set completeopt=longest    " Insert longest completion match
-    set completeopt+=menu      " Use popup menu with completions
-    set completeopt+=menuone   " Show popup even with one match
+    set completeopt-=preview    " Don't show extra information
+    set completeopt+=longest    " Insert longest completion match
+    set completeopt+=menuone    " Show menu with even one match
 endif
-set infercase              " Try to adjust insert completions for case
+set infercase                   " Try to adjust insert completions for case
 
 if has('wildmenu')
     set wildmenu                " Enable wildmenu for completion
 endif
-set wildmode=list:longest,full  " Complete longest common string,
+set wildmode=list:longest,full  " Complete longest common string
 if has('wildignore')
     set wildignore+=*~,*.swo,*.swp,*/.vim/tmp/*,tags
     set wildignore+=*.a,*.class,*.la,*.mo,*.o,*.obj,*.pyc,*.pyo,*.so
     set wildignore+=.DS_Store,*.gif,*.jpg,*.png
     set wildignore+=**/CVS/*,**/.bzr/*,**/.git/*,**/.hg/*,**/.svn/*,blib
 endif
+if exists('+wildignorecase')
+    set wildignorecase          " Ignore case when completing file names
+endif
 
-set tags=tags;/  " Search for a ctags file
+set tags=tags;/                 " Search for a ctags file
 set showfulltag
 
 
