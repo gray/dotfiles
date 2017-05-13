@@ -344,7 +344,9 @@ let g:SuperTabDefaultCompletionType = 'context'
 let g:delimitMate_expand_cr = 1
 
 if executable('ag')
-    let g:ackprg = 'ag --nogroup --nocolor --column'
+    let g:ackprg = 'ag --vimgrep --hidden'
+    let &grepprg = 'ag --vimgrep --hidden'
+    set grepformat=%f:%l:%c:%m
 endif
 
 let g:ctrlp_map = '<leader>ff'
