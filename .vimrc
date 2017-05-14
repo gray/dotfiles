@@ -438,6 +438,10 @@ inoremap <c-@> <c-g>u<c-@>
 inoremap <c-a> <c-g>u<c-a>
 inoremap <c-w> <c-g>u<c-w>
 
+" Move search direction consistent.
+noremap <expr> n 'Nn'[v:searchforward].'zv'
+noremap <expr> N 'nN'[v:searchforward].'zv'
+
 for s:cmd in ['*', '#', 'g*', 'g#', 'z*', 'gz*', 'z#', 'gz#']
     execute 'map' s:cmd '<plug>(asterisk-'.s:cmd.')zv'
     execute 'omap' s:cmd '<plug>(asterisk-'.s:cmd.')'
