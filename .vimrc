@@ -336,8 +336,9 @@ command! DiffBuff vertical new | let t:diff_bufnr = bufnr('$') |
     \ endif | syntax clear
 
 " Close DiffBuff's diff window and reset syntax.
-command! DiffOff execute 'bwipeout' t:diff_bufnr | diffoff |
-    \ if exists('b:saved_syntax') | let &l:syntax = b:saved_syntax | endif
+command! DiffOff silent! execute 'bwipeout' t:diff_bufnr | diffoff |
+    \ if exists('b:saved_syntax') | let &l:syntax = b:saved_syntax | endif |
+    \ execute 'normal! zv'
 
 command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 
