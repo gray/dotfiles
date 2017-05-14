@@ -4,7 +4,7 @@ submodule management
 add new plugin:
     cd $REPO
     # example
-    git submodule add git://github.com/mileszs/ack.vim.git .vim/bundle/ack
+    git submodule add https://github.com/mileszs/ack.vim.git .vim/bundle/ack
     git submodule init
     git commit -m "..." .gitmodules .vim/bundle/ack
 
@@ -171,6 +171,8 @@ css_color:
     https://github.com/ap/vim-css-color
 darkspectrum:
     https://github.com/vim-scripts/darkspectrum
+flatcolor:
+    https://github.com/MaxSt/FlatColor
 gentooish:
     https://github.com/cdaddr/gentooish.vim
 hickop:

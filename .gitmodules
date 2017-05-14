@@ -235,3 +235,6 @@
 [submodule ".vim/bundle/yowish"]
 	path = .vim/bundle/yowish
 	url = https://github.com/kabbamine/yowish.vim.git
+[submodule ".vim/bundle/flatcolor"]
+	path = .vim/bundle/flatcolor
+	url = https://github.com/MaxSt/FlatColor.git
