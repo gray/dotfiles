@@ -439,7 +439,8 @@ inoremap <c-a> <c-g>u<c-a>
 inoremap <c-w> <c-g>u<c-w>
 
 for s:cmd in ['*', '#', 'g*', 'g#', 'z*', 'gz*', 'z#', 'gz#']
-    execute 'map' s:cmd '<plug>(asterisk-'.s:cmd.')'
+    execute 'map' s:cmd '<plug>(asterisk-'.s:cmd.')zv'
+    execute 'omap' s:cmd '<plug>(asterisk-'.s:cmd.')'
 endfor
 
 " Make it easier to navigate displayed lines when lines wrap.
