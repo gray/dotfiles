@@ -21,8 +21,12 @@ set cpoptions+=>    " Separate register items by line breaks
 set history=1000    " Size of command/search history
 
 if has('viminfo')
-    set viminfo='1000   " Save marks for N files
-    set viminfo+=<1000  " Save N lines for each register
+    set viminfo='1000   " Save marks for 1,000 files
+    set viminfo+=/1000  " Save last 1,000 search patterns
+    set viminfo+=:1000  " Save last 1,000 commands
+    set viminfo+=<1000  " Save 1,000 lines for each register
+    set viminfo+=s1000  " Save only registers of less than 1MB size
+    set viminfo+=!      " Save global variables
     set viminfo+=h      " Disable hlsearch at startup
     " Disable viminfo for tmp directories
     for s:dir in ['/tmp', '/var/tmp', $TMPDIR]
