@@ -7,9 +7,20 @@ runtime bundle/pathogen/autoload/pathogen.vim
 execute pathogen#infect()
 
 
+" Security ----------------------------------------------------------------{{{1
+
+" Discourage editing by superuser; enable minimal features.
+if ! empty($SUDO_USER)
+    set noswapfile nowritebackup
+    if has('viminfo') | set viminfo= | endif
+    finish
+endif
+
+set modelines=0  " Trust no one
+
+
 " Files, Backup -----------------------------------------------------------{{{1
 
-set modelines=0     " Trust no one
 set autoread        " Reload file if externally, but not internally modified
 set autowrite       " Write file if modified
 set directory=~/.vim/tmp/swap//
