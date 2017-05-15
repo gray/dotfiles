@@ -300,27 +300,38 @@ function! s:AdjustColorScheme ()
 endfunction
 
 function! s:AdjustSyntaxHighlighting ()
-    highlight Search cterm=NONE ctermfg=yellow ctermbg=blue
-        \ gui=NONE guifg=yellow guibg=blue
+    highlight ColorColumn cterm=NONE ctermbg=red ctermfg=white
+        \ gui=NONE guibg=red guifg=white
 
     highlight CursorLine term=reverse cterm=reverse gui=reverse
     highlight CursorColumn term=reverse cterm=reverse gui=reverse
 
-    for l:group in ['ColorColumn', 'SpellBad', 'Todo']
-        execute 'highlight' l:group 'cterm=NONE ctermbg=red ctermfg=white'
-            \ 'gui=NONE guibg=red guifg=white'
-    endfor
-    syntax keyword myTodo containedin=.*Comment,perlPOD contained
+    highlight DiffAdd cterm=NONE ctermbg=darkgreen ctermfg=NONE
+        \ gui=NONE guibg=darkgreen guifg=NONE
+    highlight! link diffAdded DiffAdd
+    highlight DiffChange cterm=NONE ctermbg=darkblue ctermfg=NONE
+        \ gui=NONE guibg=darkblue guifg=NONE
+    highlight! link diffChanged DiffChange
+    highlight DiffDelete cterm=NONE ctermbg=darkred ctermfg=NONE
+        \ gui=NONE guibg=darkred guifg=NONE
+    highlight! link diffRemoved DiffDelete
+    highlight DiffText cterm=NONE ctermbg=darkmagenta ctermfg=NONE
+        \ gui=NONE guibg=darkmagenta guifg=NONE
+
+    highlight Search cterm=NONE ctermfg=yellow ctermbg=blue
+        \ gui=NONE guifg=yellow guibg=blue
+
+    highlight SpellBad cterm=NONE ctermbg=red ctermfg=white
+        \ gui=NONE guibg=red guifg=white
+
+    syntax keyword myTodo containedin=.*Comment.*,perlPOD contained
         \ BUG FIXME HACK NOTE README TBD TODO WARNING XXX
-    highlight default link myTodo Todo
+    highlight! default link myTodo Todo
+    highlight Todo cterm=NONE ctermbg=red ctermfg=white
+        \ gui=NONE guibg=red guifg=white
 
     syntax match nonAscii '[^\t -~]'
     highlight nonAscii term=reverse cterm=reverse gui=reverse
-
-    highlight DiffAdd cterm=NONE ctermbg=green ctermfg=white
-    highlight DiffChange cterm=bold ctermbg=cyan ctermfg=black
-    highlight DiffDelete cterm=bold ctermbg=red ctermfg=white
-    highlight DiffText cterm=bold ctermbg=NONE ctermfg=black
 endfunction
 
 
