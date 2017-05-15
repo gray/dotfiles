@@ -70,6 +70,9 @@ if has('linebreak')
     let &showbreak = '> '
     set numberwidth=1  " Minimize line number column
 endif
+if exists('+breakindent')
+    set breakindent    " Visually indent wrapped lines
+endif
 
 if &term =~ '256-\?color'
     set t_Co=256
