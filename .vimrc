@@ -150,12 +150,10 @@ set nojoinspaces      " Don't insert two spaces after join command
 set nrformats-=octal  " Don't recognize octal numbers for CTRL-A/X
 
 set formatoptions-=t  " Don't auto-wrap text
-set formatoptions+=c  " Auto-wrap comments
 set formatoptions+=n  " Recognize numbered lists
-set formatoptions+=r  " Insert comment leader after <cr> in insert mode.
-set formatoptions+=q  " Allow formatting of comments with 'gq'
-set formatoptions+=1  " Break a line before, not after, a one-letter word
-if v:version > 703 || v:version == 703 && has('patch541')
+set formatoptions+=r  " Insert comment leader after newline in insert mode.
+set formatoptions+=1  " Don't break a line after a one-letter word
+if v:version + has('patch541') >= 704
     set formatoptions+=j  " Remove comment leader when joining lines
 endif
 
