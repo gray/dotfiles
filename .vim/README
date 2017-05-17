@@ -23,7 +23,10 @@ maintenance
 ===========
 
 update all plugins:
-    @weekly cd $REPO && git submodule -q foreach git pull -q -r -s recursive -X theirs origin master && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
+    @weekly cd $REPO && git submodule -q update -q --remote --rebase && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
+        # or, if you want to update submodules in parallel:
+        # (--jobs for git submodule update only applies to cloning)
+    @weekly cd $REPO && git config -f .gitmodules --get-regexp '\.path$' | awk '{print $2}' | xargs -P10 -L1 git submodule -q update -q --remote --rebase && git submodule summary && vim -c Helptags -c q >/dev/null 2>&1
 clean up stale undo files:
     @weekly perl -MPath::Tiny -E 'for (path("~/.vim/tmp/undo")->children(qr/^\%/)) { $_->remove if ! path($_->basename =~ tr[\%][/]r)->exists }'
 
