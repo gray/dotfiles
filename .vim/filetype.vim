@@ -12,7 +12,6 @@ autocmd BufNewFile,BufRead */.irssi/config setfiletype conf
 autocmd BufNewFile,BufRead *.epub setfiletype epub
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
 autocmd BufNewFile,BufRead *.psgi,~/.dataprinter setfiletype perl
-autocmd BufNewFile,BufRead *.scala setfiletype scala
 autocmd BufNewFile,BufRead .bash_* call SetFileTypeSH('bash')
 autocmd BufNewFile,BufRead bash-fc-\d\+ call SetFileTypeSH('bash')
 autocmd BufNewFile,BufRead *.srt setfiletype srt
