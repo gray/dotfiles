@@ -55,6 +55,9 @@
 [submodule ".vim/bundle/fastfold"]
 	path = .vim/bundle/fastfold
 	url = https://github.com/Konfekt/FastFold.git
+[submodule ".vim/bundle/flatcolor"]
+	path = .vim/bundle/flatcolor
+	url = https://github.com/MaxSt/FlatColor.git
 [submodule ".vim/bundle/fugitive"]
 	path = .vim/bundle/fugitive
 	url = https://github.com/tpope/vim-fugitive.git
@@ -142,6 +145,7 @@
 [submodule ".vim/bundle/perl"]
 	path = .vim/bundle/perl
 	url = https://github.com/vim-perl/vim-perl.git
+	branch = dev
 [submodule ".vim/bundle/perl6"]
 	path = .vim/bundle/perl6
 	url = https://github.com/vim-perl/vim-perl6.git
@@ -235,6 +239,3 @@
 [submodule ".vim/bundle/yowish"]
 	path = .vim/bundle/yowish
 	url = https://github.com/kabbamine/yowish.vim.git
-[submodule ".vim/bundle/flatcolor"]
-	path = .vim/bundle/flatcolor
-	url = https://github.com/MaxSt/FlatColor.git
