@@ -378,6 +378,7 @@ let g:LargeFile = 50
 
 let g:targets_aiAI = 'ai  '
 let g:wordmotion_prefix = '<leader>'
+let g:asterisk#keeppos = 1
 
 let g:zipPlugin_ext = '*.zip'
 
@@ -435,10 +436,10 @@ inoremap <c-w> <c-g>u<c-w>
 noremap <expr> n 'Nn'[v:searchforward].'zv'
 noremap <expr> N 'nN'[v:searchforward].'zv'
 
-for s:cmd in ['*', '#', 'g*', 'g#', 'z*', 'gz*', 'z#', 'gz#']
-    execute 'map' s:cmd '<plug>(asterisk-'.s:cmd.')zv'
-    execute 'omap' s:cmd '<plug>(asterisk-'.s:cmd.')'
-endfor
+map *  <Plug>(asterisk-z*)zv
+map #  <Plug>(asterisk-z#)zv
+map g* <Plug>(asterisk-gz*)zv
+map g# <Plug>(asterisk-gz#)zv
 
 " Make it easier to navigate displayed lines when lines wrap.
 noremap <expr> j v:count ? 'j' : 'gj'
