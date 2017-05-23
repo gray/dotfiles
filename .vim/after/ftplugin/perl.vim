@@ -12,15 +12,11 @@ endif
 
 let g:perl_compiler_force_warnings = 0
 
-let g:perl_include_pod = 1
-let g:perl_extended_vars = 1
-let g:perl_want_scope_in_variables = 1
-let g:perl_string_as_statement = 1
-
-" Fold POD and heredocs
 let g:perl_fold = 1
 let g:perl_nofold_packages = 1
 let g:perl_nofold_subs = 1
+let g:perl_string_as_statement = 1
+let g:perl_include_pod = 1
 
 if exists('loaded_matchit')
     let b:match_ignorecase = 0
