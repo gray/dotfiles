@@ -615,16 +615,16 @@ if has('autocmd')
         \ if has('persistent_undo') | setlocal noundofile | endif |
         \ let b:no_viminfo = 1
     autocmd FileType html
-        \ setlocal equalprg=tidy\ -q\ -i\ --wrap\ 78\ --indent-spaces\ 4
+        \ let &l:equalprg = 'tidy -qi --wrap 78 --indent-spaces 4'
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
+    autocmd FileType json let &l:equalprg = 'jq --indent 4 .'
     autocmd FileType make setlocal nosmarttab nolist
     autocmd FileType nfo noautocmd edit ++encoding=cp437 | setlocal nolist
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType qf setlocal nobuflisted wrap number
     autocmd FileType vim setlocal keywordprg=:help | let g:vim_indent_cont=4
-    autocmd FileType xml
-        \ setlocal equalprg=tidy\ -q\ -i\ -xml\ --wrap\ 78\ --indent-spaces\ 4
-        \     matchpairs+=<:>
+    autocmd FileType xml setlocal matchpairs+=<:> |
+        \ let &l:equalprg = 'tidy -qi -xml --wrap 78 --indent-spaces 4'
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite
