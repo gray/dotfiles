@@ -23,7 +23,8 @@ highlight SpellBad cterm=NONE ctermbg=red ctermfg=white
     \ gui=NONE guibg=red guifg=white
 
 syntax keyword myTodo containedin=.*Comment.*,perlPOD contained
-    \ BUG FIXME HACK NOTE README TBD TODO WARNING XXX
+    \ BUG  FIXME  HACK  NOTE  README  TBD  TODO  WARNING  XXX 
+    \ BUG: FIXME: HACK: NOTE: README: TBD: TODO: WARNING: XXX:
 highlight! default link myTodo Todo
 highlight Todo cterm=NONE ctermbg=darkred ctermfg=white
     \ gui=NONE guibg=darkred guifg=white
