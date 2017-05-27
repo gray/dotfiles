@@ -52,38 +52,7 @@ if has('persistent_undo')
 endif
 
 
-" Display, Terminal -------------------------------------------------------{{{1
-
-set lazyredraw         " Don't redraw while executing macros
-set ttimeoutlen=50     " Reduce delay for key codes
-if exists('+belloff')
-    set belloff=all    " Disable all bell notifications
-else
-    set noerrorbells   " Disable bell notifications for errors
-    set visualbell     " Enable visual bell
-    set t_vb=          " Make visual bell invisible
-endif
-
-if has('title')
-    set title          " Set descriptive window/terminal title
-endif
-set display=lastline   " Show as much of the last line as possible
-set nowrap             " Don't wrap long lines
-if has('folding')
-    set foldclose=all  " Close folds at startup
-endif
-
-set list               " Visually display tabs and trailing spaces
-let &listchars = "tab:> ,trail:-,extends:>,precedes:<"
-
-if has('linebreak')
-    set linebreak      " Wrap lines at convenient points
-    let &showbreak = '> '
-    set numberwidth=1  " Minimize line number column
-endif
-if exists('+breakindent')
-    set breakindent    " Visually indent wrapped lines
-endif
+" Terminal ----------------------------------------------------------------{{{1
 
 if &term =~ '256-\?color'
     set t_Co=256
@@ -101,13 +70,45 @@ if s:ok_termguicolors
     let &t_8b = "\<esc>[48;2;%lu;%lu;%lum"
 endif
 
-if has('multi_byte')
-    set encoding=utf-8
-    if empty(&termencoding) | set termencoding=utf-8 | endif
 
-    let &listchars = "tab:\ubb\ub7,trail:\ub7,extends:\ubb,precedes:\uab"
-    if has('linebreak') | let &showbreak = "\u21aa" | endif
+" Display -----------------------------------------------------------------{{{1
+
+set lazyredraw         " Don't redraw while executing macros
+set ttimeoutlen=50     " Reduce delay for key codes
+if exists('+belloff')
+    set belloff=all    " Disable all bell notifications
+else
+    set noerrorbells   " Disable bell notifications for errors
+    set visualbell     " Enable visual bell
+    set t_vb=          " Make visual bell invisible
 endif
+
+if has('multi_byte')
+    if empty(&termencoding)
+        let termencoding = &encoding
+    endif
+    set encoding=utf-8
+endif
+
+if has('title')
+    set title          " Set descriptive window/terminal title
+endif
+set display=lastline   " Show as much of the last line as possible
+set nowrap             " Don't wrap long lines
+if has('folding')
+    set foldclose=all  " Close folds at startup
+endif
+if has('linebreak')
+    set numberwidth=1  " Minimize line number column
+    let &showbreak = has('multi_byte') ? "\u21b3 " : "\ubb "
+endif
+if exists('+breakindent')
+    set breakindent    " Visually indent wrapped lines
+endif
+set list               " Visually display tabs and trailing spaces
+let &listchars = has('multi_byte')
+    \ ? "tab:\u27a4\u22ef,trail:\ub7,extends:\ubb,precedes:\uab"
+    \ : "tab:\ubb\ub7,trail:\ub7,extends:\ubb,precedes:\uab"
 
 
 " Messages, Statusline ----------------------------------------------------{{{1
@@ -145,7 +146,7 @@ set nostartofline    " Keep the cursor in the same column
 
 " Text-Formatting, Identing, Tabbing --------------------------------------{{{1
 
-if has('autocmd') && ! &diff
+if has('autocmd')
     filetype plugin indent on
 endif
 
@@ -176,7 +177,7 @@ endif
 " Matching, Searching, Substituting ---------------------------------------{{{1
 
 set showmatch        " Show matching bracket
-set matchtime=2      " (for only .2 seconds)
+set matchtime=2      " Display for only 0.2 seconds
 
 if has('extra_search') && has('reltime')
     set incsearch    " Show search matches as you type
@@ -219,26 +220,27 @@ set showfulltag
 
 " Buffers, Windows, Tabs --------------------------------------------------{{{1
 
-set hidden                    " Allow edit buffers to be hidden
-set switchbuf=useopen,usetab  " Jump to first open window or tab with buffer
+set hidden                  " Allow edit buffers to be hidden
+set switchbuf+=useopen      " Jump to first open window with buffer
+set switchbuf+=usetab       " Check other tabs for the buffer
 
 if has('clipboard') && empty($SSH_CLIENT)
-    set clipboard^=unnamed    " Use system clipboard
+    set clipboard^=unnamed  " Use system clipboard
 endif
 
 if has('mouse')
-    set mouse=a            " Enable the mouse for all modes
-    set mousehide          " Hide mouse while typing
-    set mousemodel=popup   " Use popup menu for right mouse button
+    set mouse=a             " Enable the mouse for all modes
+    set mousehide           " Hide mouse while typing
+    set mousemodel=popup    " Use popup menu for right mouse button
 endif
 
-set noequalalways      " Don't resize windows to the same size
+set noequalalways           " Don't resize windows to the same size
 if has('vertsplit')
-    set splitright     " When splitting vertically, split to the right
+    set splitright          " When splitting vertically, split to the right
 endif
 if has('windows')
-    set splitbelow     " When splitting horizontally, split below
-    set tabpagemax=128 " Maximum number of tabs open
+    set splitbelow          " When splitting horizontally, split below
+    set tabpagemax=128      " Maximum number of tabs open
 endif
 
 
@@ -246,7 +248,7 @@ endif
 
 " NOTE: enabling syntax clears any pre-existing Syntax autocommands.
 let s:ok_syntax = has('syntax') && ! exists('g:syntax_on')
-    \ && (&t_Co > 2 || has('gui_running')) && ! &diff
+    \ && (&t_Co > 2 || has('gui_running'))
 if s:ok_syntax
     syntax enable
 endif
@@ -436,10 +438,10 @@ inoremap <c-w> <c-g>u<c-w>
 noremap <expr> n 'Nn'[v:searchforward].'zv'
 noremap <expr> N 'nN'[v:searchforward].'zv'
 
-map *  <Plug>(asterisk-z*)zv
-map #  <Plug>(asterisk-z#)zv
-map g* <Plug>(asterisk-gz*)zv
-map g# <Plug>(asterisk-gz#)zv
+map * <plug>(asterisk-z*)zv
+map # <plug>(asterisk-z#)zv
+map g* <plug>(asterisk-gz*)zv
+map g# <plug>(asterisk-gz#)zv
 
 " Make it easier to navigate displayed lines when lines wrap.
 noremap <expr> j v:count ? 'j' : 'gj'
@@ -465,7 +467,7 @@ inoremap <c-f> <right>
 inoremap <c-b> <left>
 
 " Redraw screen after updating highlighting.
-nnoremap <silent> <c-l> :nohlsearch <bar> :setlocal list! <bar>
+nnoremap <silent> <c-l> :nohlsearch <bar>
     \ :silent <c-r>=has('diff') ? '<bar> diffupdate' : ''<cr> <bar>
     \ :normal! <c-l><cr>
 imap <c-l> <c-o><c-l>
@@ -531,14 +533,14 @@ if has('autocmd')
 
     " Restore the cursor position.
     autocmd BufRead *
-        \ if line("'\"") <= line('$') && ! &diff && ! exists('b:no_viminfo') |
+        \ if line("'\"") > 0 && line("'\"") <= line('$') && ! exists('b:no_viminfo') |
         \     execute 'normal! g`"' | let b:restored_pos = 1 |
         \ endif
     " Open any containing folds on startup or when restoring cursor position.
-    autocmd VimEnter * execute 'normal! zv' | redraw!
+    autocmd VimEnter * execute 'normal! zvzz' | redraw!
     autocmd BufWinEnter *
         \ if exists('b:restored_pos') |
-        \     execute 'normal! zv' | unlet b:restored_pos |
+        \     execute 'normal! zvzz' | unlet b:restored_pos |
         \ endif
 
     " Create the parent directory if it does not already exist.
@@ -560,12 +562,10 @@ if has('autocmd')
     " Prevent the current line from shifting screen position when a hidden
     " buffer is displayed again.
     autocmd BufHidden *
-        \ if ! &diff |
-        \     let b:saved_winview = winsaveview() |
-        \     let b:last_winsize = [winheight(0), winwidth(0)] |
-        \ endif
+        \ let b:saved_winview = winsaveview() |
+        \ let b:last_winsize = [winheight(0), winwidth(0)] |
     autocmd BufWinEnter *
-        \ if exists('b:saved_winview') && ! &diff
+        \ if exists('b:saved_winview')
         \         && b:last_winsize == [winheight(0), winwidth(0)] |
         \     call winrestview(b:saved_winview) |
         \ endif
