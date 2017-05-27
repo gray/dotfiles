@@ -31,6 +31,3 @@ highlight Todo cterm=NONE ctermbg=darkred ctermfg=white
 
 syntax match nonAscii '[^\t -~]'
 highlight nonAscii term=reverse cterm=reverse gui=reverse
-
-syntax match vcsConflictMarker '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
-highlight! default link vcsConflictMarker ErrorMsg
