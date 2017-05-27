@@ -29,5 +29,7 @@ highlight! default link myTodo Todo
 highlight Todo cterm=NONE ctermbg=darkred ctermfg=white
     \ gui=NONE guibg=darkred guifg=white
 
-syntax match nonAscii '[^\t -~]'
+if ! has('autocmd') || ! exists('##OptionSet')
+    syntax match nonAscii '[^\t -~]\+' containedin=ALL
+endif
 highlight nonAscii term=reverse cterm=reverse gui=reverse
