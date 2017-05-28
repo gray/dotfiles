@@ -275,12 +275,18 @@ function! GetCurrentSyntax ()
 endfunction
 
 function! s:AdjustColorScheme ()
+    " Set termguicolors only if the colorscheme supports gui colors.
+    let l:ok_guicolors = ! empty(synIDattr(hlID('Normal'), 'fg#', 'gui'))
+    if s:ok_termguicolors
+        execute 'set' (l:ok_guicolors ? '' : 'no') . 'termguicolors'
+    endif
+
     let l:bg = synIDattr(hlID('Normal'), 'bg#')
     if empty(l:bg) || l:bg == -1 | return | endif
 
     " If the background color is dark, set it to black.
     " TODO: also force the background of comments, strings, etc.
-    if has('gui_running') || s:ok_termguicolors
+    if has('gui_running') || l:ok_guicolors && s:ok_termguicolors
         " Calculate the perceived brightness.
         let [l:r, l:g, l:b] = map([1,3,5], 'str2nr(l:bg[v:val : 1+v:val], 16)')
         let l:light = sqrt(0.241 * l:r*l:r + 0.691 * l:g*l:g + 0.068 * l:b*l:b)
@@ -664,10 +670,6 @@ endif
 
 
 " Colors ------------------------------------------------------------------{{{1
-
-if s:ok_termguicolors
-    set termguicolors
-endif
 
 set background=dark
 
