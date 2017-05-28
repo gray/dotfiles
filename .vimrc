@@ -281,17 +281,18 @@ function! s:AdjustColorScheme ()
         execute 'set' (l:ok_guicolors ? '' : 'no') . 'termguicolors'
     endif
 
+    " If the background color is dark, set it to black for higher contrast.
+    " TODO: also force the background of comments, strings, etc.
     let l:bg = synIDattr(hlID('Normal'), 'bg#')
     if empty(l:bg) || l:bg == -1 | return | endif
-
-    " If the background color is dark, set it to black.
-    " TODO: also force the background of comments, strings, etc.
     if has('gui_running') || l:ok_guicolors && s:ok_termguicolors
-        " Calculate the perceived brightness.
         let [l:r, l:g, l:b] = map([1,3,5], 'str2nr(l:bg[v:val : 1+v:val], 16)')
+        if ! max([l:r, l:g, l:b]) | return | endif
+        " Calculate the perceived brightness.
         let l:light = sqrt(0.241 * l:r*l:r + 0.691 * l:g*l:g + 0.068 * l:b*l:b)
         let l:dark = l:light < 130 ? 1 : 0
     else
+        if ! l:bg || l:bg == 16 | return | endif
         let l:dark_range = range(7) + [8] + range(16, 32) + range(52, 67)
             \ + range(88, 99) + range(124, 134) + range(160, 165)
             \ + [196, 197] + range(232, 244)
