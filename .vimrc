@@ -489,7 +489,7 @@ xnoremap < <gv
 xnoremap > >gv
 
 " Select last pasted text.
-nnoremap gV `[v`]
+nnoremap <expr> gV '`[' . getregtype()[0] . '`]'
 
 " Paragraph formatting.
 nnoremap Q gqap
