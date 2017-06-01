@@ -532,10 +532,12 @@ if has('autocmd')
 
     " Disable undo files for tmp directories.
     if has('persistent_undo')
-        autocmd BufNewFile,BufRead /tmp/*,/var/tmp/* setlocal noundofile
-        if ! empty($TMPDIR)
-            autocmd BufNewFile,BufRead $TMPDIR/* setlocal noundofile
-        endif
+        for s:dir in ['/tmp', '/var/tmp', $TMPDIR]
+            if ! empty(s:dir)
+                execute 'autocmd BufNewFile,BufRead' resolve(s:dir).'/*'
+                    \ 'setlocal noundofile'
+            endif
+        endfor
     endif
 
     " Restore the cursor position.
