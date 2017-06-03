@@ -345,10 +345,16 @@ command! -range=% -bar StripWhitespace call s:StripWhitespace(<line1>, <line2>)
 let g:SuperTabDefaultCompletionType = 'context'
 let g:delimitMate_expand_cr = 1
 
-if executable('ag')
-    let g:ackprg = 'ag --vimgrep --hidden'
-    let &grepprg = 'ag --vimgrep --hidden'
+if executable('rg')
+    let [&grepprg, g:ackprg] = repeat(['rg -HS --vimgrep --hidden'], 2)
     set grepformat=%f:%l:%c:%m
+    let g:ctrlp_user_command = 'rg --files --hidden %s'
+    let g:ctrlp_use_caching = 0
+elseif executable('ag')
+    let [&grepprg, g:ackprg] = repeat(['ag --vimgrep --hidden'], 2)
+    set grepformat=%f:%l:%c:%m
+    let g:ctrlp_user_command = 'ag -g "" --hidden %s'
+    let g:ctrlp_use_caching = 0
 endif
 
 let g:ctrlp_map = '<leader>ff'
