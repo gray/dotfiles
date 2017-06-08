@@ -427,7 +427,7 @@ let g:airline#extensions#wordcount#enabled = 0
 let mapleader = ','
 let maplocalleader = ','
 
-inoremap jj <esc>
+inoremap jj <esc>l
 
 " Use ,, to work around , as leader.
 noremap ,, ,
@@ -639,11 +639,13 @@ if has('autocmd')
         \ setlocal nolist spell textwidth=72 |
         \ if has('persistent_undo') | setlocal noundofile | endif |
         \ let b:no_viminfo = 1
+    autocmd FileType go setlocal shiftwidth=0 nolist
     autocmd FileType html
         \ let &l:equalprg = 'tidy -qi --wrap 78 --indent-spaces 4'
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
     autocmd FileType json let &l:equalprg = 'jq --indent 4 .'
-    autocmd FileType make setlocal nosmarttab nolist
+    autocmd FileType make setlocal shiftwidth=0 nolist
+    autocmd FileType man setlocal nolist
     autocmd FileType nfo noautocmd edit ++encoding=cp437 | setlocal nolist
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType qf setlocal nobuflisted wrap number
