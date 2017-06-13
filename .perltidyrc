@@ -1,8 +1,19 @@
+# I/O control
+--standard-error-output
+# Basic Options
 --maximum-line-length=78
---maximum-consecutive-blank-lines=2
+# Code Indentation Control
 --continuation-indentation=4
+--no-outdent-long-lines
+--no-outdent-labels
+# Whitespace Control
+--maximum-consecutive-blank-lines=2
 --paren-tightness=2
+--nospace-for-semicolon
+# Line Break Control
 --opening-token-right
---stack-opening-tokens
---stack-closing-tokens
+--stack-all-containers
+--stack-opening-block-brace
+# Comment Controls
 --nohanging-side-comments
+--minimum-space-to-comment=2
