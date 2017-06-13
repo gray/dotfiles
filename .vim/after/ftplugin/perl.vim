@@ -4,13 +4,13 @@ setlocal equalprg=perltidy\ -q
 let &l:path = './lib,./blib/lib,./blib/arch,' . &l:path
 let $PERL5LIB = substitute(&l:path, ',', ':', 'g')
 
-setlocal keywordprg=cpandoc
-if has('mac')
+let &l:keywordprg = executable('cpandoc') ? 'cpandoc' : 'perldoc'
+if has('mac') && empty($PERLDOC)
     " groff bug converts some characters to utf-8.
-    let b:keywordprg = "PERLDOC='-n\"nroff -Tascii\"' " . &keywordprg
+    let $PERLDOC = '-n"nroff -Tascii"'
 endif
-
-let g:perl_compiler_force_warnings = 0
+let g:ref_perldoc_cmd = &l:keywordprg
+let g:ref_perldoc_auto_append_f = 1
 
 let g:perl_fold = 1
 let g:perl_nofold_packages = 1

@@ -402,9 +402,6 @@ let g:gist_post_private = 1
 let g:gist_detect_filetype = 1
 
 let g:ref_cache_dir = expand('~/.vim/tmp/cache', 1)
-let g:ref_perldoc_cmd = 'cpandoc'
-let g:ref_perldoc_auto_append_f = 1
-
 let g:cpan_mod_cachef = expand('~/.vim/tmp/cache/cpan-modules.txt', 1)
 
 if ! exists('g:airline_symbols')
@@ -674,7 +671,8 @@ if has('autocmd')
     autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite setlocal nomodifiable
 
     " Preview window for ref plugin.
-    autocmd FileType ref nmap <silent> <buffer> <bs> <plug>(ref-back)
+    autocmd FileType ref setlocal nolist |
+        \ nmap <silent> <buffer> <bs> <plug>(ref-back)
 
     augroup end
 endif
