@@ -4,6 +4,7 @@ script_line2 = use warnings
 
 [Autocomplete::Commands]
 [Autocomplete::Functions]
+[Autocomplete::ExportedSymbols]
 [Autocomplete::Globals]
 [Autocomplete::Keywords]
 [Autocomplete::Lexicals]
