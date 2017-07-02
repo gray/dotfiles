@@ -63,8 +63,14 @@ elseif &term =~ 'xterm'
 endif
 
 let s:ok_termguicolors = has('termguicolors') && &t_Co == 256
-    \ && ($TERM_PROGRAM != 'Apple_Terminal' || ! empty($TMUX))
-    \ && (empty($SSH_CLIENT) || ! empty($TMUX))
+if s:ok_termguicolors
+    if $TERM_PROGRAM ==# 'iTerm.app'
+        if empty($TERM_PROGRAM_VERSION) | let s:ok_termguicolors = 0 | endif
+    elseif $TERM_PROGRAM ==# 'Apple_Terminal' || empty($SSH_CLIENT)
+        if empty($TMUX) | let s:ok_termguicolors = 0 | endif
+    endif
+endif
+
 if s:ok_termguicolors
     let &t_8f = "\<esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<esc>[48;2;%lu;%lu;%lum"
