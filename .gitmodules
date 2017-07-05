@@ -209,9 +209,6 @@
 [submodule ".vim/bundle/targets"]
 	path = .vim/bundle/targets
 	url = https://github.com/wellle/targets.vim.git
-[submodule ".vim/bundle/tmux"]
-	path = .vim/bundle/tmux
-	url = https://github.com/keith/tmux.vim.git
 [submodule ".vim/bundle/undotree"]
 	path = .vim/bundle/undotree
 	url = https://github.com/mbbill/undotree.git
@@ -239,3 +236,6 @@
 [submodule ".vim/bundle/yowish"]
 	path = .vim/bundle/yowish
 	url = https://github.com/kabbamine/yowish.vim.git
+[submodule ".vim/bundle/tmux"]
+	path = .vim/bundle/tmux
+	url = https://github.com/tmux-plugins/vim-tmux.git

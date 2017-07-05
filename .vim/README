@@ -166,7 +166,7 @@ swift:
 swig:
     http://www.vim.org/scripts/script.php?script_id=1615
 tmux:
-    https://github.com/keith/tmux.vim
+    https://github.com/tmux-plugins/vim-tmux
 
 
 installed colors
