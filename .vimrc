@@ -10,7 +10,7 @@ execute pathogen#infect()
 " Security ----------------------------------------------------------------{{{1
 
 " Discourage editing by superuser; enable minimal features.
-if ! empty($SUDO_USER)
+if exists('$SUDO_USER')
     set noswapfile nowritebackup
     if has('viminfo') | set viminfo= | endif
     finish
@@ -65,9 +65,9 @@ endif
 let s:ok_termguicolors = has('termguicolors') && &t_Co == 256
 if s:ok_termguicolors
     if $TERM_PROGRAM ==# 'iTerm.app'
-        if empty($TERM_PROGRAM_VERSION) | let s:ok_termguicolors = 0 | endif
-    elseif $TERM_PROGRAM ==# 'Apple_Terminal' || empty($SSH_CLIENT)
-        if empty($TMUX) | let s:ok_termguicolors = 0 | endif
+        if ! exists('$TERM_PROGRAM_VERSION') | let s:ok_termguicolors = 0 | endif
+    elseif $TERM_PROGRAM ==# 'Apple_Terminal' || ! exists('$SSH_CLIENT')
+        if ! exists('$TMUX') | let s:ok_termguicolors = 0 | endif
     endif
 endif
 
@@ -230,7 +230,7 @@ set hidden                  " Allow edit buffers to be hidden
 set switchbuf+=useopen      " Jump to first open window with buffer
 set switchbuf+=usetab       " Check other tabs for the buffer
 
-if has('clipboard') && empty($SSH_CLIENT)
+if has('clipboard') && ! exists('$SSH_CLIENT')
     set clipboard^=unnamed  " Use system clipboard
 endif
 
