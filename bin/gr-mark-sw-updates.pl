@@ -9,7 +9,7 @@ use Cwd qw(realpath);
 use DB_File;
 use DBM_Filter;
 use File::Find;
-use File::Spec::Functions qw(catfile catpath splitpath tmpdir);
+use FindBin;
 use PerlIO::gzip;
 use WebService::Google::Reader;
 
@@ -22,9 +22,7 @@ my $appkey   = $creds->{_}{appkey}   // die 'Missing appkey';
 my $username = $creds->{_}{username} // die 'Missing username';
 my $password = $creds->{_}{password} // die 'Missing password';
 
-my $dir  = catpath((splitpath(realpath __FILE__))[ 0, 1 ]);
-my $file = catfile($dir, '.unwanted-modules.bdb');
-my $db   = tie my %db, DB_File => $file;
+my $db = tie my %db, DB_File => "$FindBin::Bin/.unwanted-modules.bdb";
 $db->Filter_Push('utf8');
 
 my $reader = WebService::Google::Reader->new(
@@ -108,7 +106,7 @@ exit;
 
 sub read_conf {
     return {
-        'http://search.cpan.org/uploads.rdf' => do {
+        'https://metacpan.org/feed/recent' => do {
             my ($dist, $test_perl_dist_installed);
             {
                 lang => 'perl',
@@ -149,15 +147,14 @@ sub read_conf {
                             geotiger getty gryphon hanenkamp idoperel  ina
                             lnation ingy ironcamel jasei jberger jgni
                             jhthorsen jpr jvbsoft kaavannan kentnl madskill
-                            manwar mauke melezhik mhcrnl miko newellc orange
-                            orkun pekingsam perlancar plicease prbrenan
+                            manwar mauke melezhik mhcrnl miko newellc niczero
+                            orange orkun pekingsam perlancar plicease prbrenan
                             psixdists reedfish reneeb rsavage sharyanto
                             sillymoos skim sms spebern steveb szabgab tapper
                             tobyink turnerjw voj wangq yanick zdm znmstr
                             zoffix
                         );
-                        my ($user) = $_[0]->link->href =~ m[/~([^/]+)/];
-                        return 1 if $blacklist{$user};
+                        return $blacklist{ lc $_[0]->author->name } ? 1 : 0;
                     },
                     sub { 'released' ne $dist->maturity },
                 ],
@@ -256,7 +253,7 @@ sub is_perl_dist_installed {
     # Fetch the file that maps packages to distributions.
     my $file = '02packages.details.txt.gz';
     my $url = "http://www.cpan.org/modules/$file";
-    $file = catfile(tmpdir, $file);
+    $file = "/tmp/$file";
     if (not -r $file or 1 < -M _) {
         my $ua = $reader->ua->clone;
         $ua->default_header(accept_encoding => undef);
