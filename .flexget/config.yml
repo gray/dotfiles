@@ -30,9 +30,13 @@ templates:
     content_size: { min: 25, max: 2500 }
     regexp:
       reject:
+        - ? '(?x) [\W_] (?: horrible[\W_]?subs | dubbed | cropped | subpack )
+            (?:_|\b)'
+          : { from: title }
         # Avoid certain release groups.
-        - ? '(?x) [\W_] (?: afg | deadpool | heat | jah | kcrt | lotv | msd
-                            | nogr(?:ou)?p | ny2 | pimp4003 | viethd | visum
+        - ? '(?x) [\W_] (?: afg | ajp69 | bge | deadpool | heat | jah | kcrt
+                            | lotv | msd | nogr(?:ou)?p | ntb | ny2 | sdi | tbd
+                            | viethd | visum
                         ) [\W_]* $'
           : { from: title }
     if:
@@ -56,8 +60,8 @@ templates:
       # Flexget doesn't reject really old episodes for date-based series,
       # so reject them here.
       - '"date" == series_id_type and 120 <= (now - series_date).days': reject
-      # Require subs for foreign series, avoid them otherwise.
-      - 'path.startswith("~/Media/TV/Foreign/")':
+      # Require subs for non-netflix foreign series, avoid them otherwise.
+      - 'path.startswith("~/Media/TV/Foreign/") and not netflix':
           regexp:
             reject_excluding: [ '(?x) \b sub(?:s|bed) \b': { from: title } ]
             reject: [ '(?x) \b nl \W+ subs \b': { from: title } ]
@@ -71,9 +75,9 @@ templates:
       settings:
         tv: &TV_SETTING
           exact: yes
-          quality: hdtv+ <=720p !h265
-          target: <720p !h265
-          timeframe: 4 hours
+          quality: hdtv+ <=720p
+          target: <720p !h265 !dd+5.1
+          timeframe: 6 hours
           propers: 12 hours
           specials: no
           path: ~/Media/TV/{{series_name}}/.
@@ -82,7 +86,7 @@ templates:
           path: ~/Media/TV/Animation/{{series_name}}/.
         documentaries:
           <<: *TV_SETTING
-          quality: webrip+ <=720p !h265
+          quality: webrip+ <=720p
           path: ~/Media/TV/Documentaries/{{series_name}}/.
         foreign:
           <<: *TV_SETTING
@@ -90,7 +94,7 @@ templates:
           path: ~/Media/TV/Foreign/{{series_name}}/.
         talk_shows:
           <<: *TV_SETTING
-          quality: webrip+ <=720p !h265
+          quality: webrip+ <=720p
           path: ~/Media/TV/Talk Shows/{{series_name}}/.
     include: [ private/series.yml ]
 
@@ -100,14 +104,12 @@ templates:
     series_premiere:
       <<: *TV_SETTING
       allow_seasonless: yes
-      quality: webrip+ <=720p !h265
+      quality: webrip+ <=720p !h265 !dd+5.1
       timeframe: 6 hours
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
-        - ? '(?x) (?:_|\b) (?: pdtv | norwegian | hanrel | dubbed
-                               | horriblesubs | tgl )
-                (?:_|\b)'
+        - ? '(?x) (?:_|\b) (?: pdtv | norwegian | hanrel | tgl ) (?:_|\b)'
           : { from: title }
         - '(?x) (?:_|\b) (?: nz | pl | sports | championships? | bak(?:e | ing)
                              | world \W+ series | live \W+ at )
@@ -123,11 +125,10 @@ templates:
     quality: dvdrip+ <=720p !h265
     regexp:
       reject:
-        - '(?x) [\W_] (?: read[\W_]*nfo | 3-?D(?:BD)? | live\W+at
-                          | fan[\W_]edit )
-                  (?:_|\b)'
-        - ? '(?x) [\W_] (?: dubbed | pldub | cropped | (?:heb|kor|swe)sub
-                            | ro[ds]ubbed )
+        - ? '(?x) [\W_] (?: read[\W_]?nfo | 3-?D(?:BD)? | live\W+at
+                          | fan[\W_]edit
+                          | (?:heb|kor|nl|pl|ro|swe)[\W_]?[ds]ub(?:s|bed)?
+                          | dubbed | cropped | subpack )
                   (?:_|\b)'
           : { from: [ title, description ] }
         # Avoid certain release groups.
@@ -168,13 +169,14 @@ templates:
             min_score: 6.8
             min_votes: 100
             accept_languages: [
-              cantonese, chinese, danish, dutch, french, german, hebrew,
-              icelandic, italian, norwegian, japanese, korean, mandarin,
-              portuguese, spanish, swedish
+              cantonese, chinese, danish, dutch, finnish, french, german,
+              hebrew, icelandic, italian, norwegian, japanese, korean,
+              mandarin, portuguese, spanish, swedish
             ]
             accept_genres: [
               action, adventure, comedy, crime, mystery, sci-fi, thriller, war
             ]
+            reject_genres: [ documentary ]
           content_filter:
             reject: [ '*.subs.rar-missing' ]
 
