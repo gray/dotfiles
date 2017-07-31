@@ -215,15 +215,8 @@ tasks:
     regexp:
       reject_excluding:
         - '^XSbot': { from: author }
-  scenetime_tv:
-    priority: 3
-    template: [ private-torrents, tv-series ]
-    rss:
-      url: '{?feeds.scenetime.tv.url?}'
-      silent: yes
-      all_entries: no
   torrentday_tv:
-    priority: 4
+    priority: 3
     template: [ private-torrents, tv-series ]
     rss:
       url: '{?feeds.torrentday.tv.url?}'
@@ -279,17 +272,9 @@ tasks:
     regexp:
       reject_excluding:
         - '^XSbot': { from: author }
-  scenetime_tv_premieres:
-    manual: yes
-    priority: 23
-    template: [ private-torrents, tv-premieres ]
-    rss:
-      url: '{?feeds.scenetime.tv.url?}'
-      silent: yes
-      all_entries: no
   torrentday_tv_premieres:
     manual: yes
-    priority: 24
+    priority: 22
     template: [ private-torrents, tv-premieres ]
     rss:
       url: '{?feeds.torrentday.tv.url?}'
@@ -314,15 +299,8 @@ tasks:
     regexp:
       reject_excluding:
         - '^XSbot': { from: author }
-  scenetime_movies:
-    priority: 32
-    template: [ private-torrents, movies ]
-    rss:
-      url: '{?feeds.scenetime.movies.url?}'
-      silent: yes
-      all_entries: no
   torrentday_movies:
-    priority: 33
+    priority: 32
     template: [ private-torrents, movies ]
     rss:
       url: '{?feeds.torrentday.movies.url?}'
@@ -332,7 +310,7 @@ tasks:
       - title:
           replace: { regexp: '(?x) \b\W* no \W* rars? \W*$', format: '' }
   ptp:
-    priority: 34
+    priority: 33
     template: [ private-torrents, movies ]
     rss:
       url: '{?feeds.ptp.url?}'
