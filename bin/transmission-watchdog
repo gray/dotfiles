@@ -263,8 +263,8 @@ for line in $(remote --torrent all --info); do
     do=0
 
     case ${tracker_error-} in
-        [Uu]'nregistered torrent' | \
-        [Tt]'orrent is not authorized for use on this tracker')
+        [Uu]'nregistered torrent'* | \
+        [Tt]'orrent is not authorized for use on this tracker'*)
             log "Stopped unregistered torrent: $name"
             percent=100% state=Finished; tracker_error=
     esac
