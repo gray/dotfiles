@@ -123,16 +123,17 @@ sub read_conf {
                 ],
                 blacklist => [
                     sub {
+                        return 1 if $dist->distvname !~ tr/-//;
                         return 1 if $dist->dist =~ m[
                             ^ (?:
-                                acme | biox? | device | dist-zilla | panda
-                                | task-belike
+                                acme | biox? | dancer2? | device | dist-zilla
+                                | map | panda | rtx? | task-belike | util
                             ) (?:-|$)
                         ]ix;
                         return 1 if $dist->dist =~ m[
                             (?:^|-) (?:
-                                bundle | catmandu | kensho | mojo[^-]* | poex?
-                                | win(?: 32 | dows)[^-]*
+                                alien | bundle | catalystx? | catmandu | kensho
+                                | mojo[^-]* | poex? | win(?: 32 | dows)[^-]*
                             ) (?:-|$)
                         ]ix;
                         # Ignore foreign languages.
@@ -141,20 +142,28 @@ sub read_conf {
                         ]ix;
                         # Prolific purveyors of piffleware.
                         my %blacklist = map { $_ => 1 } qw(
-                            ahernit amaltsev aspose athreef aubertg awncorp
-                            bayashi bkb binary bluefeet capoeirab corliss
-                            csson curtis dannyt dfarrell diederich faraco
-                            geotiger getty gryphon hanenkamp idoperel  ina
-                            lnation ingy ironcamel jasei jberger jgni
-                            jhthorsen jpr jvbsoft kaavannan kentnl madskill
-                            manwar mauke melezhik mhcrnl miko newellc niczero
-                            orange orkun pekingsam perlancar plicease prbrenan
-                            psixdists reedfish reneeb rsavage sharyanto
-                            sillymoos skim sms spebern steveb szabgab tapper
-                            tobyink turnerjw voj wangq yanick zdm znmstr
-                            zoffix
+                            ahernit akalinux alambike amaltsev aspose athreef
+                            aubertg awncorp bayashi bkb binary bluefeet
+                            capoeirab corliss csson curtis dannyt dbook
+                            dfarrell diederich djerius faraco ferreira
+                            geotiger getty gryphon hanenkamp idoperel ina
+                            lnation ingy ironcamel ivanwills jasei jberger
+                            jeffober jgni jhthorsen jpr jvbsoft kaavannan
+                            kentnl madskill manwar mauke melezhik mhcrnl miko
+                            newellc niczero orange orkun pekingsam perlancar
+                            plicease prbrenan psixdists reedfish reneeb
+                            rsavage sharyanto sillymoos skim sms spebern
+                            steffenw steveb szabgab tapper team tobyink
+                            turnerjw voj wangq yanick zdm znmstr zoffix
                         );
-                        return $blacklist{ lc $_[0]->author->name } ? 1 : 0;
+                        return 1 if $blacklist{ lc $_[0]->author->name };
+
+                        # Ignore ego dists; they're likely useless to others.
+                        return 1 if $dist->dist =~ m[
+                            \b @{[ $_[0]->author->name ]} \b
+                        ]ix;
+
+                        return 0;
                     },
                     sub { 'released' ne $dist->maturity },
                 ],
