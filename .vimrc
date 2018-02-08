@@ -424,6 +424,8 @@ let g:airline#extensions#tabline#buffer_min_count = 2
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#wordcount#enabled = 0
 
+let g:go_version_warning = 0
+
 
 " Mappings ----------------------------------------------------------------{{{1
 
