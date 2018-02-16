@@ -12,8 +12,9 @@ autocmd BufNewFile,BufRead */.irssi/config setfiletype conf
 autocmd BufNewFile,BufRead *.epub setfiletype epub
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
 autocmd BufNewFile,BufRead *.psgi,~/.dataprinter setfiletype perl
-autocmd BufNewFile,BufRead .bash_* call SetFileTypeSH('bash')
-autocmd BufNewFile,BufRead bash-fc-\d\+ call SetFileTypeSH('bash')
+autocmd BufNewFile,BufRead .bash_*,bash-fc-\d\+
+    \ if v:version >= 800 | call dist#ft#SetFileTypeSH('bash') |
+    \ else                | call SetFileTypeSH('bash') | endif
 autocmd BufNewFile,BufRead *.srt setfiletype srt
 autocmd BufNewFile,BufRead *.{i,swg,swig} setfiletype swig
 autocmd BufNewFile,BufRead *.tt setfiletype tt2html
