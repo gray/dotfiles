@@ -659,7 +659,7 @@ if has('autocmd')
         \ let &l:equalprg = 'tidy -qi -xml --wrap 78 --indent-spaces 4'
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
-    autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite
+    autocmd FileType bdb1_hash,epub,postscr,sqlite
         \ setlocal readonly nolist wrap filetype=text | let b:no_viminfo = 1
     autocmd FileType bdb1_hash
         \ execute 'silent %!perl -MDB_File -e ''tie \%db, DB_File => shift,'
@@ -668,15 +668,13 @@ if has('autocmd')
     autocmd FileType epub
         \ execute 'silent %!einfo -q -p' shellescape(expand('<afile>'))
         \     '| lynx -stdin -dump -assume_charset=utf-8 -nolist'
-    autocmd FileType pdf
-        \ execute 'silent %!pdftotext -q' shellescape(expand('<afile>'))
         \     ' - | par w78'
     autocmd FileType postscr
         \ execute 'silent %!ps2ascii' shellescape(expand('<afile>'))
         \     '| par w78'
     autocmd FileType sqlite
         \ execute 'silent %!sqlite3' shellescape(expand('<afile>')) '.dump'
-    autocmd FileType bdb1_hash,epub,pdf,postscr,sqlite setlocal nomodifiable
+    autocmd FileType bdb1_hash,epub,postscr,sqlite setlocal nomodifiable
 
     " Preview window for ref plugin.
     autocmd FileType ref setlocal nolist |
