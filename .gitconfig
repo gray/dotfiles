@@ -48,6 +48,8 @@
     br = branch
     ci = commit
     co = checkout
+    cloner = clone --recursive
+    rclone = clone --recursive
 
     st = status
     s = status -sb
