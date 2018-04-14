@@ -605,14 +605,15 @@ if has('autocmd')
         autocmd InsertLeave * setlocal colorcolumn=
     end
 
-    " Only highlight nonAscii when `list` option is set.
     if exists('##OptionSet')
-        autocmd VimEnter * if &list == 1 |
-            \ syntax match nonAscii '[^\t -~]\+' containedin=ALL | endif
+        " Only highlight nonAscii when `list` option is set.
+        autocmd VimEnter * nested set list! list!
         autocmd OptionSet list
-            \ if v:option_new == 1  && ! v:option_old |
+            \ if v:option_new == 1 && ! v:option_old |
             \     syntax match nonAscii '[^\t -~]\+' containedin=ALL |
-            \ elseif ! v:option_new | silent! syntax clear nonAscii | endif
+            \ elseif ! v:option_new && v:option_old |
+            \     silent! syntax clear nonAscii |
+            \ endif
     endif
 
     " Fall back to syntax keyword completion.
