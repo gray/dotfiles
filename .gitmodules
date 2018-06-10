@@ -76,9 +76,6 @@
 [submodule ".vim/bundle/go"]
 	path = .vim/bundle/go
 	url = https://github.com/fatih/vim-go.git
-[submodule ".vim/bundle/hickop"]
-	path = .vim/bundle/hickop
-	url = https://github.com/hickop/vim-hickop-colors.git
 [submodule ".vim/bundle/histwin"]
 	path = .vim/bundle/histwin
 	url = https://github.com/chrisbra/histwin.vim.git
