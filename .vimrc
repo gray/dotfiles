@@ -605,6 +605,12 @@ if has('autocmd')
         autocmd InsertLeave * setlocal colorcolumn=
     end
 
+    " Avoid inserting anything when an unmapped function key is pressed.
+    autocmd VimEnter *
+        \ for s:n in range(1, 12) |
+        \     silent! execute 'map! <f' . s:n . '> <nop>' |
+        \ endfor
+
     if exists('##OptionSet')
         " Only highlight nonAscii when `list` option is set.
         autocmd VimEnter * nested set list! list!
