@@ -271,7 +271,7 @@ let g:is_posix = 1
 function! s:StripWhitespace (line1, line2)
     let l:saved_pos = getpos('.')
     let l:saved_search = @/
-    execute 'silent! keepjumps' a:line1 . ',' . a:line2 . 's/\s\+$//e'
+    silent! execute 'keepjumps' a:line1 . ',' . a:line2 . 's/\s\+$//e'
     call setpos('.', l:saved_pos)
     let @/ = l:saved_search
 endfunction
@@ -575,7 +575,7 @@ if has('autocmd')
         \ if exists('b:is_new_file') |
         \     unlet b:is_new_file |
         \     if getline(1) =~ '^#!.*/bin/' |
-        \         execute 'silent! !chmod +x' shellescape(expand('<afile>')) |
+        \         silent! execute '!chmod +x' shellescape(expand('<afile>'), 1) |
         \     endif |
         \ endif
 
@@ -669,18 +669,17 @@ if has('autocmd')
     autocmd FileType bdb1_hash,epub,postscr,sqlite
         \ setlocal readonly nolist wrap filetype=text | let b:no_viminfo = 1
     autocmd FileType bdb1_hash
-        \ execute 'silent %!perl -MDB_File -e ''tie \%db, DB_File => shift,'
+        \ silent! execute '%!perl -MDB_File -e ''tie \%db, DB_File => shift,'
         \    'O_RDONLY; while (($k, $v) = each \%db){ print "$k | $v\n" }'''
-        \    shellescape(expand('<afile>'))
+        \    shellescape(expand('<afile>'), 1)
     autocmd FileType epub
-        \ execute 'silent %!einfo -q -p' shellescape(expand('<afile>'))
-        \     '| lynx -stdin -dump -assume_charset=utf-8 -nolist'
-        \     ' - | par w78'
+        \ silent! execute '%!einfo -q -p' shellescape(expand('<afile>'), 1)
+        \     '| lynx -stdin -dump -assume_charset=utf-8 -nolist | par w78'
     autocmd FileType postscr
-        \ execute 'silent %!ps2ascii' shellescape(expand('<afile>'))
+        \ silent! execute '%!ps2ascii' shellescape(expand('<afile>'), 1)
         \     '| par w78'
     autocmd FileType sqlite
-        \ execute 'silent %!sqlite3' shellescape(expand('<afile>')) '.dump'
+        \ silent! execute '%!sqlite3' shellescape(expand('<afile>'), 1) '.dump'
     autocmd FileType bdb1_hash,epub,postscr,sqlite setlocal nomodifiable
 
     " Preview window for ref plugin.
