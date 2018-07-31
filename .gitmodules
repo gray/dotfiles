@@ -236,3 +236,6 @@
 [submodule ".vim/bundle/tmux"]
 	path = .vim/bundle/tmux
 	url = https://github.com/tmux-plugins/vim-tmux.git
+[submodule ".vim/bundle/applescript"]
+	path = .vim/bundle/applescript
+	url = https://github.com/mityu/vim-applescript.git

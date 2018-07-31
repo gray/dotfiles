@@ -132,7 +132,7 @@ after/syntax/c.vim:
 actionscript:
     http://www.vim.org/scripts/script.php?script_id=1061
 applescript:
-    http://www.vim.org/scripts/script.php?script_id=1736
+    https://github.com/mityu/vim-applescript
 arduino:
     https://github.com/vim-scripts/Arduino-syntax-file
 csv:
