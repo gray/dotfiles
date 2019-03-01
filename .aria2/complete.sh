@@ -1,20 +1,16 @@
 #!/bin/sh
 
-# This script is called by aria2c when a download completes..
+# This script is called by aria2c when a download completes.
+# The following arguments are passed in: GID, file count, file path
 #
-# The following arguments are passed to the script:
-#     GID
-#     file count
-#     file path
-
-PATH=$HOME/bin:$HOME/local/bin:/opt/local/bin:/usr/local/bin:/usr/bin:/bin
+# https://aria2.github.io/manual/en/html/aria2c.html#event-hook
 
 set -o errexit
 set -o nounset
 
-path=$3
+nfiles=$2 path=$3
 
-[ 0 -ge $2 ] && exit 0
+[ 0 -ge $nfiles ] && exit 0
 
 has_cmd () { command -v "$@" >/dev/null 2>&1; }
 
@@ -34,6 +30,10 @@ case $OSTYPE in
         ;;
     *) hilite () { :; }
 esac
+
+# The path arg is to the first file; use the parent path for multiple files.
+# This is not ideal because the file may be deeply nested within the path.
+[ 1 -lt $nfiles ] && path=${path%/*}
 
 ! hilite "$path"
 
