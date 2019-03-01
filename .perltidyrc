@@ -9,11 +9,13 @@
 # Whitespace Control
 --maximum-consecutive-blank-lines=2
 --paren-tightness=2
+--block-brace-tightness=1
 --nospace-for-semicolon
 # Line Break Control
 --opening-token-right
 --stack-all-containers
 --stack-opening-block-brace
+--weld-nested-containers
 # Comment Controls
 --nohanging-side-comments
 --minimum-space-to-comment=2
