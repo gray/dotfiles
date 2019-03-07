@@ -76,8 +76,8 @@ indent-object:
     https://github.com/michaeljsmith/vim-indent-object
 largefile:
     https://github.com/vim-scripts/LargeFile
-matchit:
-    https://github.com/benjifisher/matchit.zip
+matchup:
+    https://github.com/andymass/vim-matchup
 niceblock:
     https://github.com/kana/vim-niceblock
 nrrwregn:

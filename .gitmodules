@@ -100,9 +100,6 @@
 [submodule ".vim/bundle/markdown"]
 	path = .vim/bundle/markdown
 	url = https://github.com/tpope/vim-markdown.git
-[submodule ".vim/bundle/matchit"]
-	path = .vim/bundle/matchit
-	url = https://github.com/benjifisher/matchit.zip.git
 [submodule ".vim/bundle/metacosm"]
 	path = .vim/bundle/metacosm
 	url = https://github.com/vim-scripts/metacosm.vim.git
@@ -239,3 +236,6 @@
 [submodule ".vim/bundle/applescript"]
 	path = .vim/bundle/applescript
 	url = https://github.com/mityu/vim-applescript.git
+[submodule ".vim/bundle/matchup"]
+	path = .vim/bundle/matchup
+	url = https://github.com/andymass/vim-matchup.git
