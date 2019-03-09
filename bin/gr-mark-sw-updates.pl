@@ -2,7 +2,6 @@
 use 5.012;
 use warnings;
 
-use experimental 'smartmatch';
 use Config::Tiny;
 use CPAN::DistnameInfo;
 use Cwd qw(realpath);
@@ -10,6 +9,7 @@ use DB_File;
 use DBM_Filter;
 use File::Find;
 use FindBin;
+use List::Util qw(any);
 use PerlIO::gzip;
 use WebService::Google::Reader;
 
@@ -66,25 +66,39 @@ for my $entry ($feed->entries) {
     }
     $unread{$sw} = $entry;
 
-    for my $b (@{$conf->{blacklist} || []}) {
-        if ('CODE' eq ref $b) {
-            next unless $b->($entry);
+    for my $rule (@{$conf->{blacklist} || []}) {
+        my $ref = ref $rule;
+        if ('CODE' eq $ref) {
+            next unless $rule->($entry);
+        }
+        elsif ('Regexp' eq $ref) {
+            next unless any { /$rule/ } $name, $title, $summary, $desc;
         }
         else {
-            next unless [$name, $title, $summary, $desc] ~~ $b;
+            warn 'Unexpected blacklist filter type: ',
+                $ref ? "$ref ref" : 'SCALAR';
+            next;
         }
         push @unwanted_entry, $entry;
         VERBOSE && say "$lang - $name - blacklisted";
         next ENTRY;
     }
 
-    for my $w (@{$conf->{whitelist} || []}) {
-        next if not $name ~~ $w;
+    for my $rule (@{$conf->{whitelist} || []}) {
+        my $ref = ref $rule;
+        if ('CODE' eq $ref) {
+            next unless $rule->($name);
+        }
+        else {
+            warn 'Unexpected whitelist filter type: ',
+                $ref ? "$ref ref" : 'SCALAR';
+            next;
+        }
         VERBOSE && say "$lang - $name - whitelisted";
         next ENTRY;
     }
 
-    if (! $unseen{$sw} and $sw ~~ %db and $title ne $db{$sw}) {
+    if (! $unseen{$sw} and exists $db{$sw} and $title ne $db{$sw}) {
         push @unwanted_entry, $entry;
         VERBOSE && say "$lang - $name - unwanted because seen";
     }
@@ -107,7 +121,7 @@ exit;
 sub read_conf {
     return {
         'https://metacpan.org/feed/recent' => do {
-            my ($dist, $test_perl_dist_installed);
+            my $dist;
             {
                 lang => 'perl',
                 name => sub {
@@ -116,13 +130,14 @@ sub read_conf {
                 },
                 whitelist => [
                     sub {
-                        $test_perl_dist_installed //= is_perl_dist_installed();
+                        state $is_installed = is_perl_dist_installed();
                         'released' eq $dist->maturity
-                            and $_[0] ~~ $test_perl_dist_installed;
+                            and $is_installed->($_[0]);
                     },
                 ],
                 blacklist => [
                     sub {
+                        return 1 unless defined $dist->version;
                         return 1 if $dist->distvname !~ tr/-//;
                         return 1 if $dist->dist =~ m[
                             ^ (?:
@@ -132,8 +147,9 @@ sub read_conf {
                         ]ix;
                         return 1 if $dist->dist =~ m[
                             (?:^|-) (?:
-                                alien | bundle | catalystx? | catmandu | kensho
-                                | mojo[^-]* | poex? | win(?: 32 | dows)[^-]*
+                                alien | bundle | catalystx? | catmandu | cgi
+                                | kensho | mojo[^-]* | moo(?:se)?x? | poex?
+                                | win(?: 32 | dows)[^-]*
                             ) (?:-|$)
                         ]ix;
                         # Ignore foreign languages.
@@ -238,13 +254,13 @@ sub read_conf {
 # Return a sub that checks if the given Perl dist is installed.
 sub is_perl_dist_installed {
     # Find the list of installed modules.
-    my (%modules, %prune);
+    my (%module, %prune);
     for my $top (reverse sort @INC) {
         next if '.' eq $top;
         my $len = length $top;
         find {
             wanted => sub {
-                if ($File::Find::dir ~~ %prune) {
+                if (exists $prune{$File::Find::dir}) {
                     $File::Find::prune = 1;
                     return;
                 }
@@ -252,7 +268,7 @@ sub is_perl_dist_installed {
                 return unless -f _;
                 substr $_, 0, 1 + $len, '';
                 s{[\\/]}{::}g;
-                $modules{$_} = undef;
+                $module{$_} = undef;
             },
             no_chdir => 1
         }, $top;
@@ -272,18 +288,18 @@ sub is_perl_dist_installed {
     open my $fh, '<:gzip', $file or die "$file: $!";
 
     # Skip header.
-    while (<$fh>) { last when "\n" }
+    while (<$fh>) { last if "\n" eq $_ }
 
     # Determine the installed distributions, given the installed modules.
-    my %dists;
+    my %dist;
     while (my $line = <$fh>) {
         my ($package, $version, $dist) = split /\s+/, $line;
-        next unless $package ~~ %modules;
+        next unless exists $module{$package};
         my $info = CPAN::DistnameInfo->new($dist)->dist;
         next unless $info;
-        $dists{$info} = undef;
+        $dist{$info} = undef;
     }
     close $fh;
 
-    sub { $_[0] ~~ %dists; }
+    sub { exists $dist{$_[0] } }
 };
