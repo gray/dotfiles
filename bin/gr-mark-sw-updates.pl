@@ -158,19 +158,22 @@ sub read_conf {
                         ]ix;
                         # Prolific purveyors of piffleware.
                         my %blacklist = map { $_ => 1 } qw(
-                            ahernit akalinux alambike amaltsev aspose athreef
-                            aubertg awncorp bayashi bkb binary bluefeet
-                            capoeirab corliss csson curtis dannyt dbook
-                            dfarrell diederich djerius faraco ferreira
-                            geotiger getty gryphon hanenkamp idoperel ina
-                            lnation ingy ironcamel ivanwills jasei jberger
-                            jeffober jgni jhthorsen jpr jvbsoft kaavannan
-                            kentnl madskill manwar mauke melezhik mhcrnl miko
-                            newellc niczero orange orkun pekingsam perlancar
-                            plicease prbrenan psixdists reedfish reneeb
-                            rsavage sharyanto sillymoos skim sms spebern
-                            steffenw steveb szabgab tapper team tobyink
-                            turnerjw voj wangq yanick zdm znmstr zoffix
+                            ahernit adoptme akalinux alambike amaltsev aspose
+                            athreef aubertg awncorp bayashi bkb binary
+                            bluefeet capoeirab corliss csson curtis dannyt
+                            dbook dfarrell diederich djerius dragosv etj
+                            faraco ferreira gene geotiger getty gryphon
+                            hanenkamp idoperel ina lnation ingy ironcamel
+                            ivanwills jasei jberger jeffober jeffzhang jgni
+                            jhthorsen jlmartin jmaslak jpr jv jvbsoft
+                            kaavannan kentnl kfly khedin kimoto lskatz
+                            madskill manwar maty mauke melezhik mhcrnl miko
+                            mqtech newellc niczero orange orkun pavelsr
+                            pekingsam perlancar plicease prbrenan psixdists
+                            reedfish reneeb rrwo rsavage sharyanto sillymoos
+                            skim sms spebern steffenw steveb szabgab tabulo
+                            tapper team tobyink tulamili turnerjw voj wangq
+                            vvelox woldrich yanick zdm znmstr zoffix
                         );
                         return 1 if $blacklist{ lc $_[0]->author->name };
 
