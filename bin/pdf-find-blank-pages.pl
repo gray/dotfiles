@@ -83,7 +83,7 @@ sub process_path {
         $set->add(@example) if @example;
         push @cmd, $set->as_string;
     }
-    $out = run_cmd @cmd, $set->as_string;
+    $out = run_cmd @cmd;
     return 0, warn "$path : $@\n" if $?;
     my @page; @page[$set->as_array] = (1 .. $set->cardinality);
 
