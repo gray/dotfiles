@@ -140,9 +140,6 @@
 	path = .vim/bundle/perl
 	url = https://github.com/vim-perl/vim-perl.git
 	branch = dev
-[submodule ".vim/bundle/perl6"]
-	path = .vim/bundle/perl6
-	url = https://github.com/vim-perl/vim-perl6.git
 [submodule ".vim/bundle/perlomni"]
 	path = .vim/bundle/perlomni
 	url = https://github.com/c9s/perlomni.vim.git
@@ -239,3 +236,6 @@
 [submodule ".vim/bundle/matchup"]
 	path = .vim/bundle/matchup
 	url = https://github.com/andymass/vim-matchup.git
+[submodule ".vim/bundle/raku"]
+	path = .vim/bundle/raku
+	url = https://github.com/Raku/vim-raku

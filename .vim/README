@@ -149,10 +149,10 @@ nginx:
     http://www.vim.org/scripts/script.php?script_id=1886
 perl:
     https://github.com/vim-perl/vim-perl
-perl6:
-    https://github.com/vim-perl/vim-perl6
 puppet:
     https://github.com/rodjek/vim-puppet
+raku:
+    https://github.com/Raku/vim-raku
 ruby:
     https://github.com/vim-ruby/vim-ruby
 rust:
