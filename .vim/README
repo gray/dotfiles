@@ -86,8 +86,6 @@ nerdcommenter:
     https://github.com/scrooloose/nerdcommenter
 nerdtree:
     https://github.com/scrooloose/nerdtree
-open-browser:
-    https://github.com/tyru/open-browser.vim
 perlomni:
     https://github.com/c9s/perlomni.vim
 perlprove:

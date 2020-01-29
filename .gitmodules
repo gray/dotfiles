@@ -127,9 +127,6 @@
 [submodule ".vim/bundle/nrrwrgn"]
 	path = .vim/bundle/nrrwrgn
 	url = https://github.com/chrisbra/NrrwRgn.git
-[submodule ".vim/bundle/open-browser"]
-	path = .vim/bundle/open-browser
-	url = https://github.com/tyru/open-browser.vim.git
 [submodule ".vim/bundle/pathogen"]
 	path = .vim/bundle/pathogen
 	url = https://github.com/tpope/vim-pathogen.git
