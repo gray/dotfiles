@@ -8,6 +8,9 @@ function path_prepend () {
     done
 }
 
+if [ -x /usr/libexec/path_helper ]; then
+  PATH=""; eval `/usr/libexec/path_helper -s`
+fi
 path_prepend $HOME/bin $HOME/local/bin \
     $HOME/local/perlbrew/perls/latest/bin $HOME/local/go/bin \
     /opt/local/bin /opt/local/sbin /usr/local/bin /usr/local/sbin /bin
@@ -102,7 +105,7 @@ fi
 
 export PERL5LIB=$HOME/local/perl5
 export PERLBREW_ROOT=$HOME/local/perlbrew
-export PERL_CPANM_OPT='-q'
+export PERL_CPANM_OPT='-q --mirror https://www.cpan.org --mirror https://cpan.metacpan.org'
 # groff bug converts some characters to utf-8.
 export PERLDOC='-n"nroff -Tascii"'
 
