@@ -64,13 +64,16 @@ endif
 
 let s:ok_termguicolors = has('termguicolors') && &t_Co == 256
 if s:ok_termguicolors
-    if $TERM_PROGRAM ==# 'iTerm.app'
+    let s:is_mosh = ! executable('pstree')
+        \ || system('pstree -sa ' . getpid()) =~# 'mosh-server'
+    if s:is_mosh && ! exists('$TMUX')
+        let s:ok_termguicolors = 0
+    elseif $TERM_PROGRAM ==# 'iTerm.app'
         if ! exists('$TERM_PROGRAM_VERSION') | let s:ok_termguicolors = 0 | endif
     elseif $TERM_PROGRAM ==# 'Apple_Terminal' || ! exists('$SSH_CLIENT')
         if ! exists('$TMUX') | let s:ok_termguicolors = 0 | endif
     endif
 endif
-
 if s:ok_termguicolors
     let &t_8f = "\<esc>[38;2;%lu;%lu;%lum"
     let &t_8b = "\<esc>[48;2;%lu;%lu;%lum"
