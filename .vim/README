@@ -182,6 +182,8 @@ jellybeans:
     https://github.com/nanotech/jellybeans.vim
 kolor:
     https://github.com/zeis/vim-kolor
+kuroi:
+    https://github.com/aonemd/kuroi.vim
 lettuce:
     http://www.vim.org/scripts/script.php?script_id=1975
 liquidcarbon:
@@ -192,6 +194,8 @@ molokai:
     https://github.com/tomasr/molokai
 monokai:
     https://github.com/sickill/vim-monokai
+moonfly:
+    https://github.com/bluz71/vim-moonfly-colors
 neverness:
     https://github.com/vim-scripts/Neverness-colour-scheme
 peaksea:

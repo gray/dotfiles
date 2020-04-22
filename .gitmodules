@@ -217,7 +217,7 @@
 	url = https://github.com/vim-scripts/wombat256.vim.git
 [submodule ".vim/bundle/wordmotion"]
 	path = .vim/bundle/wordmotion
-	url = https://github.com/chaoren/vim-wordmotion
+	url = https://github.com/chaoren/vim-wordmotion.git
 [submodule ".vim/bundle/xoria256"]
 	path = .vim/bundle/xoria256
 	url = https://github.com/vim-scripts/xoria256.vim.git
@@ -235,4 +235,10 @@
 	url = https://github.com/andymass/vim-matchup.git
 [submodule ".vim/bundle/raku"]
 	path = .vim/bundle/raku
-	url = https://github.com/Raku/vim-raku
+	url = https://github.com/Raku/vim-raku.git
+[submodule ".vim/bundle/moonfly"]
+	path = .vim/bundle/moonfly
+	url = https://github.com/bluz71/vim-moonfly-colors.git
+[submodule ".vim/bundle/kuroi"]
+	path = .vim/bundle/kuroi
+	url = https://github.com/aonemd/kuroi.vim.git
