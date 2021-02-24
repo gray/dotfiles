@@ -11,7 +11,7 @@ autocmd BufNewFile,BufRead Changes setfiletype changelog
 autocmd BufNewFile,BufRead */.irssi/config setfiletype conf
 autocmd BufNewFile,BufRead *.epub setfiletype epub
 autocmd BufNewFile,BufRead *.nfo setfiletype nfo
-autocmd BufNewFile,BufRead *.psgi,~/.dataprinter setfiletype perl
+autocmd BufNewFile,BufRead *.psgi setfiletype perl
 autocmd BufNewFile,BufRead .bash_*,bash-fc-\d\+
     \ if v:version >= 800 | call dist#ft#SetFileTypeSH('bash') |
     \ else                | call SetFileTypeSH('bash') | endif
