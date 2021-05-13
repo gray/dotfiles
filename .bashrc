@@ -20,8 +20,8 @@ umask 0022
 
 case $OSTYPE in
     darwin*)
-        # XCode 4 no longer supports PPC.
-        export ARCHFLAGS='-arch i386 -arch x86_64'
+        export BASH_SILENCE_DEPRECATION_WARNING=1
+        export ARCHFLAGS='-arch arm64 -arch x86_64'
 
         # Prevent tar from copying resource forks.
         export COPY_EXTENDED_ATTRIBUTES_DISABLE=1
