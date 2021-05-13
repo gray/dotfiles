@@ -14,7 +14,6 @@ alias llsa="ls $LS_OPTIONS -FlhSrA"
 alias llt="ls $LS_OPTIONS -Flhtr"
 alias llta="ls $LS_OPTIONS -FlhtrA"
 alias ls="ls $LS_OPTIONS -F"
-alias magnet2torrent='aria2c -q --bt-metadata-only --bt-save-metadata'
 alias man='LANG=C man'
 alias qdf='qpdf --qdf --object-streams=disable'
 alias sane='printf "\033v\033o\n"'
@@ -35,6 +34,7 @@ dict () { command dict "$@" | $PAGER; }
 mkcd () { mkdir -p "$1" && cd "$1"; }
 mktd () { local d=$(mktemp -d ${TMPDIR:-/tmp}/tmp.XXXXXXXXXX) && cd $d; }
 mktouch () { mkdir -p "${1%/*}" && touch "$1"; }
+yes () { command yes "$*"; }
 
 perldoc () {
     if hash cpandoc 2>/dev/null; then
