@@ -1,6 +1,7 @@
 alias bc='bc -lq'
 alias df='df -h'
 alias du='du -h'
+alias exip='curl -o - -s icanhazip.com || curl -o - -s ifconfig.me/ip'
 alias flexget='LC_ALL=en_US.utf8 flexget'
 alias grep='grep --color=auto --devices=skip --binary-files=without-match'
 alias la="ls $LS_OPTIONS -FA"
@@ -22,7 +23,6 @@ alias udiff='LC_ALL=C TZ=UTC0 diff -Naur'
 alias urls='lynx -listonly -nonumbers -dump'
 alias vi=vim
 alias vim='vim -X'
-alias xip='curl -o - -s icanhazip.com || curl -o - -s ifconfig.me/ip'
 
 - () { cd -; }
 .. () {
