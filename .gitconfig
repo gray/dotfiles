@@ -21,6 +21,9 @@
 [fsck]
     badTimezone = ignore
 
+[pull]
+    ff = only
+
 [diff]
     renames = copies
 [color]
