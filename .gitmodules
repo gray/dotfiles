@@ -242,3 +242,12 @@
 [submodule ".vim/bundle/kuroi"]
 	path = .vim/bundle/kuroi
 	url = https://github.com/aonemd/kuroi.vim.git
+[submodule ".vim/bundle/nightfly"]
+	path = .vim/bundle/nightfly
+	url = https://github.com/bluz71/vim-nightfly-guicolors.git
+[submodule ".vim/bundle/night-owl"]
+	path = .vim/bundle/night-owl
+	url = https://github.com/haishanh/night-owl.vim.git
+[submodule ".vim/bundle/ci_dark"]
+	path = .vim/bundle/ci_dark
+	url = https://github.com/chuling/ci_dark.git

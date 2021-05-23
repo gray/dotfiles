@@ -10,6 +10,8 @@ add new plugin:
 
 update plugin:
     git pull -q -r -s recursive -X theirs origin master
+update all plugins:
+    git submodule update --remote --rebase
 
 remove plugin:
     cd $REPO
@@ -170,6 +172,8 @@ tmux:
 installed colors
 ================
 
+ci_dark:
+    https://github.com/chuling/ci_dark
 css_color:
     https://github.com/ap/vim-css-color
 darkspectrum:
@@ -198,6 +202,10 @@ moonfly:
     https://github.com/bluz71/vim-moonfly-colors
 neverness:
     https://github.com/vim-scripts/Neverness-colour-scheme
+night-owl:
+    https://github.com/haishanh/night-owl.vim
+nightfly:
+    https://github.com/bluz71/vim-nightfly-guicolors
 peaksea:
     https://github.com/vim-scripts/peaksea
 sunburst:
