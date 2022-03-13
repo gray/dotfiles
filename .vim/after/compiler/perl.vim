@@ -1,1 +1,0 @@
-CompilerSet makeprg=perl\ -c\ %\ $*
