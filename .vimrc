@@ -623,6 +623,16 @@ if has('autocmd')
         \     silent! execute 'map! <f' . s:n . '> <nop>' |
         \ endfor
 
+    " Work around an old bug in scripts.vim which resets 'cpoptions' after the
+    " ftplugin has made changes to it.
+    if ! has('patch-8.2.4372')
+        autocmd BufEnter *
+            \ redir => s:vft | silent verbose set filetype? | redir END |
+            \ if exists('b:did_ftplugin') && s:vft =~# '/scripts.vim line \d\+$' |
+            \     let &filetype = &filetype |
+            \ endif
+    endif
+
     if exists('##OptionSet')
         " Only highlight nonAscii when `list` option is set.
         autocmd VimEnter * nested set list! list!
