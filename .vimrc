@@ -110,7 +110,7 @@ endif
 
 if has('multi_byte')
     if empty(&termencoding)
-        let termencoding = &encoding
+        let &termencoding = &encoding
     endif
     set encoding=utf-8
 endif
@@ -170,7 +170,7 @@ set sidescroll=1     " Smoother scrolling when reaching end of screen
 set nostartofline    " Keep the cursor in the same column
 
 
-" Text-Formatting, Identing, Tabbing --------------------------------------{{{1
+" Text-Formatting, Indenting, Tabbing -------------------------------------{{{1
 
 if has('autocmd')
     filetype plugin indent on
@@ -198,6 +198,8 @@ endif
 if has('printer')
     set printoptions=paper:letter
 endif
+
+let g:vim_indent_cont=4
 
 
 " Matching, Searching, Substituting ---------------------------------------{{{1
@@ -573,7 +575,7 @@ if has('autocmd')
     " Restore the cursor position.
     autocmd BufRead *
         \ if line("'\"") > 0 && line("'\"") <= line('$') && ! exists('b:no_viminfo') |
-        \     execute 'normal! g`"' | let b:restored_pos = 1 |
+        \     execute 'normal! g`"' |
         \ endif
 
     " Create the parent directory if it does not already exist.
@@ -587,19 +589,16 @@ if has('autocmd')
     autocmd BufWritePost,FileWritePost *
         \ if exists('b:is_new_file') |
         \     unlet b:is_new_file |
-        \     if getline(1) =~ '^#!.*/bin/' |
+        \     if getline(1) =~# '^#!.*/bin/' |
         \         silent! execute '!chmod +x' shellescape(expand('<afile>'), 1) |
         \     endif |
         \ endif
 
     " Prevent the current line from shifting screen position when a hidden
     " buffer is displayed again.
-    autocmd BufHidden *
-        \ let b:saved_winview = winsaveview() |
-        \ let b:last_winsize = [winheight(0), winwidth(0)] |
+    autocmd BufHidden * let b:saved_winview = winsaveview()
     autocmd BufWinEnter *
-        \ if exists('b:saved_winview')
-        \         && b:last_winsize == [winheight(0), winwidth(0)] |
+        \ if exists('b:saved_winview') |
         \     call winrestview(b:saved_winview) |
         \ endif
 
@@ -634,15 +633,20 @@ if has('autocmd')
             \ endif
     endif
 
-    if exists('##OptionSet')
-        " Only highlight nonAscii when `list` option is set.
-        autocmd VimEnter * nested set list! list!
-        autocmd OptionSet list
-            \ if v:option_new == 1 && ! v:option_old |
+    " Only highlight nonAscii when `list` option is set.
+    if has('syntax')
+        autocmd VimEnter,BufNewFile,BufRead *
+            \ if &list |
             \     syntax match nonAscii '[^\t -~]\+' containedin=ALL |
-            \ elseif ! v:option_new && v:option_old |
-            \     silent! syntax clear nonAscii |
             \ endif
+        if exists('##OptionSet')
+            autocmd OptionSet list
+                \ if v:option_new && ! v:option_old |
+                \     syntax match nonAscii '[^\t -~]\+' containedin=ALL |
+                \ elseif ! v:option_new && v:option_old |
+                \     silent! syntax clear nonAscii |
+                \ endif
+        endif
     endif
 
     if has('folding') && exists('##OptionSet')
@@ -694,7 +698,7 @@ if has('autocmd')
     autocmd FileType nfo noautocmd edit ++encoding=cp437 | setlocal nolist
     autocmd FileType puppet setlocal shiftwidth=2 softtabstop=2
     autocmd FileType qf setlocal nobuflisted wrap number
-    autocmd FileType vim setlocal keywordprg=:help | let g:vim_indent_cont=4
+    autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml setlocal matchpairs+=<:> |
         \ let &l:equalprg = 'tidy -qi -xml --wrap 78 --indent-spaces 4 -utf8'
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
