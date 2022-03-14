@@ -575,7 +575,7 @@ if has('autocmd')
     " Restore the cursor position.
     autocmd BufRead *
         \ if line("'\"") > 0 && line("'\"") <= line('$') && ! exists('b:no_viminfo') |
-        \     execute 'normal! g`"' |
+        \     execute 'normal! g`"zz' |
         \ endif
 
     " Create the parent directory if it does not already exist.
