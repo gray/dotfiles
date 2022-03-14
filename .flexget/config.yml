@@ -16,13 +16,13 @@ templates:
       reject: [ '*.m2ts', '*.wmv' ]
     # BTN occasionally names torrents as 'No Name.torrent'
     download: { filename: '{{title | pathscrub}}.torrent' }
-    torrent_scrub: on
-    torrent_alive: { min_seeds: 5, reject_for: 10 minutes }
-    exec:
-      on_output:
-        phase: |
-          # This is also run from cron every few minutes.
-          nice -n 20 transmission-watchdog
+    # torrent_scrub: on
+    # torrent_alive: { min_seeds: 5, reject_for: 10 minutes }
+    # exec:
+    #   on_output:
+    #     phase: |
+    #       # This is also run from cron every few minutes.
+    #       nice -n 20 transmission-watchdog
 
   private-torrents:
     template: torrents
@@ -33,15 +33,16 @@ templates:
     content_size: { min: 25, max: 2500 }
     regexp:
       reject:
-        - ? '(?x) [\W_] (?: (?:fan | horrible) [\W_]? subs | dubbed | cropped
-            | subpack ) (?:_|\b)'
+        - ? '(?x) [\W_] (?: read[\W_]?nfo | (?:fan | horrible) [\W_]? subs
+              | cropped | dubbed | sub (?:pack | french )) (?:_|\b)'
           : { from: title }
         # Avoid certain release groups.
-        - ? '(?x) [\W_] (?: afg | ajp69 | bge | bt[nw] | deadpool | doosh
-                            | heat | jah | kcrt | kompost | lotv | lucidtv
-                            | monkee | msd | ngp | nogr(?:ou)?p | ntb | ny2
-                            | phoenix | propltv | rbb | sdi | tbd | viethd
-                            | visum
+        - ? '(?x) [\W_] (?: afg | ajp69 | bge | bt[nw] | cookiemonster
+                            | deadpool | doosh | evo | failed | heat | hybris
+                            | ion10 | jah | kcrt | kompost | lotv | lucidtv
+                            | monkee | msd | ngp | nogr(?:ou)?p | ny2
+                            | phoenix | propltv | rbb | sdi | stb | syncopy
+                            | tbd | trump | tvc | viethd | visum | [hx]?264
                         ) [\W_]* $'
           : { from: title }
         - ? '(?x) [\W_] (?: CONVERT | INTERNAL ) (?:[\W_] 720p)? [\W_]
@@ -55,7 +56,7 @@ templates:
               - ? '(?x) (?:_|\b) (?: preview | trailer
                                      | behind \W+ the \W+ scenes
                                      | catch(?:ing)? \W+ up | first \W+ look
-                                     | making \W+ of | sneak \W+ peeks? )
+                                     | making \W+ of | sneak \W+ pe[ae]ks? )
                         (?:_|\b)'
                 : { from: title }
       # Only accept specials for later seasons.
@@ -70,11 +71,12 @@ templates:
       # Require subs for non-netflix foreign series, avoid them otherwise.
       - 'path.startswith("~/Media/TV/Foreign/") and not has_field("netflix")':
           regexp:
-            reject_excluding: [ '(?x) \b sub(?:s|bed) \b': { from: title } ]
+            reject_excluding:
+              - '(?x) \b (?:en)?sub(?:s|bed) \b': { from: title }
             reject: [ '(?x) \b nl \W+ subs \b': { from: title } ]
       - 'not path.startswith("~/Media/TV/Foreign/")':
           regexp:
-            reject: [ '(?x) \b sub(?:s|bed) \b': { from: title } ]
+            reject: [ '(?x) \b (?:en)?sub(?:s|bed) \b': { from: title } ]
 
   tv-series:
     template: tv
@@ -82,9 +84,7 @@ templates:
       settings:
         tv: &TV_SETTING
           exact: yes
-          target: <720p !h265 !vp9 <dd5.1
-          quality: webrip+ <=720p !h265 !vp9 <dd5.1
-          timeframe: 6 hours
+          quality: webrip+ <=720p
           propers: 12 hours
           specials: no
           path: ~/Media/TV/{{series_name}}/.
@@ -108,7 +108,6 @@ templates:
     series_premiere:
       <<: *TV_SETTING
       allow_seasonless: yes
-      timeframe: 6 hours
       path: ~/Media/TV/_NEW_/.
     regexp:
       reject:
@@ -125,10 +124,10 @@ templates:
 
   movies:
     interval: 30 minutes
-    # quality: dvdrip+ <=720p !h265 !vp9
-    quality: webrip+ <=720p !h265 !vp9
+    quality: webrip+ <=720p
     regexp:
       reject:
+        - '\b \d{4} \b .*? \b HC \b'
         - ? '(?x) [\W_] (?: read[\W_]?nfo | 3-?D(?:BD)? | live\W+at
                           | (?:heb|kor|nl|pl|ro|swe)[\W_]?[ds]ub(?:s|bed)?
                           | fan[\W_]edit | dubbed | cropped | subpack )
@@ -136,9 +135,9 @@ templates:
           : { from: [ title, description ] }
         - '(?x) (?:_|\b) christmas (?:_|\b)'
         # Avoid certain release groups.
-        - '(?x) [\W_] (?: maxspeed | tnt[\W_]*village | cocain | wdr | msd
-                          | nnd | thc | ssdd | crys | nogr(?:ou)?p | evo | ift
-                          | play[sx]d | aqos | santi ) [\W_]* $'
+        - '(?x) [\W_] (?: aqos | cmrg | cocain | crys | evo | ift | maxspeed
+                          | msd | nnd | nogr(?:ou)?p | play[sx]d | santi
+                          | ssdd | thc | tnt[\W_]*village | wdr ) [\W_]* $'
         # Flexget doesn't recognize cam or line audio as qualities.
         - '(?x) [\W_] (?: cam[\W_]*audio | line(?:[\W_]*audio)? ) (?:_|\b)'
       from: title
@@ -147,7 +146,7 @@ templates:
     require_field: imdb_url
     seen_movies: strict
     if:
-      - 'imdb_year < now.year - 6': reject
+      - '(imdb_year or 0) < now.year - 6': reject
       - "'musical' in (imdb_genres or [])": reject
       - "'reality-tv' in (imdb_genres or [])": reject
       - "['drama'] == (imdb_genres or [])": reject
@@ -176,9 +175,9 @@ templates:
             min_score: 6.8
             min_votes: 100
             accept_languages: [
-              cantonese, chinese, danish, dutch, finnish, french, german,
-              icelandic, italian, norwegian, japanese, korean, mandarin,
-              portuguese, spanish, swedish
+              cantonese, danish, dutch, finnish, french, german, icelandic,
+              italian, norwegian, japanese, korean, portuguese, spanish,
+              swedish
             ]
             accept_genres: [
               action, adventure, comedy, crime, mystery, sci-fi, thriller, war
@@ -222,7 +221,7 @@ tasks:
     # Only accept scene torrents here- members often mislabel.
     regexp:
       reject_excluding:
-        - '^XSbot': { from: author }
+        - '(?x) ^ (?: XSbot\d\* | LaylaXS) $': { from: author }
   torrentday_tv:
     priority: 3
     template: [ private-torrents, tv-series ]
@@ -233,16 +232,6 @@ tasks:
     manipulate:
       - title:
           replace: { regexp: '(?x) \b\W* no \W* rars? \W*$', format: '' }
-  ettv:
-    priority: 4
-    template: [ torrents, tv-series ]
-    rss:
-      url: https://www.ettv.tv/rss.php?cat=5
-      silent: yes
-      all_entries: no
-    manipulate:
-      - title:
-          replace: { regexp: '\[ettv\]*$', format: '' }
 
   #####################
   # TV series premieres
@@ -291,7 +280,7 @@ tasks:
     # Only accept scene torrents here- members often mislabel.
     regexp:
       reject_excluding:
-        - '^XSbot': { from: author }
+        - '(?x) ^ (?: XSbot\d\* | LaylaXS) $': { from: author }
   torrentday_tv_premieres:
     manual: yes
     priority: 22
@@ -317,7 +306,7 @@ tasks:
     # Only accept scene torrents here- members often mislabel.
     regexp:
       reject_excluding:
-        - '^XSbot': { from: author }
+        - '(?x) ^ (?: XSbot\d\* | LaylaXS) $': { from: author }
   torrentday_movies:
     priority: 32
     template: [ private-torrents, movies ]
@@ -328,16 +317,6 @@ tasks:
     manipulate:
       - title:
           replace: { regexp: '(?x) \b\W* no \W* rars? \W*$', format: '' }
-  ptp:
-    priority: 33
-    template: [ private-torrents, movies ]
-    rss:
-      url: '{?feeds.ptp.url?}'
-      silent: yes
-      all_entries: no
-    regexp:
-      reject:
-        - '/ Extras\b' : { from: title }
 
   ##########
   # Streams
