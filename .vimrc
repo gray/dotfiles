@@ -121,7 +121,8 @@ endif
 set display=lastline   " Show as much of the last line as possible
 set nowrap             " Don't wrap long lines
 if has('folding')
-    set foldclose=all  " Close folds at startup
+    set nofoldenable
+    set foldclose=all  " Close all folds not under the cursor
 endif
 if has('linebreak')
     set numberwidth=1  " Minimize line number column
@@ -509,6 +510,13 @@ smap <c-l> <esc><c-l>gv<c-g>
 " Make repeat command operate on visually selected lines.
 xnoremap <silent> . :normal .<cr>
 
+" The default commands don't trigger the OptionSet event for &foldenable
+if exists('##OptionSet')
+    nnoremap zn :set nofoldenable<cr>
+    nnoremap zN :set foldenable<cr>
+    nnoremap zi :set invfoldenable<cr>
+endif
+
 " Return to visual mode after indenting.
 xnoremap < <gv
 xnoremap > >gv
@@ -566,12 +574,6 @@ if has('autocmd')
     autocmd BufRead *
         \ if line("'\"") > 0 && line("'\"") <= line('$') && ! exists('b:no_viminfo') |
         \     execute 'normal! g`"' | let b:restored_pos = 1 |
-        \ endif
-    " Open any containing folds on startup or when restoring cursor position.
-    autocmd VimEnter * execute 'normal! zvzz' | redraw!
-    autocmd BufWinEnter *
-        \ if exists('b:restored_pos') |
-        \     execute 'normal! zvzz' | unlet b:restored_pos |
         \ endif
 
     " Create the parent directory if it does not already exist.
@@ -640,6 +642,16 @@ if has('autocmd')
             \     syntax match nonAscii '[^\t -~]\+' containedin=ALL |
             \ elseif ! v:option_new && v:option_old |
             \     silent! syntax clear nonAscii |
+            \ endif
+    endif
+
+    if has('folding') && exists('##OptionSet')
+        autocmd OptionSet foldenable
+            \ if v:option_new != v:option_old |
+            \     set foldenable? |
+            \ endif |
+            \ if v:option_new && ! v:option_old |
+            \     execute 'normal! zv' |
             \ endif
     endif
 
