@@ -371,7 +371,8 @@ let g:SuperTabDefaultCompletionType = 'context'
 let g:delimitMate_expand_cr = 1
 
 if executable('rg')
-    let [&grepprg, g:ackprg] = repeat(['rg -HS --vimgrep --hidden'], 2)
+    let [&grepprg, g:ackprg] =
+        \ repeat(['rg --vimgrep --hidden --smart-case --no-heading '], 2)
     set grepformat=%f:%l:%c:%m
     let g:ctrlp_user_command = 'rg --files --hidden %s'
     let g:ctrlp_use_caching = 0
@@ -664,7 +665,7 @@ if has('autocmd')
         \ let b:no_viminfo = 1
     autocmd FileType go setlocal shiftwidth=0 nolist
     autocmd FileType html
-        \ let &l:equalprg = 'tidy -qi --wrap 78 --indent-spaces 4'
+        \ let &l:equalprg = 'tidy -qi --wrap 78 --indent-spaces 4 -utf8'
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
     autocmd FileType json let &l:equalprg = 'jq --indent 4 .'
     autocmd FileType make setlocal shiftwidth=0 nolist
@@ -674,7 +675,7 @@ if has('autocmd')
     autocmd FileType qf setlocal nobuflisted wrap number
     autocmd FileType vim setlocal keywordprg=:help | let g:vim_indent_cont=4
     autocmd FileType xml setlocal matchpairs+=<:> |
-        \ let &l:equalprg = 'tidy -qi -xml --wrap 78 --indent-spaces 4'
+        \ let &l:equalprg = 'tidy -qi -xml --wrap 78 --indent-spaces 4 -utf8'
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd FileType bdb1_hash,epub,postscr,sqlite
