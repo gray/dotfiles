@@ -62,11 +62,27 @@ elseif &term =~ 'xterm'
     set t_Co=8
 endif
 
+function! s:IsMosh ()
+    if ! exists('$SSH_CLIENT') | return | endif
+    let l:parents = {}
+    " ps is a standard utility and POSIX compliant.
+    for l:line in split(system('ps -Ao pid=,ppid=,comm='), '\n')
+        let l:fields = split(line, ' \+')
+        let l:parents[l:fields[0]]= [l:fields[1], join(l:fields[2:-1], ' ')]
+    endfor
+    if v:shell_error || ! len(l:parents) | return | endif
+    let l:pid = getpid()
+    while 1 < l:pid
+        let l:parent = l:parents[l:pid]
+        if l:parent[-1] =~# 'mosh-server' | return 1 | endif
+        let l:pid = l:parent[0]
+    endwhile
+    return
+endfunction
+
 let s:ok_termguicolors = has('termguicolors') && &t_Co == 256
 if s:ok_termguicolors
-    let s:is_mosh = ! executable('pstree')
-        \ || system('pstree -sa ' . getpid()) =~# 'mosh-server'
-    if s:is_mosh && ! exists('$TMUX')
+    if s:IsMosh() && ! exists('$TMUX')
         let s:ok_termguicolors = 0
     elseif $TERM_PROGRAM ==# 'iTerm.app'
         if ! exists('$TERM_PROGRAM_VERSION') | let s:ok_termguicolors = 0 | endif
