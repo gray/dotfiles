@@ -13,7 +13,6 @@ let g:ref_perldoc_cmd = &l:keywordprg
 let g:ref_perldoc_auto_append_f = 1
 
 let g:perl_compiler_force_warnings = 0
-let g:perl_fold = 1
 let g:perl_nofold_packages = 1
 let g:perl_nofold_subs = 1
 let g:perl_string_as_statement = 1

@@ -278,9 +278,8 @@ if s:ok_syntax
     syntax enable
 endif
 
-" For sh syntax; most shells are POSIX-compliant.
 let g:is_posix = 1
-
+let g:perl_fold = 1
 
 " Functions ---------------------------------------------------------------{{{1
 
