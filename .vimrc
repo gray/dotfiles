@@ -408,6 +408,9 @@ let g:tagbar_type_xs = {
     \ 'scope2kind' : { 'enum' : 'g', 'struct' : 's', 'union' : 'u' },
     \ }
 
+let g:netrw_errorlvl = 2
+let g:netrw_use_errorwindow = 0
+let g:netrw_silent = 1
 if has('macunix')
     let g:netrw_browsex_viewer = 'open -g'
 endif
