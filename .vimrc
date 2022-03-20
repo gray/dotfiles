@@ -304,9 +304,7 @@ endfunction
 function! s:AdjustColorScheme ()
     " Set termguicolors only if the colorscheme supports gui colors.
     let l:ok_guicolors = ! empty(synIDattr(hlID('Normal'), 'fg#', 'gui'))
-    if s:ok_termguicolors
-        execute 'set' (l:ok_guicolors ? '' : 'no') . 'termguicolors'
-    endif
+    let &termguicolors = s:ok_termguicolors && l:ok_guicolors
 
     " If the background color is dark, set it to black for higher contrast.
     " TODO: also force the background of comments, strings, etc.
