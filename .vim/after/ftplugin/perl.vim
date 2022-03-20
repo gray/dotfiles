@@ -15,6 +15,10 @@ let g:ref_perldoc_auto_append_f = 1
 let g:perl_compiler_force_warnings = 0
 let g:perl_string_as_statement = 1
 
+if expand("%:e") == 't'
+    compiler perlprove
+endif
+
 if exists('loaded_matchit')
     let b:match_ignorecase = 0
     " Skip variables and methods.
