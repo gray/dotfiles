@@ -172,14 +172,14 @@ tmux:
 installed colors
 ================
 
+challenger_deep:
+    https://github.com/challenger-deep-theme/vim
 ci_dark:
     https://github.com/chuling/ci_dark
 css_color:
     https://github.com/ap/vim-css-color
 darkspectrum:
     https://github.com/vim-scripts/darkspectrum
-flatcolor:
-    https://github.com/MaxSt/FlatColor
 gentooish:
     https://github.com/cdaddr/gentooish.vim
 jellybeans:

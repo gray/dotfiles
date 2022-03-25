@@ -55,9 +55,6 @@
 [submodule ".vim/bundle/fastfold"]
 	path = .vim/bundle/fastfold
 	url = https://github.com/Konfekt/FastFold.git
-[submodule ".vim/bundle/flatcolor"]
-	path = .vim/bundle/flatcolor
-	url = https://github.com/MaxSt/FlatColor.git
 [submodule ".vim/bundle/fugitive"]
 	path = .vim/bundle/fugitive
 	url = https://github.com/tpope/vim-fugitive.git
@@ -251,3 +248,6 @@
 [submodule ".vim/bundle/ci_dark"]
 	path = .vim/bundle/ci_dark
 	url = https://github.com/chuling/ci_dark.git
+[submodule ".vim/bundle/challenger_deep"]
+	path = .vim/bundle/challenger_deep
+	url = https://github.com/challenger-deep-theme/vim.git
