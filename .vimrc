@@ -297,10 +297,6 @@ function! s:StripWhitespace (line1, line2)
     let @/ = l:saved_search
 endfunction
 
-function! GetCurrentSyntax ()
-    return map(synstack(line('.'), col('.')), 'synIDattr(v:val, "name")')
-endfunction
-
 function! s:AdjustColorScheme ()
     " Set termguicolors only if the colorscheme supports gui colors.
     let l:ok_guicolors = ! empty(synIDattr(hlID('Normal'), 'fg#', 'gui'))

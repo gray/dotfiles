@@ -13,15 +13,24 @@
 [submodule ".vim/bundle/airline"]
 	path = .vim/bundle/airline
 	url = https://github.com/vim-airline/vim-airline.git
+[submodule ".vim/bundle/applescript"]
+	path = .vim/bundle/applescript
+	url = https://github.com/mityu/vim-applescript.git
 [submodule ".vim/bundle/arduino"]
 	path = .vim/bundle/arduino
 	url = https://github.com/vim-scripts/Arduino-syntax-file.git
 [submodule ".vim/bundle/asterisk"]
 	path = .vim/bundle/asterisk
 	url = https://github.com/haya14busa/vim-asterisk.git
+[submodule ".vim/bundle/challenger_deep"]
+	path = .vim/bundle/challenger_deep
+	url = https://github.com/challenger-deep-theme/vim.git
 [submodule ".vim/bundle/characterize"]
 	path = .vim/bundle/characterize
 	url = https://github.com/tpope/vim-characterize.git
+[submodule ".vim/bundle/ci_dark"]
+	path = .vim/bundle/ci_dark
+	url = https://github.com/chuling/ci_dark.git
 [submodule ".vim/bundle/css_color"]
 	path = .vim/bundle/css_color
 	url = https://github.com/ap/vim-css-color.git
@@ -88,6 +97,9 @@
 [submodule ".vim/bundle/kolor"]
 	path = .vim/bundle/kolor
 	url = https://github.com/zeis/vim-kolor.git
+[submodule ".vim/bundle/kuroi"]
+	path = .vim/bundle/kuroi
+	url = https://github.com/aonemd/kuroi.vim.git
 [submodule ".vim/bundle/largefile"]
 	path = .vim/bundle/largefile
 	url = https://github.com/vim-scripts/LargeFile.git
@@ -97,6 +109,9 @@
 [submodule ".vim/bundle/markdown"]
 	path = .vim/bundle/markdown
 	url = https://github.com/tpope/vim-markdown.git
+[submodule ".vim/bundle/matchup"]
+	path = .vim/bundle/matchup
+	url = https://github.com/andymass/vim-matchup.git
 [submodule ".vim/bundle/metacosm"]
 	path = .vim/bundle/metacosm
 	url = https://github.com/vim-scripts/metacosm.vim.git
@@ -106,6 +121,9 @@
 [submodule ".vim/bundle/monokai"]
 	path = .vim/bundle/monokai
 	url = https://github.com/sickill/vim-monokai.git
+[submodule ".vim/bundle/moonfly"]
+	path = .vim/bundle/moonfly
+	url = https://github.com/bluz71/vim-moonfly-colors.git
 [submodule ".vim/bundle/nerdcommenter"]
 	path = .vim/bundle/nerdcommenter
 	url = https://github.com/preservim/nerdcommenter.git
@@ -121,6 +139,12 @@
 [submodule ".vim/bundle/niceblock"]
 	path = .vim/bundle/niceblock
 	url = https://github.com/kana/vim-niceblock.git
+[submodule ".vim/bundle/night-owl"]
+	path = .vim/bundle/night-owl
+	url = https://github.com/haishanh/night-owl.vim.git
+[submodule ".vim/bundle/nightfly"]
+	path = .vim/bundle/nightfly
+	url = https://github.com/bluz71/vim-nightfly-guicolors.git
 [submodule ".vim/bundle/nrrwrgn"]
 	path = .vim/bundle/nrrwrgn
 	url = https://github.com/chrisbra/NrrwRgn.git
@@ -149,6 +173,9 @@
 [submodule ".vim/bundle/ragtag"]
 	path = .vim/bundle/ragtag
 	url = https://github.com/tpope/vim-ragtag.git
+[submodule ".vim/bundle/raku"]
+	path = .vim/bundle/raku
+	url = https://github.com/Raku/vim-raku.git
 [submodule ".vim/bundle/ref"]
 	path = .vim/bundle/ref
 	url = https://github.com/thinca/vim-ref.git
@@ -167,6 +194,9 @@
 [submodule ".vim/bundle/scratch"]
 	path = .vim/bundle/scratch
 	url = https://github.com/yegappan/scratch.git
+[submodule ".vim/bundle/scriptease"]
+	path = .vim/bundle/scriptease
+	url = https://github.com/tpope/vim-scriptease.git
 [submodule ".vim/bundle/speeddating"]
 	path = .vim/bundle/speeddating
 	url = https://github.com/tpope/vim-speeddating.git
@@ -194,6 +224,9 @@
 [submodule ".vim/bundle/targets"]
 	path = .vim/bundle/targets
 	url = https://github.com/wellle/targets.vim.git
+[submodule ".vim/bundle/tmux"]
+	path = .vim/bundle/tmux
+	url = https://github.com/tmux-plugins/vim-tmux.git
 [submodule ".vim/bundle/undotree"]
 	path = .vim/bundle/undotree
 	url = https://github.com/mbbill/undotree.git
@@ -221,33 +254,3 @@
 [submodule ".vim/bundle/yowish"]
 	path = .vim/bundle/yowish
 	url = https://github.com/kabbamine/yowish.vim.git
-[submodule ".vim/bundle/tmux"]
-	path = .vim/bundle/tmux
-	url = https://github.com/tmux-plugins/vim-tmux.git
-[submodule ".vim/bundle/applescript"]
-	path = .vim/bundle/applescript
-	url = https://github.com/mityu/vim-applescript.git
-[submodule ".vim/bundle/matchup"]
-	path = .vim/bundle/matchup
-	url = https://github.com/andymass/vim-matchup.git
-[submodule ".vim/bundle/raku"]
-	path = .vim/bundle/raku
-	url = https://github.com/Raku/vim-raku.git
-[submodule ".vim/bundle/moonfly"]
-	path = .vim/bundle/moonfly
-	url = https://github.com/bluz71/vim-moonfly-colors.git
-[submodule ".vim/bundle/kuroi"]
-	path = .vim/bundle/kuroi
-	url = https://github.com/aonemd/kuroi.vim.git
-[submodule ".vim/bundle/nightfly"]
-	path = .vim/bundle/nightfly
-	url = https://github.com/bluz71/vim-nightfly-guicolors.git
-[submodule ".vim/bundle/night-owl"]
-	path = .vim/bundle/night-owl
-	url = https://github.com/haishanh/night-owl.vim.git
-[submodule ".vim/bundle/ci_dark"]
-	path = .vim/bundle/ci_dark
-	url = https://github.com/chuling/ci_dark.git
-[submodule ".vim/bundle/challenger_deep"]
-	path = .vim/bundle/challenger_deep
-	url = https://github.com/challenger-deep-theme/vim.git
