@@ -19,32 +19,6 @@ if expand("%:e") == 't'
     compiler perlprove
 endif
 
-if exists('loaded_matchit')
-    let b:match_ignorecase = 0
-    " Skip variables and methods.
-    let s:not_start = '\%(\%([$@%&]\|->\)\s*\)\@<!'
-    let s:has_paren = '\%(\s*(\s*\)\@='
-    let s:has_brace = '\%(\s*{\s*\)\@='
-    let s:has_container = '\%(\s*[{(]\s*\)\@='
-    let b:match_words =
-        \         s:not_start . '\<\%(if\|unless\)\>' . s:has_paren
-        \ . ':' . s:not_start . '\<elsif\>' . s:has_paren
-        \ . ':' . s:not_start . '\<else\>' . s:has_brace
-        \
-        \ . ',' . s:not_start . '\<\%(for\|foreach\|while\|until\)\>'
-        \ . ':' . s:not_start . '\<next\>'
-        \ . ':' . s:not_start . '\<break\>'
-        \ . ':' . s:not_start . '\<continue\>' . s:has_brace
-        \
-        \ . ',' . s:not_start . '\<try\>' . s:has_brace
-        \ . ':' . s:not_start . '\<catch\>' . s:has_container
-        \ . ':' . s:not_start . '\<finally\>' . s:has_container
-        \
-        \ . ',' . s:not_start . '\<do\>' . s:has_brace
-        \ . ':' . s:not_start . '\<\%(while\|until\)\>'
-    unlet s:not_start s:has_paren s:has_brace
-endif
-
 " Deparse obfuscated code
 nnoremap <silent> <buffer> <localleader>pd :%!perl -MO=Deparse 2>/dev/null<cr>
 vnoremap <silent> <buffer> <localleader>pd :!perl -MO=Deparse 2>/dev/null<cr>
