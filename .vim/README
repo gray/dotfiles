@@ -85,9 +85,9 @@ niceblock:
 nrrwregn:
     https://github.com/chrisbra/NrrwRgn
 nerdcommenter:
-    https://github.com/scrooloose/nerdcommenter
+    https://github.com/preservim/nerdcommenter
 nerdtree:
-    https://github.com/scrooloose/nerdtree
+    https://github.com/preservim/nerdtree
 perlomni:
     https://github.com/c9s/perlomni.vim
 perlprove:
@@ -111,7 +111,7 @@ surround:
 tabular:
     https://github.com/godlygeek/tabular
 tagbar:
-    https://github.com/majutsushi/tagbar
+    https://github.com/preservim/tagbar
 targets:
     https://github.com/wellle/targets.vim
 undotree:
