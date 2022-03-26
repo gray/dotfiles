@@ -199,7 +199,7 @@ if has('printer')
     set printoptions=paper:letter
 endif
 
-let g:vim_indent_cont=4
+let g:vim_indent_cont = &shiftwidth
 
 
 " Matching, Searching, Substituting ---------------------------------------{{{1
@@ -686,9 +686,10 @@ if has('autocmd')
         \ let b:no_viminfo = 1
     autocmd FileType go setlocal shiftwidth=0 nolist
     autocmd FileType html
-        \ let &l:equalprg = 'tidy -qi --wrap 78 --indent-spaces 4 -utf8'
+        \ let &l:equalprg = 'tidy -qi -xml --wrap ' . &textwidth
+        \     . ' --indent-spaces ' . &shiftwidth
     autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
-    autocmd FileType json let &l:equalprg = 'jq --indent 4 .'
+    autocmd FileType json let &l:equalprg = 'jq --indent ' . &shiftwidth . ' .'
     autocmd FileType make setlocal shiftwidth=0 nolist
     autocmd FileType man setlocal nolist
     autocmd FileType nfo noautocmd edit ++encoding=cp437 | setlocal nolist
@@ -696,7 +697,8 @@ if has('autocmd')
     autocmd FileType qf setlocal nobuflisted wrap number
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml setlocal matchpairs+=<:> |
-        \ let &l:equalprg = 'tidy -qi -xml --wrap 78 --indent-spaces 4 -utf8'
+        \ let &l:equalprg = 'tidy -qi -xml -utf8 --wrap ' . &textwidth
+        \     . ' --indent-spaces ' . &shiftwidth
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
     autocmd FileType bdb1_hash,epub,postscr,sqlite
@@ -707,10 +709,11 @@ if has('autocmd')
         \    shellescape(expand('<afile>'), 1)
     autocmd FileType epub
         \ silent! execute '%!einfo -q -p' shellescape(expand('<afile>'), 1)
-        \     '| lynx -stdin -dump -assume_charset=utf-8 -nolist | par w78'
+        \     '| lynx -stdin -dump -assume_charset=utf-8 -nolist | par w'
+        \     . &textwidth
     autocmd FileType postscr
         \ silent! execute '%!ps2ascii' shellescape(expand('<afile>'), 1)
-        \     '| par w78'
+        \     '| par w' . &textwidth
     autocmd FileType sqlite
         \ silent! execute '%!sqlite3' shellescape(expand('<afile>'), 1) '.dump'
     autocmd FileType bdb1_hash,epub,postscr,sqlite setlocal nomodifiable
