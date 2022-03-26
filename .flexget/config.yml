@@ -229,9 +229,9 @@ tasks:
       url: '{?feeds.torrentday.tv.url?}'
       silent: yes
       all_entries: no
-    manipulate:
-      - title:
-          replace: { regexp: '(?x) \b\W* no \W* rars? \W*$', format: '' }
+    regexp:
+      reject_excluding:
+        - '(?x) [hx]\ ? 264 - \w+ $': { from: title }
 
   #####################
   # TV series premieres
@@ -289,9 +289,9 @@ tasks:
       url: '{?feeds.torrentday.tv.url?}'
       silent: yes
       all_entries: no
-    manipulate:
-      - title:
-          replace: { regexp: '(?x) \b\W* no \W* rars? \W*$', format: '' }
+    regexp:
+      reject_excluding:
+        - '(?x) [hx]\ ? 264 - \w+ $': { from: title }
 
   ########
   # Movies
@@ -314,9 +314,9 @@ tasks:
       url: '{?feeds.torrentday.movies.url?}'
       silent: yes
       all_entries: no
-    manipulate:
-      - title:
-          replace: { regexp: '(?x) \b\W* no \W* rars? \W*$', format: '' }
+    regexp:
+      reject_excluding:
+        - '(?x) (?:[hx]\ ? 264 | xvid) - \w+ $': { from: title }
 
   ##########
   # Streams
