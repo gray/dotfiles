@@ -1,5 +1,5 @@
 setlocal number
-setlocal equalprg=perltidy\ -q;true
+setlocal formatprg=perltidy\ -q;true
 
 let &l:path = './lib,./blib/lib,./blib/arch,' . &l:path
 let $PERL5LIB = substitute(&l:path, ',', ':', 'g')

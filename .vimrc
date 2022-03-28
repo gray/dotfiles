@@ -523,12 +523,12 @@ xnoremap > >gv
 " Select last pasted text.
 nnoremap <expr> gV '`[' . getregtype()[0] . '`]'
 
-" Paragraph formatting.
-nnoremap Q gqap
-xnoremap Q gq
-
 " Avoid accidentally calling up the command history.
 nnoremap q: <nop>
+
+" Paragraph formatting.
+nnoremap Q gwap
+xnoremap Q gw
 
 " Avoid accidentally deleting selection when using NerdCommenter mappings.
 xnoremap <leader>c <nop>
@@ -686,10 +686,10 @@ if has('autocmd')
         \ let b:no_viminfo = 1
     autocmd FileType go setlocal shiftwidth=0 nolist
     autocmd FileType html
-        \ let &l:equalprg = 'tidy -qi -xml --wrap ' . &textwidth
+        \ let &l:formatprg = 'tidy -qi -xml --wrap ' . &textwidth
         \     . ' --indent-spaces ' . &shiftwidth
-    autocmd FileType javascript setlocal equalprg=js_beautify.pl\ -
-    autocmd FileType json let &l:equalprg = 'jq --indent ' . &shiftwidth . ' .'
+    autocmd FileType javascript setlocal formatprg=js_beautify.pl\ -
+    autocmd FileType json let &l:formatprg = 'jq --indent ' . &shiftwidth . ' .'
     autocmd FileType make setlocal shiftwidth=0 nolist
     autocmd FileType man setlocal nolist
     autocmd FileType nfo noautocmd edit ++encoding=cp437 | setlocal nolist
@@ -697,7 +697,7 @@ if has('autocmd')
     autocmd FileType qf setlocal nobuflisted wrap number
     autocmd FileType vim setlocal keywordprg=:help
     autocmd FileType xml setlocal matchpairs+=<:> |
-        \ let &l:equalprg = 'tidy -qi -xml -utf8 --wrap ' . &textwidth
+        \ let &l:formatprg = 'tidy -qi -xml -utf8 --wrap ' . &textwidth
         \     . ' --indent-spaces ' . &shiftwidth
     autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
 
