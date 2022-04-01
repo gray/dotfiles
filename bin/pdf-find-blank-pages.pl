@@ -10,7 +10,7 @@ use Path::Tiny;
 use Pod::Usage;
 use Set::IntSpan::Fast;
 
-for (qw(pdfinfo pdfgrep mutool)) {
+for (qw(pdfgrep mutool)) {
     die "`$_` isn't installed" unless defined which $_;
 }
 
@@ -43,7 +43,8 @@ sub run_cmd {
     # Propogate control-c from the child process.
     for ($? & 127) { exit $_ if 2 == $_ or 3 == $_ }
 
-    if ($? >>= 8) { $@ = "$cmd[0]: " . ($err || "unknown error") }
+    $err = 'unknown error' unless length $err;
+    if ($? >>= 8) { $@ = "$cmd[0]: $err" }
 
     return $out;
 }
@@ -53,9 +54,9 @@ sub process_path {
     my $path = shift;
     return unless $path =~ /\.pdf$/ and -f $path and ! -l $path;
 
-    my $info = run_cmd pdfinfo => $path;
+    my $info = run_cmd mutool => qw(info -M), $path, 'N';
     return 0, warn "$path : $@\n" if $?;
-    my ($max_page) = $info =~ /^Pages: \s+ (\d+)/m;
+    my ($max_page) = $info =~ /^Pages: \s+ (\d+)/mx;
     return 0, warn "$path : failed to determine page count\n"
         unless $max_page;
     my $set = Set::IntSpan::Fast->new("1-$max_page");
@@ -70,9 +71,10 @@ sub process_path {
     }
     my $todo = $set->diff($blank);
 
-    my $pattern = '^ *this page (is |has been )?intentionally left blank *$';
-    my $out = run_cmd qw(pdfgrep -pi), $blank->is_empty ? ()
+    my $pattern = '^\s*this page(?:is|has been)? intentionally left blank\s*$';
+    my $out = run_cmd qw(pdfgrep -iPp), $blank->is_empty ? ()
         : (qw(--page-range), $todo->as_string), $pattern, $path;
+    return 0, warn "$path : $@\n" if 2 == $?;
     $blank->add($out =~ /^(\d+):/mg);
     $todo = $set->diff($blank);
 
@@ -87,14 +89,14 @@ sub process_path {
     return 0, warn "$path : $@\n" if $?;
     my @page; @page[$set->as_array] = (1 .. $set->cardinality);
 
-    my $img = Imager->new;
     for (@example) {
-        $_ = Imager->new(file => "$dir/$page[$_].png", type => 'png')
-            or return 0, warn "page $_: ", Imager->errstr, "\n";
+        $_ = Imager->new(file => "$dir/$page[$_].png") or return 0,
+            warn "page $_: ", Imager->errstr // 'unknown error', "\n";
     }
+    my $img = Imager->new;
     for my $p ($todo->as_array) {
-        $img->read(file => "$dir/$page[$p].png", type => 'png')
-            or return 0, warn "page $p: ", Imager->errstr, "\n";
+        $img->read(file => "$dir/$page[$p].png") or return 0,
+            warn "page $p: ", $img->errstr // 'unknown error', "\n";
         if (is_blank($img)) { $blank->add($p); next }
         for (@example) {
             if (is_example($img, $_)) { $blank->add($p); last }
