@@ -723,6 +723,7 @@ if has('autocmd')
         \ nmap <silent> <buffer> <bs> <plug>(ref-back)
 
     autocmd BufRead ~/.flexget/*.yml setlocal makeprg=flexget\ check
+        \ errorformat=0
 
     augroup end
 endif
