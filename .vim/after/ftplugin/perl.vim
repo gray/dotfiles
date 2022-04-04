@@ -1,8 +1,7 @@
 setlocal number
 setlocal formatprg=perltidy\ -q;true
 
-let &l:path = './lib,./blib/lib,./blib/arch,' . &l:path
-let $PERL5LIB = substitute(&l:path, ',', ':', 'g')
+setlocal path^=.,,./lib,./blib/lib,./blib/arch
 
 let &l:keywordprg = executable('cpandoc') ? 'cpandoc' : 'perldoc'
 if has('mac') && empty($PERLDOC)
