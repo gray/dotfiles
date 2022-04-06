@@ -581,16 +581,6 @@ if has('autocmd')
         \     silent! call mkdir(fnameescape(expand('<afile>:p:h')), 'p') |
         \ endif
 
-    " Make new scripts executable.
-    autocmd BufNewFile * let b:is_new_file = 1
-    autocmd BufWritePost,FileWritePost *
-        \ if exists('b:is_new_file') |
-        \     unlet b:is_new_file |
-        \     if getline(1) =~# '^#!.*/bin/' |
-        \         silent! execute '!chmod +x' shellescape(expand('<afile>'), 1) |
-        \     endif |
-        \ endif
-
     " Prevent the current line from shifting screen position when a hidden
     " buffer is displayed again.
     autocmd BufHidden * let b:saved_winview = winsaveview()
