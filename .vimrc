@@ -452,7 +452,8 @@ inoremap jj <esc>l
 noremap ,, ,
 
 " Save current buffer with root permissions.
-cnoremap <silent> w!! :SudoWrite<cr>
+cnoreabbrev <expr> w!! getcmdtype() == ':' && getcmdpos() == 4 && v:char == "\r"
+    \ ? 'SudoWrite' : 'w!!'
 
 " Insert a single character.
 noremap <leader>i i<space><esc>r
