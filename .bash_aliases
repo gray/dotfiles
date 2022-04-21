@@ -49,8 +49,14 @@ case $OSTYPE in
     darwin*)
         alias gvim=mvim
 
-        mdl () { [ 0 -lt $# ] && mdfind NOT kind:folder -name "$*" | sort; }
-        mdl0 () { [ 0 -lt $# ] && mdfind NOT kind:folder -0 -name "$*"; }
+        mdl () {
+            [ 0 -lt $# ] || return
+            mdfind NOT kind:folder -name $(echo "$*" | tr ._ ' ') | sort
+        }
+        mdl0 () {
+            [ 0 -lt $# ] || return
+            mdfind NOT kind:folder -0 -name $(echo "$*" | tr ._ ' ')
+        }
         mdll () { mdl0 "$*" | sort -z | xargs -0 ls -ld; }
         mdlo () { mdl0 "$*" | xargs -0 open; }
         ;;
