@@ -34,7 +34,7 @@ dict () { command dict "$@" | $PAGER; }
 mkcd () { mkdir -p "$1" && cd "$1"; }
 mktd () { local d=$(mktemp -d ${TMPDIR:-/tmp}/tmp.XXXXXXXXXX) && cd $d; }
 mktouch () { mkdir -p "${1%/*}" && touch "$1"; }
-yes () { command yes "$*"; }
+yes () { [ 0 -eq $# ] && y=y || y="$*"; command yes "$y"; }
 
 perldoc () {
     if hash cpandoc 2>/dev/null; then
